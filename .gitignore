@@ -1,0 +1,17 @@
+__pycache__/
+.idea
+*.so
+*.o
+*.bin
+*.msh
+*.pyc
+*.npz
+*.npy
+*.data
+*.ipynb_checkpoints
+*.DS_Store
+*dSYM/
+*sysmg.egg-info
+dist
+build
+sysmg/version.py

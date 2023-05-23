@@ -1,0 +1,69 @@
+Info    : Running 'gmsh -3 pinched_channel_h_00.new -format msh2 -o pinched_channel_h_00.msh' [Gmsh 4.8.4, 1 node, max. 1 thread]
+Info    : Started on Thu Oct 27 12:05:59 2022
+Info    : Reading 'pinched_channel_h_00.new'...
+Info    : Done reading 'pinched_channel_h_00.new'
+Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (BSpline)
+Info    : [ 20%] Meshing curve 4 (Line)
+Info    : [ 30%] Meshing curve 5 (Line)
+Info    : [ 40%] Meshing curve 6 (Circle)
+Info    : [ 50%] Meshing curve 7 (Circle)
+Info    : [ 60%] Meshing curve 8 (Line)
+Info    : [ 70%] Meshing curve 9 (Circle)
+Info    : [ 80%] Meshing curve 10 (Line)
+Info    : [ 90%] Meshing curve 11 (Circle)
+Info    : Done meshing 1D (Wall 0.0063868s, CPU 0.006388s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Surface of Revolution, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Cylinder, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 60%] Meshing surface 4 (Cylinder, Frontal-Delaunay)
+Info    : [ 80%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 0.0900497s, CPU 0.090012s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 1 volume with 1 connected component
+Info    : Tetrahedrizing 196 nodes...
+Info    : Done tetrahedrizing 204 nodes (Wall 0.00238206s, CPU 0s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.00516532s, CPU 0.001356s)
+Info    : Found volume 100
+Info    : It. 0 - 0 nodes created - worst tet radius 2.12819 (nodes removed 0 0)
+Info    : 3D refinement terminated (218 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 610 tetrahedra created in 0.00155636 sec. (391940 tets/s)
+Info    : Done meshing 3D (Wall 0.0181497s, CPU 0.009946s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 100
+Info    : Optimization starts (volume = 377613) with worst = 0.0392763 / average = 0.729155:
+Info    : 0.00 < quality < 0.10 :         4 elements
+Info    : 0.10 < quality < 0.20 :        10 elements
+Info    : 0.20 < quality < 0.30 :        14 elements
+Info    : 0.30 < quality < 0.40 :        13 elements
+Info    : 0.40 < quality < 0.50 :        12 elements
+Info    : 0.50 < quality < 0.60 :        32 elements
+Info    : 0.60 < quality < 0.70 :       108 elements
+Info    : 0.70 < quality < 0.80 :       174 elements
+Info    : 0.80 < quality < 0.90 :       186 elements
+Info    : 0.90 < quality < 1.00 :        57 elements
+Info    : 22 edge swaps, 0 node relocations (volume = 377613): worst = 0.166174 / average = 0.748526 (Wall 0.000504605s, CPU 0.000467s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         1 elements
+Info    : 0.20 < quality < 0.30 :         3 elements
+Info    : 0.30 < quality < 0.40 :        13 elements
+Info    : 0.40 < quality < 0.50 :        16 elements
+Info    : 0.50 < quality < 0.60 :        33 elements
+Info    : 0.60 < quality < 0.70 :       111 elements
+Info    : 0.70 < quality < 0.80 :       169 elements
+Info    : 0.80 < quality < 0.90 :       188 elements
+Info    : 0.90 < quality < 1.00 :        58 elements
+Info    : Done optimizing mesh (Wall 0.00112133s, CPU 0.001037s)
+Info    : 243 nodes 1072 elements
+Info    : Writing 'pinched_channel_h_00.msh'...
+Info    : Done writing 'pinched_channel_h_00.msh'
+Info    : Stopped on Thu Oct 27 12:06:00 2022 (From start: Wall 0.231726s, CPU 0.348054s)
+

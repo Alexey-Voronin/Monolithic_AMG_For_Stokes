@@ -1,0 +1,119 @@
+Info    : Running 'gmsh -3 pinched_channel_h_04.new -format msh2 -o pinched_channel_h_04.msh' [Gmsh 4.8.4, 1 node, max. 1 thread]
+Info    : Started on Thu Oct 27 12:06:06 2022
+Info    : Reading 'pinched_channel_h_04.new'...
+Info    : Done reading 'pinched_channel_h_04.new'
+Info    : Meshing 1D...
+Info    : [  0%] Meshing curve 1 (BSpline)
+Info    : [ 20%] Meshing curve 4 (Line)
+Info    : [ 30%] Meshing curve 5 (Line)
+Info    : [ 40%] Meshing curve 6 (Circle)
+Info    : [ 50%] Meshing curve 7 (Circle)
+Info    : [ 60%] Meshing curve 8 (Line)
+Info    : [ 70%] Meshing curve 9 (Circle)
+Info    : [ 80%] Meshing curve 10 (Line)
+Info    : [ 90%] Meshing curve 11 (Circle)
+Info    : Done meshing 1D (Wall 0.0114s, CPU 0.011394s)
+Info    : Meshing 2D...
+Info    : [  0%] Meshing surface 1 (Surface of Revolution, Frontal-Delaunay)
+Info    : [ 20%] Meshing surface 2 (Cylinder, Frontal-Delaunay)
+Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
+Info    : [ 60%] Meshing surface 4 (Cylinder, Frontal-Delaunay)
+Info    : [ 80%] Meshing surface 5 (Plane, Frontal-Delaunay)
+Info    : Done meshing 2D (Wall 3.33193s, CPU 3.32691s)
+Info    : Meshing 3D...
+Info    : 3D Meshing 1 volume with 1 connected component
+Info    : Tetrahedrizing 9242 nodes...
+Info    : Done tetrahedrizing 9250 nodes (Wall 0.216002s, CPU 0.215917s)
+Info    : Reconstructing mesh...
+Info    :  - Creating surface mesh
+Info    :  - Identifying boundary edges
+Info    :  - Recovering boundary
+Info    : Done reconstructing mesh (Wall 0.632853s, CPU 0.612648s)
+Info    : Found volume 100
+Info    : It. 0 - 0 nodes created - worst tet radius 14.9174 (nodes removed 0 0)
+Info    : It. 500 - 500 nodes created - worst tet radius 3.27282 (nodes removed 0 0)
+Info    : It. 1000 - 1000 nodes created - worst tet radius 2.65416 (nodes removed 0 0)
+Info    : It. 1500 - 1500 nodes created - worst tet radius 2.36608 (nodes removed 0 0)
+Info    : It. 2000 - 2000 nodes created - worst tet radius 2.17241 (nodes removed 0 0)
+Info    : It. 2500 - 2500 nodes created - worst tet radius 2.02102 (nodes removed 0 0)
+Info    : It. 3000 - 3000 nodes created - worst tet radius 1.91625 (nodes removed 0 0)
+Info    : It. 3500 - 3500 nodes created - worst tet radius 1.82835 (nodes removed 0 0)
+Info    : It. 4000 - 4000 nodes created - worst tet radius 1.75531 (nodes removed 0 0)
+Info    : It. 4500 - 4500 nodes created - worst tet radius 1.69161 (nodes removed 0 0)
+Info    : It. 5000 - 5000 nodes created - worst tet radius 1.63575 (nodes removed 0 0)
+Info    : It. 5500 - 5500 nodes created - worst tet radius 1.58733 (nodes removed 0 0)
+Info    : It. 6000 - 6000 nodes created - worst tet radius 1.54594 (nodes removed 0 0)
+Info    : It. 6500 - 6500 nodes created - worst tet radius 1.50965 (nodes removed 0 0)
+Info    : It. 7000 - 7000 nodes created - worst tet radius 1.47591 (nodes removed 0 0)
+Info    : It. 7500 - 7500 nodes created - worst tet radius 1.44391 (nodes removed 0 0)
+Info    : It. 8000 - 8000 nodes created - worst tet radius 1.41634 (nodes removed 0 0)
+Info    : It. 8500 - 8500 nodes created - worst tet radius 1.38997 (nodes removed 0 0)
+Info    : It. 9000 - 9000 nodes created - worst tet radius 1.36547 (nodes removed 0 0)
+Info    : It. 9500 - 9500 nodes created - worst tet radius 1.34189 (nodes removed 0 0)
+Info    : It. 10000 - 10000 nodes created - worst tet radius 1.32142 (nodes removed 0 0)
+Info    : It. 10500 - 10500 nodes created - worst tet radius 1.30278 (nodes removed 0 0)
+Info    : It. 11000 - 11000 nodes created - worst tet radius 1.28354 (nodes removed 0 0)
+Info    : It. 11500 - 11500 nodes created - worst tet radius 1.26613 (nodes removed 0 0)
+Info    : It. 12000 - 12000 nodes created - worst tet radius 1.24876 (nodes removed 0 0)
+Info    : It. 12500 - 12500 nodes created - worst tet radius 1.2331 (nodes removed 0 0)
+Info    : It. 13000 - 13000 nodes created - worst tet radius 1.21733 (nodes removed 0 0)
+Info    : It. 13500 - 13500 nodes created - worst tet radius 1.20265 (nodes removed 0 0)
+Info    : It. 14000 - 14000 nodes created - worst tet radius 1.18899 (nodes removed 0 0)
+Info    : It. 14500 - 14500 nodes created - worst tet radius 1.17597 (nodes removed 0 0)
+Info    : It. 15000 - 15000 nodes created - worst tet radius 1.16358 (nodes removed 0 0)
+Info    : It. 15500 - 15500 nodes created - worst tet radius 1.15111 (nodes removed 0 0)
+Info    : It. 16000 - 16000 nodes created - worst tet radius 1.13961 (nodes removed 0 0)
+Info    : It. 16500 - 16500 nodes created - worst tet radius 1.12887 (nodes removed 0 0)
+Info    : It. 17000 - 17000 nodes created - worst tet radius 1.11868 (nodes removed 0 0)
+Info    : It. 17500 - 17500 nodes created - worst tet radius 1.10854 (nodes removed 0 0)
+Info    : It. 18000 - 18000 nodes created - worst tet radius 1.09795 (nodes removed 0 0)
+Info    : It. 18500 - 18500 nodes created - worst tet radius 1.08849 (nodes removed 0 0)
+Info    : It. 19000 - 19000 nodes created - worst tet radius 1.07966 (nodes removed 0 0)
+Info    : It. 19500 - 19500 nodes created - worst tet radius 1.07092 (nodes removed 0 0)
+Info    : It. 20000 - 20000 nodes created - worst tet radius 1.06238 (nodes removed 0 0)
+Info    : It. 20500 - 20500 nodes created - worst tet radius 1.05413 (nodes removed 0 0)
+Info    : It. 21000 - 21000 nodes created - worst tet radius 1.04634 (nodes removed 0 0)
+Info    : It. 21500 - 21500 nodes created - worst tet radius 1.03804 (nodes removed 0 0)
+Info    : It. 22000 - 22000 nodes created - worst tet radius 1.03108 (nodes removed 0 0)
+Info    : It. 22500 - 22500 nodes created - worst tet radius 1.02367 (nodes removed 0 0)
+Info    : It. 23000 - 23000 nodes created - worst tet radius 1.01645 (nodes removed 0 0)
+Info    : It. 23500 - 23500 nodes created - worst tet radius 1.0099 (nodes removed 0 0)
+Info    : It. 24000 - 24000 nodes created - worst tet radius 1.00344 (nodes removed 0 0)
+Info    : 3D refinement terminated (33498 nodes total):
+Info    :  - 1 Delaunay cavities modified for star shapeness
+Info    :  - 0 nodes could not be inserted
+Info    :  - 183228 tetrahedra created in 1.49408 sec. (122636 tets/s)
+Info    : Done meshing 3D (Wall 2.91091s, CPU 2.88175s)
+Info    : Optimizing mesh...
+Info    : Optimizing volume 100
+Info    : Optimization starts (volume = 396484) with worst = 0.000986492 / average = 0.782013:
+Info    : 0.00 < quality < 0.10 :       368 elements
+Info    : 0.10 < quality < 0.20 :      1215 elements
+Info    : 0.20 < quality < 0.30 :      2050 elements
+Info    : 0.30 < quality < 0.40 :      3270 elements
+Info    : 0.40 < quality < 0.50 :      4952 elements
+Info    : 0.50 < quality < 0.60 :      8209 elements
+Info    : 0.60 < quality < 0.70 :     17414 elements
+Info    : 0.70 < quality < 0.80 :     40563 elements
+Info    : 0.80 < quality < 0.90 :     69760 elements
+Info    : 0.90 < quality < 1.00 :     35427 elements
+Info    : 3595 edge swaps, 131 node relocations (volume = 396484): worst = 0.150313 / average = 0.794581 (Wall 0.14355s, CPU 0.143473s)
+Info    : 3610 edge swaps, 134 node relocations (volume = 396484): worst = 0.216182 / average = 0.794625 (Wall 0.187633s, CPU 0.187543s)
+Info    : 3611 edge swaps, 134 node relocations (volume = 396484): worst = 0.239397 / average = 0.794629 (Wall 0.230938s, CPU 0.230828s)
+Info    : No ill-shaped tets in the mesh :-)
+Info    : 0.00 < quality < 0.10 :         0 elements
+Info    : 0.10 < quality < 0.20 :         0 elements
+Info    : 0.20 < quality < 0.30 :         3 elements
+Info    : 0.30 < quality < 0.40 :      3231 elements
+Info    : 0.40 < quality < 0.50 :      4739 elements
+Info    : 0.50 < quality < 0.60 :      7858 elements
+Info    : 0.60 < quality < 0.70 :     17332 elements
+Info    : 0.70 < quality < 0.80 :     41194 elements
+Info    : 0.80 < quality < 0.90 :     70371 elements
+Info    : 0.90 < quality < 1.00 :     35247 elements
+Info    : Done optimizing mesh (Wall 0.567904s, CPU 0.555614s)
+Info    : 33547 nodes 198958 elements
+Info    : Writing 'pinched_channel_h_04.msh'...
+Info    : Done writing 'pinched_channel_h_04.msh'
+Info    : Stopped on Thu Oct 27 12:06:14 2022 (From start: Wall 7.30007s, CPU 7.35642s)
+
