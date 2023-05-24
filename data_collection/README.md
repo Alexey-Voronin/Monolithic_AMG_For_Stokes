@@ -1,33 +1,40 @@
-# Data Collection Scripts
+# Monolithic Algebraic Multigrid Preconditioners for the Stokes Equations
 
-This repository contains scripts for collecting data. To collect all the data, execute the following command: `bash launch.sh`. 
+This repository supports an academic paper focused on Monolithic Algebraic Multigrid Preconditioners for the Stokes Equations. Here, you'll find scripts used for data collection and plot generation, and definitions for key abbreviations. 
 
-For collecting data for a specific example, navigate to the respective directory and run the same command.
+## Data Collection Scripts
+
+Scripts for data collection are included in this repository. To collect all the relevant data, use the following command: `bash collect_data.sh`.
+
+To collect data specific to an example, please navigate to the respective directory and run the same command there.
+
+## Plotting Scripts
+
+You'll find Python plotting scripts in each subdirectory of `data_collection` and `parameter_search`. These scripts generate the figures that appear in the manuscript.
 
 ## Abbreviations
 
+We have used several abbreviations throughout our directory structure and in our files. Here's what they mean:
+
 ### Directory Abbreviations
 
-The following table provides a list of directory abbreviations along with their descriptions:
-
-| Abbreviation | Description                                 |
-| :-----------:|:--------------------------------------------|
-| th           | Taylor-Hood discretization                   |
-| sv           | Scott-Vogelius discretization                |
-| amg_p2p1     | Monolithic AMG applied directly to P2/P1     |
-| amg_isop2p1  | Defect-correction based monolithic AMG       |
-| hlo          | Relaxation on higher and lower order discretizations (levels 0 and 1)|
+| Abbreviation | Description |
+| :-----------:|:------------|
+| th           | Taylor-Hood discretization |
+| sv           | Scott-Vogelius discretization |
+| amg\_p2p1     | Monolithic AMG applied directly to P2/P1 |
+| amg\_isop2p1  | Defect-correction based monolithic AMG |
+| hlo          | Relaxation on both higher and lower order discretizations (levels 0 and 1)|
 | ho           | Relaxation on higher order discretizations (level 0)|
 | lo           | Relaxation on lower order discretizations (level 1)|
 
 ### File Abbreviations
 
-The following table provides a list of file abbreviations along with their descriptions:
-
-| Abbreviation         | Description                                                |
-| :-----------:        |:-----------------------------------------------------------|
-| problem_iterator.py  | Creates an iterator object over different size Stokes problems|
-| mg_params.py         | Contains solver parameters                                  |
-| disc.py              | Describes problem discretization and the auxiliary operator needed for the solver|
-| collect_data.py      | Combines the above-described information to perform strong-scaling data collection|
+| Abbreviation         | Description |
+| :-----------:        |:------------|
+| problem\_iterator.py | Creates an iterator object for different size Stokes problems |
+| mg\_params.py        | Contains the solver parameters |
+| disc.py              | Describes the problem discretization and the auxiliary operator needed for the solver |
+| collection\_data.py  | Combines the information described above to perform strong-scaling data collection |
+| collection\_data.sh  | Shell script that traverses subdirectories and launches Python data collection scripts |
 

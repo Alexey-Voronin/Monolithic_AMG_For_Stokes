@@ -1,6 +1,6 @@
 echo $(basename $PWD)
 
-cd amg_isop2p1/ho  
+cd amg_isop2p1/ho
 bash launch.sh
 
 cd ../../amg_p2p1/
