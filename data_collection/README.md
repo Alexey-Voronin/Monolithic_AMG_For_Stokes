@@ -10,7 +10,7 @@ To collect data specific to an example, please navigate to the respective direct
 
 ## Plotting Scripts
 
-You'll find Python plotting scripts in each subdirectory of `data_collection` and `parameter_search`. These scripts generate the figures that appear in the manuscript.
+You'll find Python plotting scripts in each subdirectory of [data\_collection](./data_collection/) and [parameter\_search](./paramter_search/). These scripts generate the figures that appear in the manuscript.
 
 ## Abbreviations
 

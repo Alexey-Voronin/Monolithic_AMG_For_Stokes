@@ -17,7 +17,7 @@ This GitHub repository houses the code referenced in the aforementioned publicat
 
 # How to Run the Example Problems
 
-The primary code is located in the `sysmg` directory. The scripts required for data collection are stored in the `data_collection` directory.
+The primary code is located in the [sysmg](./sysmg/) directory. The scripts required for data collection are stored in the [data\_collection](./data_collection/) directory.
 
 ## Dependencies
 
@@ -28,7 +28,7 @@ To effectively utilize this code, the following dependencies are needed:
 
 ## Data Collection and Results
 
-The `data_collection` directory contains detailed information regarding the methods and scripts used for data collection. Each sub-directory also includes scripts for data visualization.
+The [data\_collection](./data_collection/) directory contains detailed information regarding the methods and scripts used for data collection. Each sub-directory also includes scripts for data visualization.
 
 
 
