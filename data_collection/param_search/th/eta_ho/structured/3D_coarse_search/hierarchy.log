@@ -1,0 +1,9 @@
+Stokes MultilevelSolver
+Number of Levels:     3
+Operator Complexity:  1.390: 1.38 1.38 1.38 1.63
+Grid Complexity:      1.076
+Coarse Solver:        'splu'
+  level   unknowns     nonzeros           Ratio[v/p]   CR[vx,vy,vz,p]
+     0     3621752     93240559 [71.95%]    23.3       [14.21,14.20,14.20, 8.25]
+     1      262601     33660913 [25.97%]    13.5       [23.19,23.20,23.22,28.25]
+     2       11178      2692416 [ 2.08%]    16.5       [31.37,29.05,29.75,     ]
