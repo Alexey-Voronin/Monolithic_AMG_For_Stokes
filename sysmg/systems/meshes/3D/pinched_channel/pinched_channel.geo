@@ -89,4 +89,4 @@ Physical Surface(2)  = {1, 2, 4};
 Physical Surface(0)  = {3}; 
 Physical Surface(1)  = {5}; 
 Physical Volume(101) = {100};
-Mesh.Smoothing = 10;
+// Mesh.Smoothing = 2;

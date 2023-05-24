@@ -1,5 +1,6 @@
+gmsh -3 pinched_channel_h_01.new -format msh2 -o pinched_channel_h_01.msh
 Info    : Running 'gmsh -3 pinched_channel_h_01.new -format msh2 -o pinched_channel_h_01.msh' [Gmsh 4.8.4, 1 node, max. 1 thread]
-Info    : Started on Thu Oct 27 12:06:00 2022
+Info    : Started on Fri Oct 28 17:24:16 2022
 Info    : Reading 'pinched_channel_h_01.new'...
 Info    : Done reading 'pinched_channel_h_01.new'
 Info    : Meshing 1D...
@@ -12,61 +13,61 @@ Info    : [ 60%] Meshing curve 8 (Line)
 Info    : [ 70%] Meshing curve 9 (Circle)
 Info    : [ 80%] Meshing curve 10 (Line)
 Info    : [ 90%] Meshing curve 11 (Circle)
-Info    : Done meshing 1D (Wall 0.00844638s, CPU 0.008427s)
+Info    : Done meshing 1D (Wall 0.00882692s, CPU 0.008776s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (Surface of Revolution, Frontal-Delaunay)
 Info    : [ 20%] Meshing surface 2 (Cylinder, Frontal-Delaunay)
 Info    : [ 40%] Meshing surface 3 (Plane, Frontal-Delaunay)
 Info    : [ 60%] Meshing surface 4 (Cylinder, Frontal-Delaunay)
 Info    : [ 80%] Meshing surface 5 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.563447s, CPU 0.563199s)
+Info    : Done meshing 2D (Wall 0.132945s, CPU 0.132725s)
 Info    : Meshing 3D...
 Info    : 3D Meshing 1 volume with 1 connected component
 Info    : Tetrahedrizing 1451 nodes...
-Info    : Done tetrahedrizing 1459 nodes (Wall 0.0259582s, CPU 0.025945s)
+Info    : Done tetrahedrizing 1459 nodes (Wall 0.0262738s, CPU 0.022333s)
 Info    : Reconstructing mesh...
 Info    :  - Creating surface mesh
 Info    :  - Identifying boundary edges
 Info    :  - Recovering boundary
-Info    : Done reconstructing mesh (Wall 0.0575139s, CPU 0.053532s)
+Info    : Done reconstructing mesh (Wall 0.0598647s, CPU 0.051824s)
 Info    : Found volume 100
-Info    : It. 0 - 0 nodes created - worst tet radius 5.53188 (nodes removed 0 0)
-Info    : It. 500 - 498 nodes created - worst tet radius 1.2616 (nodes removed 0 2)
-Info    : It. 1000 - 998 nodes created - worst tet radius 1.04123 (nodes removed 0 2)
-Info    : 3D refinement terminated (2614 nodes total):
-Info    :  - 1 Delaunay cavities modified for star shapeness
+Info    : It. 0 - 0 nodes created - worst tet radius 5.47956 (nodes removed 0 0)
+Info    : It. 500 - 498 nodes created - worst tet radius 1.26808 (nodes removed 0 2)
+Info    : It. 1000 - 998 nodes created - worst tet radius 1.03471 (nodes removed 0 2)
+Info    : 3D refinement terminated (2570 nodes total):
+Info    :  - 0 Delaunay cavities modified for star shapeness
 Info    :  - 2 nodes could not be inserted
-Info    :  - 11604 tetrahedra created in 0.0661446 sec. (175433 tets/s)
-Info    : Done meshing 3D (Wall 0.175435s, CPU 0.171371s)
+Info    :  - 11260 tetrahedra created in 0.0634701 sec. (177406 tets/s)
+Info    : Done meshing 3D (Wall 0.172443s, CPU 0.156219s)
 Info    : Optimizing mesh...
 Info    : Optimizing volume 100
-Info    : Optimization starts (volume = 394120) with worst = 0.00283125 / average = 0.768732:
-Info    : 0.00 < quality < 0.10 :        37 elements
-Info    : 0.10 < quality < 0.20 :        80 elements
-Info    : 0.20 < quality < 0.30 :       136 elements
-Info    : 0.30 < quality < 0.40 :       218 elements
-Info    : 0.40 < quality < 0.50 :       322 elements
-Info    : 0.50 < quality < 0.60 :       536 elements
-Info    : 0.60 < quality < 0.70 :      1369 elements
-Info    : 0.70 < quality < 0.80 :      2896 elements
-Info    : 0.80 < quality < 0.90 :      4137 elements
-Info    : 0.90 < quality < 1.00 :      1873 elements
-Info    : 250 edge swaps, 9 node relocations (volume = 394120): worst = 0.0607263 / average = 0.782848 (Wall 0.00656095s, CPU 0.006557s)
-Info    : 252 edge swaps, 9 node relocations (volume = 394120): worst = 0.300435 / average = 0.782985 (Wall 0.00827635s, CPU 0.008272s)
+Info    : Optimization starts (volume = 394122) with worst = 0.00396259 / average = 0.770996:
+Info    : 0.00 < quality < 0.10 :        41 elements
+Info    : 0.10 < quality < 0.20 :        71 elements
+Info    : 0.20 < quality < 0.30 :       142 elements
+Info    : 0.30 < quality < 0.40 :       186 elements
+Info    : 0.40 < quality < 0.50 :       287 elements
+Info    : 0.50 < quality < 0.60 :       533 elements
+Info    : 0.60 < quality < 0.70 :      1275 elements
+Info    : 0.70 < quality < 0.80 :      2848 elements
+Info    : 0.80 < quality < 0.90 :      4033 elements
+Info    : 0.90 < quality < 1.00 :      1844 elements
+Info    : 252 edge swaps, 7 node relocations (volume = 394122): worst = 0.280068 / average = 0.785231 (Wall 0.00676248s, CPU 0.006742s)
+Info    : 253 edge swaps, 7 node relocations (volume = 394122): worst = 0.300788 / average = 0.785289 (Wall 0.00838555s, CPU 0.008365s)
 Info    : No ill-shaped tets in the mesh :-)
 Info    : 0.00 < quality < 0.10 :         0 elements
 Info    : 0.10 < quality < 0.20 :         0 elements
 Info    : 0.20 < quality < 0.30 :         0 elements
-Info    : 0.30 < quality < 0.40 :       212 elements
-Info    : 0.40 < quality < 0.50 :       300 elements
-Info    : 0.50 < quality < 0.60 :       509 elements
-Info    : 0.60 < quality < 0.70 :      1388 elements
-Info    : 0.70 < quality < 0.80 :      2905 elements
-Info    : 0.80 < quality < 0.90 :      4176 elements
-Info    : 0.90 < quality < 1.00 :      1884 elements
-Info    : Done optimizing mesh (Wall 0.0206939s, CPU 0.020684s)
-Info    : 2647 nodes 14486 elements
+Info    : 0.30 < quality < 0.40 :       181 elements
+Info    : 0.40 < quality < 0.50 :       277 elements
+Info    : 0.50 < quality < 0.60 :       505 elements
+Info    : 0.60 < quality < 0.70 :      1269 elements
+Info    : 0.70 < quality < 0.80 :      2903 elements
+Info    : 0.80 < quality < 0.90 :      4067 elements
+Info    : 0.90 < quality < 1.00 :      1832 elements
+Info    : Done optimizing mesh (Wall 0.0209504s, CPU 0.020876s)
+Info    : 2603 nodes 14146 elements
 Info    : Writing 'pinched_channel_h_01.msh'...
 Info    : Done writing 'pinched_channel_h_01.msh'
-Info    : Stopped on Thu Oct 27 12:06:01 2022 (From start: Wall 0.900067s, CPU 1.00612s)
+Info    : Stopped on Fri Oct 28 17:24:17 2022 (From start: Wall 0.466075s, CPU 0.560018s)
 

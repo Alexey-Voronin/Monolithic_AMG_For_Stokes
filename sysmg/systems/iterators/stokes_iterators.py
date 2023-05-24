@@ -7,47 +7,6 @@ from .system_iterator import SystemIterator
 
 import os
 import glob
-"""
-class GenericStokesIterator(SystemIterator):
-    
-    mesh_ext = []    
-
-    def __init__(self, 
-                 system_params,
-                 mesh_iterator = None, # list of firedrake Mesh objects
-                 max_dofs=1e5, 
-                 #start_idx=None, end_idx=None,
-                 #mesh_loc=None, mesh_name=None 
-                 ):
-        super().__init__(system_params, max_dofs)
-        
-        self.iterator = mesh_iterator
-    def __repr__(self):
-        return 'Stokes Problem Iterator'
-
-    def __iter__(self):
-        self.mesh = next(self.iterator)
-        return self
-
-    def __next__(self):
-        
-        try:
-
-            mesh = Mesh(path)
-            dim  = mesh.dim 
-
-            self.system_params['mesh'] = mesh
-            stokes = Stokes(self.system_params)
-            self.build_time = (time_ns() - tic) / 1e9
-
-            self.count += 1
-            stokes.structured = False
-            if hasattr(stokes, 'lo_fe_sys'):
-                stokes.lo_fe_sys.structured = False
-            return stokes
-        else:
-            raise StopIteration
-"""
 
 class StructuredStokesIterator(SystemIterator):
     """Iterator object that generates structured Stokes systems on demand.

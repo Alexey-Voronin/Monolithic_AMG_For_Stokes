@@ -628,3 +628,4 @@ Physical Line("outflow") = {-1};
 Physical Line("foil") = {-7,-6, 2, 4}; 
 
 Physical Surface("fluid") = {9};
+Mesh.Smoothing = 30;

@@ -1,6 +1,6 @@
 gmsh -3 split_artery_h_01.new -format msh2 -o split_artery_h_01.msh
-Info    : Running 'gmsh -3 split_artery_h_01.new -format msh2 -o split_artery_h_01.msh' [Gmsh 4.10.5, 1 node, max. 1 thread]
-Info    : Started on Thu Oct 27 13:44:17 2022
+Info    : Running 'gmsh -3 split_artery_h_01.new -format msh2 -o split_artery_h_01.msh' [Gmsh 4.8.4, 1 node, max. 1 thread]
+Info    : Started on Wed Nov 30 09:31:18 2022
 Info    : Reading 'split_artery_h_01.new'...
 Info    : Reading 'split_artery.step'...
 Info    :  - Label 'Shapes/art1right' (3D)
@@ -262,7 +262,7 @@ Info    : [100%] Meshing curve 252 (BSpline)
 Info    : [100%] Meshing curve 253 (BSpline)
 Info    : [100%] Meshing curve 254 (BSpline)
 Info    : [100%] Meshing curve 255 (BSpline)
-Info    : Done meshing 1D (Wall 0.295362s, CPU 0.292949s)
+Info    : Done meshing 1D (Wall 0.58813s, CPU 0.587557s)
 Info    : Meshing 2D...
 Info    : [  0%] Meshing surface 1 (BSpline surface, Frontal-Delaunay)
 Info    : [ 10%] Meshing surface 2 (BSpline surface, Frontal-Delaunay)
@@ -389,52 +389,51 @@ Info    : [100%] Meshing surface 122 (BSpline surface, Frontal-Delaunay)
 Info    : [100%] Meshing surface 123 (Plane, Frontal-Delaunay)
 Info    : [100%] Meshing surface 124 (Plane, Frontal-Delaunay)
 Info    : [100%] Meshing surface 125 (Plane, Frontal-Delaunay)
-Info    : Done meshing 2D (Wall 0.514961s, CPU 0.512395s)
+Info    : Done meshing 2D (Wall 2.59468s, CPU 2.58783s)
 Info    : Meshing 3D...
 Info    : 3D Meshing 1 volume with 1 connected component
-Info    : Tetrahedrizing 1092 nodes...
-Info    : Done tetrahedrizing 1100 nodes (Wall 0.00623583s, CPU 0.006028s)
+Info    : Tetrahedrizing 1096 nodes...
+Info    : Done tetrahedrizing 1104 nodes (Wall 0.0153553s, CPU 0.01534s)
 Info    : Reconstructing mesh...
 Info    :  - Creating surface mesh
 Info    :  - Identifying boundary edges
 Info    :  - Recovering boundary
-Info    : Done reconstructing mesh (Wall 0.0157236s, CPU 0.015119s)
+Info    : Done reconstructing mesh (Wall 0.0343522s, CPU 0.034302s)
 Info    : Found volume 1
-Info    : It. 0 - 0 nodes created - worst tet radius 13.1814 (nodes removed 0 0)
-Info    : 3D refinement terminated (1323 nodes total):
+Info    : It. 0 - 0 nodes created - worst tet radius 14.1799 (nodes removed 0 0)
+Info    : 3D refinement terminated (1328 nodes total):
 Info    :  - 8 Delaunay cavities modified for star shapeness
 Info    :  - 19 nodes could not be inserted
-Info    :  - 4435 tetrahedra created in 0.00973654 sec. (455500 tets/s)
-Info    : Done meshing 3D (Wall 0.0439141s, CPU 0.04112s)
+Info    :  - 4479 tetrahedra created in 0.0199066 sec. (225001 tets/s)
+Info    : Done meshing 3D (Wall 0.105505s, CPU 0.097146s)
 Info    : Optimizing mesh...
 Info    : Optimizing volume 1
-Info    : Optimization starts (volume = 1830.41) with worst = 0.000520622 / average = 0.697412:
-Info    : 0.00 < quality < 0.10 :        34 elements
-Info    : 0.10 < quality < 0.20 :        51 elements
-Info    : 0.20 < quality < 0.30 :       110 elements
-Info    : 0.30 < quality < 0.40 :       114 elements
-Info    : 0.40 < quality < 0.50 :       173 elements
-Info    : 0.50 < quality < 0.60 :       462 elements
-Info    : 0.60 < quality < 0.70 :       996 elements
-Info    : 0.70 < quality < 0.80 :      1209 elements
-Info    : 0.80 < quality < 0.90 :       919 elements
-Info    : 0.90 < quality < 1.00 :       367 elements
-Info    : 177 edge swaps, 5 node relocations (volume = 1830.41): worst = 0.0265502 / average = 0.718929 (Wall 0.00153417s, CPU 0.001521s)
-Info    : 183 edge swaps, 8 node relocations (volume = 1830.41): worst = 0.0265502 / average = 0.718809 (Wall 0.00184779s, CPU 0.001833s)
-Info    : No ill-shaped tets in the mesh :-)
-Info    : 0.00 < quality < 0.10 :         3 elements
-Info    : 0.10 < quality < 0.20 :         0 elements
-Info    : 0.20 < quality < 0.30 :         6 elements
-Info    : 0.30 < quality < 0.40 :       112 elements
-Info    : 0.40 < quality < 0.50 :       162 elements
-Info    : 0.50 < quality < 0.60 :       469 elements
-Info    : 0.60 < quality < 0.70 :      1015 elements
-Info    : 0.70 < quality < 0.80 :      1206 elements
-Info    : 0.80 < quality < 0.90 :       925 elements
+Info    : Optimization starts (volume = 1830.78) with worst = 0.000742121 / average = 0.697393:
+Info    : 0.00 < quality < 0.10 :        45 elements
+Info    : 0.10 < quality < 0.20 :        71 elements
+Info    : 0.20 < quality < 0.30 :        96 elements
+Info    : 0.30 < quality < 0.40 :       108 elements
+Info    : 0.40 < quality < 0.50 :       180 elements
+Info    : 0.50 < quality < 0.60 :       441 elements
+Info    : 0.60 < quality < 0.70 :       985 elements
+Info    : 0.70 < quality < 0.80 :      1218 elements
+Info    : 0.80 < quality < 0.90 :       955 elements
+Info    : 0.90 < quality < 1.00 :       380 elements
+Info    : 190 edge swaps, 8 node relocations (volume = 1830.78): worst = 0.000742121 / average = 0.719448 (Wall 0.00343226s, CPU 0.003433s)
+Info    : 200 edge swaps, 12 node relocations (volume = 1830.78): worst = 0.000742121 / average = 0.720726 (Wall 0.00454279s, CPU 0.00454s)
+Info    : 0.00 < quality < 0.10 :         7 elements
+Info    : 0.10 < quality < 0.20 :         3 elements
+Info    : 0.20 < quality < 0.30 :         8 elements
+Info    : 0.30 < quality < 0.40 :       102 elements
+Info    : 0.40 < quality < 0.50 :       187 elements
+Info    : 0.50 < quality < 0.60 :       460 elements
+Info    : 0.60 < quality < 0.70 :       958 elements
+Info    : 0.70 < quality < 0.80 :      1227 elements
+Info    : 0.80 < quality < 0.90 :       976 elements
 Info    : 0.90 < quality < 1.00 :       365 elements
-Info    : Done optimizing mesh (Wall 0.00393896s, CPU 0.003875s)
-Info    : 1323 nodes 7295 elements
+Info    : Done optimizing mesh (Wall 0.00917987s, CPU 0.009171s)
+Info    : 1328 nodes 7338 elements
 Info    : Writing 'split_artery_h_01.msh'...
 Info    : Done writing 'split_artery_h_01.msh'
-Info    : Stopped on Thu Oct 27 13:44:18 2022 (From start: Wall 1.16084s, CPU 1.27325s)
+Info    : Stopped on Wed Nov 30 09:31:22 2022 (From start: Wall 3.92186s, CPU 4.02145s)
 
