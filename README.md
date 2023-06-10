@@ -5,7 +5,7 @@ In this paper, we investigate a novel monolithic algebraic multigrid solver for
 the discrete Stokes problem discretized with stable mixed finite elements. The
 algorithm is based on the use of the low-order $\pmb{\mathbb{P}}_1 \text{iso}\kern1pt\pmb{ \mathbb{P}}_2/ \mathbb{P}_1$
 discretization as
-a preconditioner for a higher-order discretization, such as \ptwopone{}.
+a preconditioner for a higher-order discretization, such as $\pmb{\mathbb{P}}_2/\mathbb{P}_1$.
 Smoothed aggregation algebraic multigrid is used to construct independent
 coarsenings of the velocity and pressure fields for the low-order
     discretization, resulting in a purely algebraic
