@@ -1,7 +1,26 @@
 # Monolithic Algebraic Multigrid Preconditioners for the Stokes Equations
 
 ## Abstract
-TBU (To Be Updated)
+In this paper, we investigate a novel monolithic algebraic multigrid solver for
+the discrete Stokes problem discretized with stable mixed finite elements. The
+algorithm is based on the use of the low-order $\pmb{\mathbb{P}}_1 \text{iso}\kern1pt\pmb{ \mathbb{P}}_2/ \mathbb{P}_1$
+discretization as
+a preconditioner for a higher-order discretization, such as \ptwopone{}.
+Smoothed aggregation algebraic multigrid is used to construct independent
+coarsenings of the velocity and pressure fields for the low-order
+    discretization, resulting in a purely algebraic
+preconditioner for the high-order discretization (i.e., using no geometric information).
+Furthermore, we incorporate a novel block LU factorization technique for Vanka patches,
+which balances computational efficiency with lower storage requirements.
+The effectiveness of the
+new method is verified for the $\pmb{\mathbb{P}}_2/\mathbb{P}_1$ (Taylor-Hood) discretization in two
+and three dimensions on both structured and unstructured meshes.
+Similarly, the approach is shown to be effective when applied to
+the $\pmb{\mathbb{P}}_2/\mathbb{P}_1^{disc}$ (Scott-Vogelius) discretization on 2D
+barycentrically refined meshes.
+This novel monolithic algebraic multigrid solver not only meets but frequently surpasses the performance 
+of inexact Uzawa preconditioners, demonstrating the versatility and robust performance across a diverse 
+spectrum of problem sets, even where inexact Uzawa preconditioners struggle to converge.
 
 ## Authors
 - Alexey Voronin (voronin2@illinois.edu)
