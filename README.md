@@ -29,7 +29,7 @@ spectrum of problem sets, even where inexact Uzawa preconditioners struggle to c
 - Raymond Tuminaro
 
 The published paper can be found at:
-- [arxiv (TBU)](https://arxiv.org/abs/2306.06795)
+- [arxiv](https://arxiv.org/abs/2306.06795)
 - [JCP (TBU)]()
 
 This GitHub repository houses the code referenced in the aforementioned publications.
