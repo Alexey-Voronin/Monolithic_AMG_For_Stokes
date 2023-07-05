@@ -30,7 +30,7 @@ spectrum of problem sets, even where inexact Uzawa preconditioners struggle to c
 
 The published paper can be found at:
 - [arxiv](https://arxiv.org/abs/2306.06795)
-- [JCP (TBU)]()
+- [SISC (TBU)]()
 
 This GitHub repository houses the code referenced in the aforementioned publications.
 
