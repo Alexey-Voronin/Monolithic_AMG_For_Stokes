@@ -349,7 +349,7 @@ class Vanka(System_Relaxation):
         self._A_inv_flat = np.zeros((_A_size,), dtype=np.double)
 
         if self.vanka_setup_opt:
-            from patch_mult import th_patch_setup
+            from .core.patch_mult import th_patch_setup
             th_patch_setup(self.M.indptr, self.M.indices, self.M.data,
                                self.B.indptr, self.B.indices, self.B.data,
                                Ps_ordered,
@@ -408,7 +408,7 @@ class Vanka(System_Relaxation):
         S_inv = np.zeros((n_p))
 
         if self.vanka_setup_opt:
-            from patch_mult import th_bf_patch_setup
+            from .core.patch_mult import th_bf_patch_setup
             th_bf_patch_setup(self.M.indptr, self.M.indices, self.M.data,
                               self.B.indptr, self.B.indices, self.B.data,
                               Mloc_x_sizes.ravel(),
@@ -532,7 +532,7 @@ class Vanka(System_Relaxation):
         # Compute patches and place them into a linear array
         self._A_inv_flat = np.zeros((np.sum(self.block_sizes ** 2),), dtype=np.double)
         if self.vanka_setup_opt:
-            from patch_mult import sv_patch_setup
+            from .core.patch_mult import sv_patch_setup
             sv_patch_setup(self.M.indptr, self.M.indices, self.M.data,
                            self.B.indptr, self.B.indices, self.B.data,
                            P_cells.reshape(-1),
@@ -621,7 +621,7 @@ class Vanka(System_Relaxation):
 
             if self.cblas:
                 self._x_gs = np.zeros((self._GS.shape[0],), dtype=np.float64)
-                from patch_mult import n_part_batch
+                from .core.patch_mult import n_part_batch
                 def mv(A, x, b):
                     _GS           = self._GS
                     for _ in range(self.relax_iters):
@@ -679,7 +679,7 @@ class Vanka(System_Relaxation):
             self._rg_scatter = np.zeros((nu_gs + self._pdofs,))
 
             if self.cblas:
-                from patch_mult import n_part_bs
+                from .core.patch_mult import n_part_bs
                 def mv(A, x, b):
                     GS = self._GS
 
@@ -806,7 +806,7 @@ class Vanka(System_Relaxation):
 
             if self.cblas:
                 self._x_gs = np.zeros((self._GS.shape[0],), dtype=np.float64)
-                from patch_mult import n_part
+                from .core.patch_mult import n_part
 
                 def mv(A, x, b):
                     _GS = self._GS
