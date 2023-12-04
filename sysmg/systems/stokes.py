@@ -133,7 +133,7 @@ class Stokes(System):
         assemble(expr, tensor=b)
 
         blift = Function(Z)
-        blift += b
+        blift += b.riesz_representation(riesz_map='l2')
         for bc in A.bcs:
             bc.apply(blift)
         self.b = np.copy(blift.vector().array())
