@@ -6,6 +6,7 @@ import gc
 # sysmg imports
 from .mg_common import MG
 from .relaxation.vanka import Vanka
+from .relaxation.lsc_dgs import LSCDGS
 from .ho_wrapper import HighOrderWrapper
 from sysmg.util.bmat import BlockMatrix
 from sysmg.util.alg_util import dropSmallEntries
@@ -46,7 +47,7 @@ class StokesMG(MG):
 
     @timeit("setup:solver:mg:")
     def __init__(self, stokes_system, mg_param,
-                 keep=False,
+                 keep=True,
                  ):
         """Initialize StokesMG Object.
 
@@ -204,6 +205,7 @@ class StokesMG(MG):
                     setattr(levels[-1], mat, R * getattr(levels[-2], mat) * P)
 
         return levels
+
     def aspreconditioner(self, cycle='V'):
         """ return a linear operator that can be used as a preconditioner
         """
@@ -266,6 +268,7 @@ class StokesMG(MG):
             level.A_bmat[1,0].eliminate_zeros()
             level.A_bmat[0,1].eliminate_zeros()
             stks = Stokes_tmp(level.A_bmat, system.dim, system.structured)
+            stks.stiffness_bmat = system.stiffness_bmat if i == 0 else None
             stks.dim = self.dim
             stks_levels.append(stks)
             level.A = level.A_bmat.tocsr()
@@ -273,10 +276,17 @@ class StokesMG(MG):
             if i == len(levels) - 1:  # exact-solve here, no relax needed
                 continue
 
+
+            #for mat in ['mass_bmat', 'stiffness_bmat']:
+            #    if hasattr(levels[-2], mat):
+            #        setattr(levels[-1], mat, R * getattr(levels[-2], mat) * P)
+
             if rlx_name.lower() == 'vanka' and rlx_param['type'] == 'geometric':
                 stks.grid_hier = [system.grid_hier[-1 - i]]
                 stks.ext_grid_hier = [system.ext_grid_hier[-1 - i]]
                 stks.periodic = system.periodic
+            elif rlx_name.lower() == 'lsc-dgs':
+                pass
             elif rlx_param['type'] == 'geometric_dg' and i == 0:
                 stks.dof_cells = system.dof_cells
 
@@ -294,6 +304,8 @@ class StokesMG(MG):
                 # one component at a time.
                 stks._udofs_component_wise = self.mls_info['dofs'][i][:self.dim]
                 relax = Vanka(stks, params=rlx_param_copy, level=(i + 1))
+            elif rlx_name.lower() == 'lsc-dgs':
+                relax = LSCDGS(stks, params=rlx_param_copy, level=(i + 1))
             else:
                 raise ValueError('%s Relaxation not defined' % rlx_name.lower())
 

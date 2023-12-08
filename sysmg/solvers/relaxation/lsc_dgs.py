@@ -55,12 +55,19 @@ class LSCDGS(System_Relaxation):
 
         # Operator Setup
         self.system = stokes
+        Abmat = self.system.A_bmat
+        self._Au    = Abmat[0,0].copy()
+        self._B     = Abmat[1,0].copy()
+        self._BT    = Abmat[0,1].copy()
         self.nullspace = getattr(stokes, 'nullspace', None)
         self._vdofs = stokes.velocity_nodes()
         self._pdofs = stokes.pressure_nodes()
 
         self._step_solvers = {}
         self._setup_relaxation_method()
+
+        if self.accel:
+            self._xt = np.zeros((self.system.ndofs(),))
 
 
     def _get_solver(self, A, solver, params, name):
@@ -103,7 +110,6 @@ class LSCDGS(System_Relaxation):
         Au    = Abmat[0,0]
         B     = Abmat[1,0]
         BT    = Abmat[0,1]
-        Ap    = self.system.stiffness_bmat[1,1]
 
         name = "momentum"
         iparams = self.params[name]
@@ -113,6 +119,7 @@ class LSCDGS(System_Relaxation):
                                                 name)
         name = 'continuity'
         iparams = self.params[name]
+        Ap      = self.system.stiffness_bmat[1,1] if iparams['operator'].lower() == 'stiffness' else None
         mat  = Ap if iparams['operator'].lower() == 'stiffness' else B*BT
         self._continuity_solver = self._get_solver(mat,
                                                   iparams['solver'],
@@ -134,10 +141,9 @@ class LSCDGS(System_Relaxation):
         u,p   = up[:Nu], up[Nu:]
         f,g   = rhs[:Nu], rhs[Nu:]
 
-        Abmat = self.system.A_bmat
-        Au    = Abmat[0,0]
-        B     = Abmat[1,0]
-        BT    = Abmat[0,1]
+        Au = self._Au
+        B  = self._B
+        BT = self._BT
         B_Au_BT = self._BABT
 
         for _ in range(self.relax_iters):
