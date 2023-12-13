@@ -66,7 +66,7 @@ class Stokes(System):
         self.cleanup()  # frees memory and deletes unnecessary attributes
 
     @timeit("setup:system:stokes:")
-    def _form_system(self, plot=False, solve=False, **kwargs):
+    def _form_system(self, plot=False, solve=True, **kwargs):
         """Form the Stokes system.
 
         Delegates most of the work to the fe_factory.stokes.StokesProblem.

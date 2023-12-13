@@ -56,9 +56,9 @@ class LSCDGS(System_Relaxation):
         # Operator Setup
         self.system = stokes
         Abmat = self.system.A_bmat
-        self._Au    = Abmat[0,0].copy()
-        self._B     = Abmat[1,0].copy()
-        self._BT    = Abmat[0,1].copy()
+        self._Au    = Abmat[0,0].copy().tocsr()
+        self._B     = Abmat[1,0].copy().tocsr()
+        self._BT    = Abmat[0,1].copy().tocsr()
         self.nullspace = getattr(stokes, 'nullspace', None)
         self._vdofs = stokes.velocity_nodes()
         self._pdofs = stokes.pressure_nodes()
@@ -83,6 +83,18 @@ class LSCDGS(System_Relaxation):
                 x = np.zeros_like(b)
                 pyamg.relaxation.relaxation.gauss_seidel(A, x, b, **params)
                 return x
+        elif solver == 'chebyshev':
+
+            class Level(object):
+                self.A = None
+                def __init__(self, A):
+                    self.A = A
+
+            self._step_solvers[name] = pyamg.relaxation.smoothing.setup_chebyshev(Level(A), **params)
+            def custom_solver(b):
+                x = np.zeros_like(b)
+                self._step_solvers[name](A, x, b)
+                return x
         elif solver == 'sa-amg':
             solve_params = params.pop('solve_phase')
             setup_params = params.pop('setup_phase')
@@ -90,14 +102,14 @@ class LSCDGS(System_Relaxation):
             self._step_solvers[name] = mg
 
             def custom_solver(b):
-                resid = []
-                max_iter = solve_params.get('iterations', 1)
+                #resid = []
+                max_iter = solve_params.get('iterations', 2)
                 x =  mg.solve(b,
                          maxiter=max_iter,
                          cycle=solve_params.get('cycle', 'V'),
-                         residuals=resid
+                         #residuals=resid
                         )
-                assert len(resid)-1 == max_iter
+                #assert len(resid)-1 == max_iter
                 return x
         else:
             raise Exception(f"solver {solver} is not defined.")
@@ -106,34 +118,33 @@ class LSCDGS(System_Relaxation):
 
     def _setup_relaxation_method(self):
 
-        Abmat = self.system.A_bmat
-        Au    = Abmat[0,0]
-        B     = Abmat[1,0]
-        BT    = Abmat[0,1]
+        Au    = self._Au
+        B     = self._B
+        BT    = self._BT
 
         name = "momentum"
         iparams = self.params[name]
-        self._momentum_solver = self._get_solver(Abmat[0,0],
+        self._momentum_solver = self._get_solver(Au,
                                                 iparams['solver'],
                                                 iparams['solver_params'],
                                                 name)
         name = 'continuity'
         iparams = self.params[name]
         Ap      = self.system.stiffness_bmat[1,1] if iparams['operator'].lower() == 'stiffness' else None
-        mat  = Ap if iparams['operator'].lower() == 'stiffness' else B*BT
+        mat  = Ap if iparams['operator'].lower() == 'stiffness' else (B*BT).tocsr()
         self._continuity_solver = self._get_solver(mat,
                                                   iparams['solver'],
                                                   iparams['solver_params'],
                                                   name)
         name = 'transform'
         iparams = self.params[name]
-        mat  = Ap if iparams['operator'].lower() == 'stiffness' else B*BT
+        mat  = Ap if iparams['operator'].lower() == 'stiffness' else (B*BT).tocsr()
         self._transform_solver = self._get_solver(mat,
                                                   iparams['solver'],
                                                   iparams['solver_params'],
                                                   name)
 
-        self._BABT = B*(Au*BT)
+        self._BABT = (B*(Au*BT)).tocsr()
 
     def relax(self, K, up, rhs):
 
@@ -150,7 +161,7 @@ class LSCDGS(System_Relaxation):
             # Step 1: Relax momentum equations
             u[:] = u + self._momentum_solver(f - Au * u - BT * p)
             # Step 2: Relax transformed continuity equations
-            dq   = self._continuity_solver(g - 1.0 * (B * u))
+            dq   = self._continuity_solver(g - B * u)
             # Step 3: Transform the correction back to the original variables
             u[:] = u + BT * dq
             p[:] = p - self._transform_solver(B_Au_BT * dq)
