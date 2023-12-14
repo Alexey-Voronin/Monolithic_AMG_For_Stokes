@@ -54,6 +54,9 @@ class HighOrderWrapper(object):
         relax_name, relax_params = params
         if relax_name.lower() == "vanka":
             rlx = Vanka(self.stokes, params=relax_params)
+        elif relax_name.lower() == "lsc-dgs":
+            from sysmg import LSCDGS
+            rlx = LSCDGS(self.stokes, params=relax_params, level=0)
         elif relax_name.lower() == "uzawa":
             from sysmg import BlockDiagMG
             rlx = BlockDiagMG(self.stokes, relax_params)
