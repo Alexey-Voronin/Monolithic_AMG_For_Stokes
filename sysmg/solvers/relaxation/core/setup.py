@@ -1,8 +1,6 @@
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 import sys
-import setuptools
-import os
 
 
 # Include directories for pybind11 and numpy
@@ -68,29 +66,13 @@ ext_modules = [
         language='c++',
         libraries=["openblas"],
         library_dirs=[openblas_lib],
-        extra_compile_args=['-std=c++11',
-                            '-O3',
-                            '-march=native',
-                            '-funroll-loops',
-                            '-ffast-math',
-                            #'--Wall -Wextra', '-g'
-                            ] + arch_compile_flags,
-        extra_link_args=[
-                         f'-L{openblas_lib}',
-                         '-lopenblas',
-                         '-flto',
-                         ],
+        extra_compile_args=['-Wall -Wextra -std=c++11', '-O3', '-march=native', '-funroll-loops', '-ffast-math'] + arch_compile_flags,
+        extra_link_args=['-L' + openblas_lib, '-lopenblas', '-flto'],
     ),
 ]
 
 setup(
-    name='patch_mult',
-    version='0.1',
-    description='Matrix operations using pybind11',
-    long_description='',
     ext_modules=ext_modules,
-    setup_requires=['pybind11>=2.5.0'],
     cmdclass={'build_ext': BuildExt},
     zip_safe=False,
 )
-
