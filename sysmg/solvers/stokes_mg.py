@@ -6,7 +6,7 @@ import gc
 # sysmg imports
 from .mg_common import MG
 from .relaxation.vanka import Vanka
-from .relaxation.lsc_dgs import LSCDGS
+from .relaxation.lsc import LSC
 from .ho_wrapper import HighOrderWrapper
 from sysmg.util.bmat import BlockMatrix
 from sysmg.util.alg_util import dropSmallEntries
@@ -285,7 +285,7 @@ class StokesMG(MG):
                 stks.grid_hier = [system.grid_hier[-1 - i]]
                 stks.ext_grid_hier = [system.ext_grid_hier[-1 - i]]
                 stks.periodic = system.periodic
-            elif rlx_name.lower() == 'lsc-dgs':
+            elif rlx_name.lower() == 'lsc':
                 pass
             elif rlx_param['type'] == 'geometric_dg' and i == 0:
                 stks.dof_cells = system.dof_cells
@@ -304,8 +304,8 @@ class StokesMG(MG):
                 # one component at a time.
                 stks._udofs_component_wise = self.mls_info['dofs'][i][:self.dim]
                 relax = Vanka(stks, params=rlx_param_copy, level=(i + 1))
-            elif rlx_name.lower() == 'lsc-dgs':
-                relax = LSCDGS(stks, params=rlx_param_copy, level=(i + 1))
+            elif rlx_name.lower() == 'lsc':
+                relax = LSC(stks, params=rlx_param_copy, level=(i + 1))
             else:
                 raise ValueError('%s Relaxation not defined' % rlx_name.lower())
 

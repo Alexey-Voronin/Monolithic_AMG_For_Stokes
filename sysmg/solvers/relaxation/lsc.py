@@ -10,16 +10,16 @@ from sysmg.util.decorators import timeit
 from .relaxation import System_Relaxation
 
 
-class LSCDGS(System_Relaxation):
+class LSC(System_Relaxation):
     """
-    LSC-DGS smoother setup for Q2/Q1 and Q1isoQ2/Q1 Stokes Discretizations.
+    Least Squares Commutor (LSC)  smoother setup for Q2/Q1 and Q1isoQ2/Q1 Stokes Discretizations.
 
     """
 
     omega = None
     relax_iters = None
 
-    @timeit("setup:solver:lscdgs:")
+    @timeit("setup:solver:lsc:")
     def __init__(self, stokes,
                  params={'iterations': (2, 2),
                          'momentum'   : {'solver' : 'gauss-seidel',

@@ -9,7 +9,7 @@ from .solvers.ho_wrapper import HighOrderWrapper
 
 from .solvers.relaxation.vanka import Vanka
 from .solvers.relaxation.block_solve import block_solve
-from .solvers.relaxation.lsc_dgs import LSCDGS
+from .solvers.relaxation.lsc import LSC
 
 from firedrake import Mesh
 
