@@ -797,12 +797,14 @@ void n_part_bs(const py::array_t<int>& Mloc_x_sizes,
 PYBIND11_MODULE(patch_mult, m) {
     m.doc() = "Matrix operations using pybind11";
     m.def("n_part"      ,      &n_part, "n_part patch-vector multiplication");
-    m.def("n_part_batch",      &n_part_batch, "Batched patch-vector multiplication");  
-    m.def("n_part_factorized", &n_part_factorized, "Factorized patch-vector multiplication");
     m.def("n_part_bs", &n_part_bs, "(simplified) Block Factorized patch-vector multiplication");
-    m.def("th_patch_setup", &th_patch_setup, "Taylor-Hood algebraic patch setup all");
-    m.def("th_bf_patch_setup", &th_bf_patch_setup, "Taylor-Hood block-factorized algebraic patch setup");
+    m.def("n_part_batch",      &n_part_batch, "Batched patch-vector multiplication");  
+    
     m.def("sv_patch_setup", &sv_patch_setup, "Scott-Vogelius algebraic patch setup all");
-    m.def("block_fact_patch_setup", &block_fact_patch_setup, "Taylor-Hood algebraic block-factorized patch setup");
+    m.def("th_bf_patch_setup", &th_bf_patch_setup, "Taylor-Hood block-factorized algebraic patch setup");
+    m.def("th_patch_setup", &th_patch_setup, "Taylor-Hood algebraic patch setup all");
+    // not used atm. 
+    //m.def("n_part_factorized", &n_part_factorized, "Factorized patch-vector multiplication");
+    //m.def("block_fact_patch_setup", &block_fact_patch_setup, "Taylor-Hood algebraic block-factorized patch setup");
 }
 
