@@ -3,5 +3,7 @@ from .stokes import Stokes
 
 from . import iterators
 
-from .iterators.stokes_iterators import StructuredStokesIterator,\
-                                        UnstructuredStokesIterator
+from .iterators.stokes_iterators import (
+    StructuredStokesIterator,
+    UnstructuredStokesIterator,
+)

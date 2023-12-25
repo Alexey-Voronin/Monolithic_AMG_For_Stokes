@@ -1,7 +1,9 @@
 from .systems.stokes import Stokes
 
-from .systems.iterators.stokes_iterators import StructuredStokesIterator,\
-                                                UnstructuredStokesIterator
+from .systems.iterators.stokes_iterators import (
+    StructuredStokesIterator,
+    UnstructuredStokesIterator,
+)
 
 from .solvers.stokes_mg import StokesMG
 from .solvers.block_diag_mg import BlockDiagMG
@@ -16,5 +18,4 @@ from firedrake import Mesh
 from . import systems
 
 
-
-__all__ = ['systems']
+__all__ = ["systems"]

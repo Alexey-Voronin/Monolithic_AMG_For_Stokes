@@ -99,24 +99,38 @@ def bary(cdm):
 
     for cdm_cell in range(*cdm_cells):
         cdm_cell_entities = closure(cdm, cdm_cell)[0]
-        cdm_cell_vertices = [x for x in cdm_cell_entities if cdm_vertices[0] <= x < cdm_vertices[1]]
-        cdm_cell_edges = [x for x in cdm_cell_entities if cdm_edges[0] <= x < cdm_edges[1]]
+        cdm_cell_vertices = [
+            x for x in cdm_cell_entities if cdm_vertices[0] <= x < cdm_vertices[1]
+        ]
+        cdm_cell_edges = [
+            x for x in cdm_cell_entities if cdm_edges[0] <= x < cdm_edges[1]
+        ]
         if dim == 3:
-            cdm_cell_facets = [x for x in cdm_cell_entities if cdm_facets[0] <= x < cdm_facets[1]]
+            cdm_cell_facets = [
+                x for x in cdm_cell_entities if cdm_facets[0] <= x < cdm_facets[1]
+            ]
 
         # Step 1.
         # Introduce new vertex at barycentre.
         new_vertex = num_cdm_vertices + cdm_cell + rdm_vertices[0]
-        cdm_cell_vertices_in_new_numbering = [old_vertex - cdm_vertices[0] + rdm_vertices[0] for old_vertex in
-                                              cdm_cell_vertices]
+        cdm_cell_vertices_in_new_numbering = [
+            old_vertex - cdm_vertices[0] + rdm_vertices[0]
+            for old_vertex in cdm_cell_vertices
+        ]
         # print("Introducing new vertex %s" % new_vertex)
 
         # Step 2.
         # Introduce new edges.
-        new_edges = list(range(rdm_edges[0] + num_cdm_edges + (dim + 1) * cdm_cell,
-                               rdm_edges[0] + num_cdm_edges + (dim + 1) * (cdm_cell + 1)))
+        new_edges = list(
+            range(
+                rdm_edges[0] + num_cdm_edges + (dim + 1) * cdm_cell,
+                rdm_edges[0] + num_cdm_edges + (dim + 1) * (cdm_cell + 1),
+            )
+        )
 
-        for (old_vertex_in_new_numbering, new_edge) in zip(cdm_cell_vertices_in_new_numbering, new_edges):
+        for old_vertex_in_new_numbering, new_edge in zip(
+            cdm_cell_vertices_in_new_numbering, new_edges
+        ):
             new_edge_cone = [old_vertex_in_new_numbering, new_vertex]
             rdm.setCone(new_edge, new_edge_cone)
             # print("Introducing new edge %d -> %s" % (new_edge, new_edge_cone))
@@ -124,10 +138,14 @@ def bary(cdm):
         # Step 3.
         # Introduce new facets (in 3D)
         if dim == 3:
-            new_facets = list(range(rdm_facets[0] + num_cdm_facets + 6 * cdm_cell,
-                                    rdm_facets[0] + num_cdm_facets + 6 * (cdm_cell + 1)))
+            new_facets = list(
+                range(
+                    rdm_facets[0] + num_cdm_facets + 6 * cdm_cell,
+                    rdm_facets[0] + num_cdm_facets + 6 * (cdm_cell + 1),
+                )
+            )
 
-            for (old_edge, new_facet) in zip(cdm_cell_edges, new_facets):
+            for old_edge, new_facet in zip(cdm_cell_edges, new_facets):
                 # Construct a new facet from the old edge and two new edges connecting
                 # those vertices to the barycentre.
                 old_edge_in_new_numbering = old_edge - cdm_edges[0] + rdm_edges[0]
@@ -152,7 +170,7 @@ def bary(cdm):
 
         # Step 4. Construct new cell cones (and possibly new facet cones, too, in 3D)
         if dim == 2:
-            for (old_edge, new_cell) in zip(cdm_cell_edges, new_cells):
+            for old_edge, new_cell in zip(cdm_cell_edges, new_cells):
                 old_edge_in_new_numbering = old_edge - cdm_edges[0] + rdm_edges[0]
                 vertices = rdm.getCone(old_edge_in_new_numbering)
 
@@ -170,7 +188,7 @@ def bary(cdm):
                 copy_label("Cell Sets", new_cell, cdm_cell)
 
         elif dim == 3:
-            for (old_facet, new_cell) in zip(cdm_cell_facets, new_cells):
+            for old_facet, new_cell in zip(cdm_cell_facets, new_cells):
                 old_facet_in_new_numbering = old_facet - cdm_facets[0] + rdm_facets[0]
                 old_edges = cdm.getCone(old_facet)
 
@@ -327,7 +345,9 @@ def bary(cdm):
                 if False:
                     should_be = [[0, 1, 2], [0, 3, 1], [0, 2, 3], [2, 1, 3]]
                     for i in range(4):
-                        walk = get_vertex_walk_for_facet(new_cell_cone[i], new_cell_cone_orientation[i])
+                        walk = get_vertex_walk_for_facet(
+                            new_cell_cone[i], new_cell_cone_orientation[i]
+                        )
                         # print("Fast", walk)
                         # walk = get_vertex_walk_for_facet_slow(new_cell_cone[i], new_cell_cone_orientation[i])
                         # print("Slow", walk)
@@ -356,7 +376,11 @@ def bary(cdm):
     cdm_coordinates = cdm.getCoordinatesLocal()
 
     def cdm_coords(p):
-        return cdm.getVecClosure(cdm_section, cdm_coordinates, p).reshape(-1, space_dim).mean(axis=0)
+        return (
+            cdm.getVecClosure(cdm_section, cdm_coordinates, p)
+            .reshape(-1, space_dim)
+            .mean(axis=0)
+        )
 
     rdm_section.setNumFields(1)
     rdm_section.setFieldComponents(0, space_dim)
@@ -383,7 +407,9 @@ def bary(cdm):
     # Now new vertices at the barycentres.
     for cdm_cell in range(*cdm_cells):
         cdm_cell_entities = closure(cdm, cdm_cell)[0]
-        cdm_cell_vertices = [x for x in cdm_cell_entities if cdm_vertices[0] <= x < cdm_vertices[1]]
+        cdm_cell_vertices = [
+            x for x in cdm_cell_entities if cdm_vertices[0] <= x < cdm_vertices[1]
+        ]
         new_coords = sum(cdm_coords(p) for p in cdm_cell_vertices) / (dim + 1)
         new_vertex = num_cdm_vertices + cdm_cell
         rdm_coords_array[new_vertex] = new_coords
@@ -474,14 +500,22 @@ def bary(cdm):
     return rdm
 
 
-def BaryMeshHierarchy(mesh, refinement_levels, distribution_parameters=None, callbacks=None, reorder=None,
-                      refinements_per_level=1):
+def BaryMeshHierarchy(
+    mesh,
+    refinement_levels,
+    distribution_parameters=None,
+    callbacks=None,
+    reorder=None,
+    refinements_per_level=1,
+):
     cdm = mesh._topology_dm
     cdm.setRefinementUniform(True)
     dms = []
     if mesh.comm.size > 1 and mesh._grown_halos:
-        raise RuntimeError("Cannot refine parallel overlapped meshes "
-                           "(make sure the MeshHierarchy is built immediately after the Mesh)")
+        raise RuntimeError(
+            "Cannot refine parallel overlapped meshes "
+            "(make sure the MeshHierarchy is built immediately after the Mesh)"
+        )
     parameters = {}
     if distribution_parameters is not None:
         parameters.update(distribution_parameters)
@@ -511,9 +545,13 @@ def BaryMeshHierarchy(mesh, refinement_levels, distribution_parameters=None, cal
         # Remove vertex (and edge) points from labels on exterior
         # facets.  Interior facets will be relabeled in Mesh
         # construction below.
-        impl.filter_labels(rdm, rdm.getHeightStratum(1),
-                           "exterior_facets", "boundary_faces",
-                           FACE_SETS_LABEL)
+        impl.filter_labels(
+            rdm,
+            rdm.getHeightStratum(1),
+            "exterior_facets",
+            "boundary_faces",
+            FACE_SETS_LABEL,
+        )
 
         rdm.removeLabel("pyop2_core")
         rdm.removeLabel("pyop2_owned")
@@ -522,31 +560,47 @@ def BaryMeshHierarchy(mesh, refinement_levels, distribution_parameters=None, cal
         dms.append(rdm)
         cdm = rdm
         # Fix up coords if refining embedded circle or sphere
-        if hasattr(mesh, '_radius'):
+        if hasattr(mesh, "_radius"):
             # FIXME, really we need some CAD-like representation
             # of the boundary we're trying to conform to.  This
             # doesn't DTRT really for cubed sphere meshes (the
             # refined meshes are no longer gnonomic).
-            coords = cdm.getCoordinatesLocal().array.reshape(-1, mesh.geometric_dimension())
+            coords = cdm.getCoordinatesLocal().array.reshape(
+                -1, mesh.geometric_dimension()
+            )
             scale = mesh._radius / numpy.linalg.norm(coords, axis=1).reshape(-1, 1)
             coords *= scale
 
     barydms = (bary(mesh._topology_dm),) + tuple(bary(dm) for dm in dms)
 
     for bdm in barydms:
-        impl.filter_labels(bdm, bdm.getHeightStratum(1),
-                           "exterior_facets", "boundary_faces",
-                           FACE_SETS_LABEL)
+        impl.filter_labels(
+            bdm,
+            bdm.getHeightStratum(1),
+            "exterior_facets",
+            "boundary_faces",
+            FACE_SETS_LABEL,
+        )
 
-    barymeshes = [firedrake.Mesh(dm, dim=mesh.ufl_cell().geometric_dimension(),
-                                 distribution_parameters=distribution_parameters,
-                                 reorder=reorder)
-                  for dm in barydms]
+    barymeshes = [
+        firedrake.Mesh(
+            dm,
+            dim=mesh.ufl_cell().geometric_dimension(),
+            distribution_parameters=distribution_parameters,
+            reorder=reorder,
+        )
+        for dm in barydms
+    ]
 
-    meshes = [mesh] + [firedrake.Mesh(dm, dim=mesh.ufl_cell().geometric_dimension(),
-                                      distribution_parameters=distribution_parameters,
-                                      reorder=reorder)
-                       for dm in dms]
+    meshes = [mesh] + [
+        firedrake.Mesh(
+            dm,
+            dim=mesh.ufl_cell().geometric_dimension(),
+            distribution_parameters=distribution_parameters,
+            reorder=reorder,
+        )
+        for dm in dms
+    ]
 
     lgmaps = []
     for i, m in enumerate(meshes):
@@ -558,8 +612,9 @@ def BaryMeshHierarchy(mesh, refinement_levels, distribution_parameters=None, cal
 
     coarse_to_fine_cells = []
     fine_to_coarse_cells = [None]
-    for (coarse, fine), (clgmaps, flgmaps) in zip(zip(meshes[:-1], meshes[1:]),
-                                                  zip(lgmaps[:-1], lgmaps[1:])):
+    for (coarse, fine), (clgmaps, flgmaps) in zip(
+        zip(meshes[:-1], meshes[1:]), zip(lgmaps[:-1], lgmaps[1:])
+    ):
         c2f, f2c = impl.coarse_to_fine_cells(coarse, fine, clgmaps, flgmaps)
         coarse_to_fine_cells.append(c2f)
         fine_to_coarse_cells.append(f2c)
@@ -575,12 +630,17 @@ def BaryMeshHierarchy(mesh, refinement_levels, distribution_parameters=None, cal
     d = mesh.topological_dimension()
     bary_coarse_to_fine_cells = []
     bary_fine_to_coarse_cells = [None]
-    for (coarseu, fineu), (coarse, fine), (clgmaps, flgmaps), uniform_coarse_to_fine \
-            in zip(zip(meshes[:-1], meshes[1:]),
-                   zip(barymeshes[:-1], barymeshes[1:]),
-                   zip(lgmaps[:-1], lgmaps[1:]),
-                   coarse_to_fine_cells):
-
+    for (
+        (coarseu, fineu),
+        (coarse, fine),
+        (clgmaps, flgmaps),
+        uniform_coarse_to_fine,
+    ) in zip(
+        zip(meshes[:-1], meshes[1:]),
+        zip(barymeshes[:-1], barymeshes[1:]),
+        zip(lgmaps[:-1], lgmaps[1:]),
+        coarse_to_fine_cells,
+    ):
         cdm = coarseu._topology_dm
         fdm = fineu._topology_dm
         _, cn2o = impl.get_entity_renumbering(cdm, coarseu._cell_numbering, "cell")
@@ -591,8 +651,9 @@ def BaryMeshHierarchy(mesh, refinement_levels, distribution_parameters=None, cal
             plex_uniform_coarse_to_fine[cn2o[i], :] = plexcells
 
         ncoarse, nfine = plex_uniform_coarse_to_fine.shape
-        plex_coarse_bary_to_fine_bary = numpy.full((ncoarse * (d + 1),
-                                                    nfine * (d + 1)), -1, dtype=PETSc.IntType)
+        plex_coarse_bary_to_fine_bary = numpy.full(
+            (ncoarse * (d + 1), nfine * (d + 1)), -1, dtype=PETSc.IntType
+        )
 
         for c in range(ncoarse * (d + 1)):
             uniform = c // (d + 1)
@@ -624,20 +685,33 @@ def BaryMeshHierarchy(mesh, refinement_levels, distribution_parameters=None, cal
                 # the coarse cell `coarse` is contained in the fine cell
                 # `bary_coarse_to_fine_cells[0][coarse, ifine]` so we
                 # should add it to the corresponding list
-                fine_bary_to_coarse_bary[coarse_bary_to_fine_bary[coarse, ifine]].append(coarse)
-        fine_bary_to_coarse_bary = numpy.asarray(fine_bary_to_coarse_bary, dtype=PETSc.IntType)
+                fine_bary_to_coarse_bary[
+                    coarse_bary_to_fine_bary[coarse, ifine]
+                ].append(coarse)
+        fine_bary_to_coarse_bary = numpy.asarray(
+            fine_bary_to_coarse_bary, dtype=PETSc.IntType
+        )
 
         bary_fine_to_coarse_cells.append(fine_bary_to_coarse_bary)
 
     # print(bary_coarse_to_fine_cells)
     # print(bary_fine_to_coarse_cells)
 
-    coarse_to_fine_cells = dict((Fraction(i, refinements_per_level), c2f)
-                                for i, c2f in enumerate(bary_coarse_to_fine_cells))
-    fine_to_coarse_cells = dict((Fraction(i, refinements_per_level), f2c)
-                                for i, f2c in enumerate(bary_fine_to_coarse_cells))
-    return HierarchyBase(barymeshes, coarse_to_fine_cells, fine_to_coarse_cells,
-                         refinements_per_level, nested=False)
+    coarse_to_fine_cells = dict(
+        (Fraction(i, refinements_per_level), c2f)
+        for i, c2f in enumerate(bary_coarse_to_fine_cells)
+    )
+    fine_to_coarse_cells = dict(
+        (Fraction(i, refinements_per_level), f2c)
+        for i, f2c in enumerate(bary_fine_to_coarse_cells)
+    )
+    return HierarchyBase(
+        barymeshes,
+        coarse_to_fine_cells,
+        fine_to_coarse_cells,
+        refinements_per_level,
+        nested=False,
+    )
 
 
 def bary_reg_ref_mesh(mesh):
@@ -655,7 +729,11 @@ def bary_reg_ref_mesh(mesh):
     space_dim = dm.getCoordinateDim()
 
     def dm_coords(p):
-        return dm.getVecClosure(dm_section, dm_coordinates, p).reshape(-1, space_dim).mean(axis=0)
+        return (
+            dm.getVecClosure(dm_section, dm_coordinates, p)
+            .reshape(-1, space_dim)
+            .mean(axis=0)
+        )
 
     dim = dm.getDimension()
     dm_cells = dm.getHeightStratum(0)
@@ -675,7 +753,9 @@ def bary_reg_ref_mesh(mesh):
     dm_coords_arr = numpy.zeros((num_dm_vertices, dim))
     for dm_cell in range(*dm_cells):
         dm_cell_entities = closure(dm, dm_cell)[0]
-        dm_cell_vertices = [x for x in dm_cell_entities if dm_vertices[0] <= x < dm_vertices[1]]
+        dm_cell_vertices = [
+            x for x in dm_cell_entities if dm_vertices[0] <= x < dm_vertices[1]
+        ]
         dm_cell_edges = [x for x in dm_cell_entities if dm_edges[0] <= x < dm_edges[1]]
 
         dm_cells_arr += [numpy.array(dm_cell_vertices) - dm_vertices[0]]
@@ -689,17 +769,19 @@ def bary_reg_ref_mesh(mesh):
     from firedrake.cython import dmcommon
     from firedrake.mesh import plex_from_cell_list
     from pyop2.mpi import COMM_WORLD
+
     comm = dm.comm
 
     # "regularly" refined plex built from dm nodes above
     from pyop2.mpi import dup_comm
+
     comm = dup_comm(COMM_WORLD)
-    plex = plex_from_cell_list(dim, dm_cells_arr, dm_coords_arr, comm)# COMM_WORLD)
+    plex = plex_from_cell_list(dim, dm_cells_arr, dm_coords_arr, comm)  # COMM_WORLD)
 
     #######################################################
     # Mark Boundary Nodes
     # for serial problems (and maybe even parallel) the boundary
-    # node distrbution and geomtric (xy coordinates) ordering
+    # node distribution and geometric (xy coordinates) ordering
     # is the same. So we can just iterate through the boundary faces
     # of the bary and regular mesh and mark the regular mesh with
     # bary labels. See below..
@@ -721,17 +803,19 @@ def bary_reg_ref_mesh(mesh):
         b_boundary_faces = b_plex.getStratumIS("boundary_faces", 1).getIndices()
         boundary_faces = plex.getStratumIS("boundary_faces", 1).getIndices()
 
-        assert len(b_boundary_faces) == len(boundary_faces), \
-            '''Bary mesh has different number of boundary
-               faces than the refined mesh'''
+        assert len(b_boundary_faces) == len(
+            boundary_faces
+        ), """Bary mesh has different number of boundary
+               faces than the refined mesh"""
 
         for face, bface in zip(boundary_faces, b_boundary_faces):
             # get coordinates of the face, only needed for correctness check
             b_face_coords = b_plex.vecGetClosure(b_coord_sec, b_coords, bface)
             face_coords = plex.vecGetClosure(coord_sec, coords, face)
             # If it fails, it's possible that DoFs are just out of order..
-            assert numpy.allclose(b_face_coords, face_coords), \
-                'Boundary location do not match up'
+            assert numpy.allclose(
+                b_face_coords, face_coords
+            ), "Boundary location do not match up"
 
             # use the bary-mesh boundary label for the regularly refined mesh..
             b_label_id = b_plex.getLabelValue(dmcommon.FACE_SETS_LABEL, bface)
