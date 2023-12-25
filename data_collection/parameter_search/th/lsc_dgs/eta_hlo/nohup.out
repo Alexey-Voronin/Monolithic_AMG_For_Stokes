@@ -1,0 +1,47 @@
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+structured 3
+unstructured 3
+/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/
+unstructured 2
+/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/
+structured 2
+Traceback (most recent call last):
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/data_collection/parameter_search/th/lsc_dgs/eta_hlo/collect.py", line 15, in <module>
+    from problem_iterator import get_problem_iterator
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/data_collection/parameter_search/th/lsc_dgs/eta_hlo/problem_iterator.py", line 1, in <module>
+    from sysmg  import StructuredStokesIterator,\
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/__init__.py", line 1, in <module>
+    from .systems.stokes import Stokes
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/__init__.py", line 1, in <module>
+    from .system import System
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/system.py", line 3, in <module>
+    from firedrake import *
+  File "/home/voronin2/firedrake/src/firedrake/firedrake/__init__.py", line 94, in <module>
+    from firedrake.plot import *
+  File "/home/voronin2/firedrake/src/firedrake/firedrake/plot.py", line 5, in <module>
+    import matplotlib.pyplot as plt
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/matplotlib/pyplot.py", line 57, in <module>
+    import matplotlib.image
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/matplotlib/image.py", line 231, in <module>
+    class _ImageBase(martist.Artist, cm.ScalarMappable):
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/matplotlib/artist.py", line 150, in __init_subclass__
+    cls._update_set_signature_and_docstring()
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/matplotlib/artist.py", line 178, in _update_set_signature_and_docstring
+    + kwdoc(cls))
+      ^^^^^^^^^^
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/matplotlib/artist.py", line 1853, in kwdoc
+    ai = ArtistInspector(artist)
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/matplotlib/artist.py", line 1440, in __init__
+    self.aliasd = self.get_aliases()
+                  ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/matplotlib/artist.py", line 1453, in get_aliases
+    names = [name for name in dir(self.o)
+                              ^^^^^^^^^^^
+KeyboardInterrupt
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+structured 3
+unstructured 3
+/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/

@@ -1,0 +1,9 @@
+python: can't open file '/home/voronin2/Monolithic_AMG_For_Stokes/data_collection/parameter_search/th/vanka_rerun/eta_hlo/collect.py': [Errno 2] No such file or directory
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+structured 2
+unstructured 2
+/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/
+structured 3
+unstructured 3
+/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/

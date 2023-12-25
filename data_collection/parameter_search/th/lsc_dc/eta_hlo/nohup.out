@@ -1,0 +1,173 @@
+structured 2
+unstructured 2
+/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+structured 3
+Traceback (most recent call last):
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/data_collection/parameter_search/th/lsc_dgs/eta_hlo/collect.py", line 45, in <module>
+    parameter_scan(iterator, StokesMG, mg_params, setter, param_search)
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/param_search.py", line 107, in parameter_scan
+    mg = mg_fxn(problem, mg_params)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 20, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/stokes_mg.py", line 154, in __init__
+    self.aspreconditioner(self.cycle)
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/stokes_mg.py", line 225, in aspreconditioner
+    M = self.wrapper.construct_preconditioner(self.ml, cycle)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/ho_wrapper.py", line 88, in construct_preconditioner
+    self.M = self._th_preconditioner(ml, cycle)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 20, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/ho_wrapper.py", line 164, in _th_preconditioner
+    M_full = sp.linalg.LinearOperator(A0.shape, matvec=mv)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/scipy/sparse/linalg/_interface.py", line 582, in __init__
+    self._init_dtype()
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/scipy/sparse/linalg/_interface.py", line 180, in _init_dtype
+    self.dtype = np.asarray(self.matvec(v)).dtype
+                            ^^^^^^^^^^^^^^
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/scipy/sparse/linalg/_interface.py", line 234, in matvec
+    y = self._matvec(x)
+        ^^^^^^^^^^^^^^^
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/scipy/sparse/linalg/_interface.py", line 591, in _matvec
+    return self.__matvec_impl(x)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 20, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/ho_wrapper.py", line 135, in mv
+    outer_rlx.presmoother(A0, x, b)
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/relaxation/relaxation.py", line 118, in presmoother
+    self.__call__(A, x, b, *args)
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/relaxation/relaxation.py", line 153, in __call__
+    self.relax_inplace(A, x, b)
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 20, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/relaxation/relaxation.py", line 103, in relax_inplace
+    x[:] = self.relax(A, x, b)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/relaxation/lsc_dgs.py", line 162, in relax
+    u[:] = u + self._momentum_solver(f - Au * u - BT * p)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/relaxation/lsc_dgs.py", line 84, in custom_solver
+    pyamg.relaxation.relaxation.gauss_seidel(A, x, b, **params)
+TypeError: gauss_seidel() got an unexpected keyword argument 'lower_bound'
+unstructured 3
+/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/
+Traceback (most recent call last):
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/data_collection/parameter_search/th/lsc_dgs/eta_hlo/collect.py", line 45, in <module>
+    parameter_scan(iterator, StokesMG, mg_params, setter, param_search)
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/param_search.py", line 107, in parameter_scan
+    mg = mg_fxn(problem, mg_params)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 20, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/stokes_mg.py", line 154, in __init__
+    self.aspreconditioner(self.cycle)
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/stokes_mg.py", line 225, in aspreconditioner
+    M = self.wrapper.construct_preconditioner(self.ml, cycle)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/ho_wrapper.py", line 88, in construct_preconditioner
+    self.M = self._th_preconditioner(ml, cycle)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 20, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/ho_wrapper.py", line 164, in _th_preconditioner
+    M_full = sp.linalg.LinearOperator(A0.shape, matvec=mv)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/scipy/sparse/linalg/_interface.py", line 582, in __init__
+    self._init_dtype()
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/scipy/sparse/linalg/_interface.py", line 180, in _init_dtype
+    self.dtype = np.asarray(self.matvec(v)).dtype
+                            ^^^^^^^^^^^^^^
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/scipy/sparse/linalg/_interface.py", line 234, in matvec
+    y = self._matvec(x)
+        ^^^^^^^^^^^^^^^
+  File "/home/voronin2/firedrake/lib/python3.11/site-packages/scipy/sparse/linalg/_interface.py", line 591, in _matvec
+    return self.__matvec_impl(x)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 20, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/ho_wrapper.py", line 135, in mv
+    outer_rlx.presmoother(A0, x, b)
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/relaxation/relaxation.py", line 118, in presmoother
+    self.__call__(A, x, b, *args)
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/relaxation/relaxation.py", line 153, in __call__
+    self.relax_inplace(A, x, b)
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 20, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/relaxation/relaxation.py", line 103, in relax_inplace
+    x[:] = self.relax(A, x, b)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/relaxation/lsc_dgs.py", line 162, in relax
+    u[:] = u + self._momentum_solver(f - Au * u - BT * p)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/relaxation/lsc_dgs.py", line 84, in custom_solver
+    pyamg.relaxation.relaxation.gauss_seidel(A, x, b, **params)
+TypeError: gauss_seidel() got an unexpected keyword argument 'lower_bound'
+unstructured 2
+/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/
+structured 2
+unstructured 2
+/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/
+structured 2
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+structured 3
+Traceback (most recent call last):
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/data_collection/parameter_search/th/lsc_dc/eta_hlo/collect.py", line 45, in <module>
+    parameter_scan(iterator, StokesMG, mg_params, setter, param_search)
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/param_search.py", line 104, in parameter_scan
+    for problem in sys_iterator:
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/stokes_iterators.py", line 107, in __next__
+    stokes = Stokes(self.system_params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 20, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/stokes.py", line 41, in __init__
+    self._form_system(**self.form_params)
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 20, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/stokes.py", line 207, in _form_system
+    _, self.up_sol = self._solve_sys(a, L, Z, bcs, nullspace=fnullspace)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/system.py", line 51, in _solve_sys
+    solve(a == L, fsol, bcs=bcs, nullspace=nullspace)
+  File "petsc4py/PETSc/Log.pyx", line 188, in petsc4py.PETSc.Log.EventDecorator.decorator.wrapped_func
+  File "petsc4py/PETSc/Log.pyx", line 189, in petsc4py.PETSc.Log.EventDecorator.decorator.wrapped_func
+  File "/home/voronin2/firedrake/src/firedrake/firedrake/adjoint_utils/solving.py", line 57, in wrapper
+    output = solve(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/firedrake/src/firedrake/firedrake/solving.py", line 128, in solve
+    _solve_varproblem(*args, **kwargs)
+  File "/home/voronin2/firedrake/src/firedrake/firedrake/solving.py", line 164, in _solve_varproblem
+    solver.solve()
+  File "petsc4py/PETSc/Log.pyx", line 188, in petsc4py.PETSc.Log.EventDecorator.decorator.wrapped_func
+  File "petsc4py/PETSc/Log.pyx", line 189, in petsc4py.PETSc.Log.EventDecorator.decorator.wrapped_func
+  File "/home/voronin2/firedrake/src/firedrake/firedrake/adjoint_utils/variational_solver.py", line 89, in wrapper
+    out = solve(self, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/firedrake/src/firedrake/firedrake/variational_solver.py", line 291, in solve
+    solving_utils.check_snes_convergence(self.snes)
+  File "/home/voronin2/firedrake/src/firedrake/firedrake/solving_utils.py", line 138, in check_snes_convergence
+    raise ConvergenceError(r"""Nonlinear solve failed to converge after %d nonlinear iterations.
+firedrake.exceptions.ConvergenceError: Nonlinear solve failed to converge after 0 nonlinear iterations.
+Reason:
+   DIVERGED_LINEAR_SOLVE
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+structured 3
+unstructured 3
+/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/

@@ -804,7 +804,7 @@ PYBIND11_MODULE(patch_mult, m) {
     m.def("th_bf_patch_setup", &th_bf_patch_setup, "Taylor-Hood block-factorized algebraic patch setup");
     m.def("th_patch_setup", &th_patch_setup, "Taylor-Hood algebraic patch setup all");
     // not used atm. 
-    //m.def("n_part_factorized", &n_part_factorized, "Factorized patch-vector multiplication");
-    //m.def("block_fact_patch_setup", &block_fact_patch_setup, "Taylor-Hood algebraic block-factorized patch setup");
+    m.def("n_part_factorized", &n_part_factorized, "Factorized patch-vector multiplication");
+    m.def("block_fact_patch_setup", &block_fact_patch_setup, "Taylor-Hood algebraic block-factorized patch setup");
 }
 

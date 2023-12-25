@@ -1,0 +1,8 @@
+unstructured 2
+/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/
+structured 2
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+unstructured 3
+/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/
+structured 3

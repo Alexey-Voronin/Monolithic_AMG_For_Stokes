@@ -180,7 +180,6 @@ class UnstructuredStokesIterator(SystemIterator):
         mesh_ext = self.mesh_ext2
         import os
         self.pream = os.path.split(__file__)[0] + "/../meshes/"
-        # print(self.pream)
         import glob
         # print(mesh_name)
         for k, v in mesh_name.items():
