@@ -23,41 +23,42 @@ class Stokes(System):
             super().__init__(system_param)
             return
 
-        self.disc = system_param['discretization']
-        self.elem_type = self.disc['elem_type']
-        self.elem_order = self.disc['order']
-        self.grad_div_stab = self.disc.get('grad_div_stab', None)
-        self.bcs_type = self.disc.get('bcs', None)
-        self.ordering = system_param['dof_ordering']
-        self.additional = system_param.get('additional', None)
+        self.disc = system_param["discretization"]
+        self.elem_type = self.disc["elem_type"]
+        self.elem_order = self.disc["order"]
+        self.grad_div_stab = self.disc.get("grad_div_stab", None)
+        self.bcs_type = self.disc.get("bcs", None)
+        self.ordering = system_param["dof_ordering"]
+        self.additional = system_param.get("additional", None)
         self.lo_fe_precond = lo_fe_sys
-        self.debug = system_param.get('debug', False)
-        self.keep = system_param.get('keep', False)
+        self.debug = system_param.get("debug", False)
+        self.keep = system_param.get("keep", False)
 
         super().__init__(system_param)
 
-        self.form_params = system_param.get('additional', {})
+        self.form_params = system_param.get("additional", {})
         # Assemble FE system
         self._form_system(**self.form_params)
         # Split velocity field into components (x,y,z)
         # see the function for more details
-        if self.ordering.get('split_by_component', False):
+        if self.ordering.get("split_by_component", False):
             self._split_by_component()
         # Sort each fields dofs by their coordinates.
         # This is needed for low-order preconditioning, at least until
         # macroelement are implemented.
-        if self.ordering.get('lexicographic', False):
-            assert self.ordering.get('split_by_component', False), \
-                """lexicographic ordering currently also requires
+        if self.ordering.get("lexicographic", False):
+            assert self.ordering.get(
+                "split_by_component", False
+            ), """lexicographic ordering currently also requires
                 split_by_component=True"""
             self._renumber_dofs()
         # GMG relic
         # TODO: revise when GMG comes back
-        if self.form_params.get('grid_hierarchy', False):
+        if self.form_params.get("grid_hierarchy", False):
             # mostly needed for GMG
             self._grid_hierarchy()
         # Construct low order finite element system
-        if self.additional.get('lo_fe_precond', False):
+        if self.additional.get("lo_fe_precond", False):
             self._form_low_order_system()
         # verify that (self.A, self.b) gives the same solution as problem.
         if self.debug:
@@ -75,18 +76,19 @@ class Stokes(System):
         """
         self.problems = []
         for mesh in self.meshes:
-            problem = StokesProblem(mesh, self.elem_order, self.elem_type, self.grad_div_stab)
+            problem = StokesProblem(
+                mesh, self.elem_order, self.elem_type, self.grad_div_stab
+            )
             self.problems.append(problem)
 
-        if self.elem_type[1] == 'DG' or \
-                self.additional.get('cells', False):
-            """ only needed for geometric_dg Vanka """
+        if self.elem_type[1] == "DG" or self.additional.get("cells", False):
+            """only needed for geometric_dg Vanka"""
             self.dof_cells = []
             for space in [problem.Z for problem in self.problems[-1:]]:
                 U, P = space.subfunctions
                 P_cells = P.cell_node_list.copy()
                 U_cells = U.cell_node_list.copy()
-                self.dof_cells.append({'u': U_cells, 'p': P_cells})
+                self.dof_cells.append({"u": U_cells, "p": P_cells})
         ######################################################################
         # Weak form
         Z = self.problems[-1].Z
@@ -94,13 +96,15 @@ class Stokes(System):
         L = problem.rhs(Z)
         ######################################################################
         # BCs
-        bcs_hier = [problem.bcs(self.bcs_type, self.boundary_marker) \
-                    for problem in self.problems]
+        bcs_hier = [
+            problem.bcs(self.bcs_type, self.boundary_marker)
+            for problem in self.problems
+        ]
         self.bcs_nodes_hier = self._get_bc_nodes(bcs_hier)
         ######################################################################
         # Assemble the system
         bcs = bcs_hier[-1]
-        A = assemble(a, bcs=bcs, mat_type='nest', sub_mat_type='aij')
+        A = assemble(a, bcs=bcs, mat_type="nest", sub_mat_type="aij")
         b = assemble(L, bcs=bcs)
 
         ######################################################################
@@ -114,8 +118,12 @@ class Stokes(System):
                 tmp = A.petscmat.getNestSubMatrix(*idx)
                 return csr_matrix((tmp.getValuesCSR())[::-1])
 
-        self.A_bmat = BlockMatrix([[_extract_op(A, (0, 0)), _extract_op(A, (0, 1))],
-                                   [_extract_op(A, (1, 0)), _extract_op(A, (1, 1))]])
+        self.A_bmat = BlockMatrix(
+            [
+                [_extract_op(A, (0, 0)), _extract_op(A, (0, 1))],
+                [_extract_op(A, (1, 0)), _extract_op(A, (1, 1))],
+            ]
+        )
 
         # the wrong way to get the right hand-side
         # stokes.b =  np.copy(b.vector().array())
@@ -133,29 +141,31 @@ class Stokes(System):
         assemble(expr, tensor=b)
 
         blift = Function(Z)
-        blift += b.riesz_representation(riesz_map='l2')
+        blift += b.riesz_representation(riesz_map="l2")
         for bc in A.bcs:
             bc.apply(blift)
         self.b = np.copy(blift.vector().array())
         ######################################################################
         # Auxiliary operators
         add_tmp = {} if not self.additional else self.additional
-        bc_p = [bc if bc.function_space().name == 'p' else None for bc in bcs_hier[-1]]
+        bc_p = [bc if bc.function_space().name == "p" else None for bc in bcs_hier[-1]]
         bc_p = [bc for bc in bc_p if bc is not None]
-        bc_u = [bc if bc.function_space().name == 'u' else None for bc in bcs_hier[-1]]
+        bc_u = [bc if bc.function_space().name == "u" else None for bc in bcs_hier[-1]]
         bc_u = [bc for bc in bc_u if bc is not None]
 
-        for mat_type in ['mass', 'stiffness']:
-            attr_name = f'ho_{mat_type}' if not self.lo_fe_precond else f'lo_{mat_type}'
+        for mat_type in ["mass", "stiffness"]:
+            attr_name = f"ho_{mat_type}" if not self.lo_fe_precond else f"lo_{mat_type}"
             bmat = [[None, None], [None, None]]
             components = add_tmp.get(attr_name, ())
             for c in components:
-                i = 0 if c == 'u' else 1
-                bc_i = bc_p if c == 'p' else bc_u
-                fxn = getattr(problem, mat_type + '_matrix')  # fxn return petsc matrix
-                bmat[i][i] = _extract_op(fxn(c, bc_i), None)  # None -> not block-operator
+                i = 0 if c == "u" else 1
+                bc_i = bc_p if c == "p" else bc_u
+                fxn = getattr(problem, mat_type + "_matrix")  # fxn return petsc matrix
+                bmat[i][i] = _extract_op(
+                    fxn(c, bc_i), None
+                )  # None -> not block-operator
             if len(components) > 0:
-                setattr(self, f'{mat_type}_bmat', BlockMatrix(bmat))
+                setattr(self, f"{mat_type}_bmat", BlockMatrix(bmat))
         ######################################################################
         # eliminate zeros, C can come out fairly dense with zeros.
         # firedrake spits out zero-matrix w/ pressure mass matrix sparsity
@@ -178,20 +188,20 @@ class Stokes(System):
         # anyway.
         np.random.seed(7)
         x0 = np.random.rand(self.A_bmat.shape[0])
-        bcs_x = np.array(self.bcs_nodes_hier[-1]['u'])
+        bcs_x = np.array(self.bcs_nodes_hier[-1]["u"])
         if len(bcs_x) > 0:
             nvx = self.velocity_nodes() // self.dim
             for i in range(self.dim):
                 x0[bcs_x + nvx * i] = 0
         self.x0 = x0 / np.linalg.norm(x0)
-        if isinstance(getattr(self, 'nullspace', None), np.ndarray):
+        if isinstance(getattr(self, "nullspace", None), np.ndarray):
             null = self.nullspace
             x0 -= null * np.dot(null, x0)
         ######################################################################
         # rm dirichlet-boundary contribution from rhs. when it is left behind
         # it will mess with Vanka relaxation.
         # This is equivalent to removing dirichlet BCs from the matrix.
-        bc_vx = np.array(self.bcs_nodes_hier[-1]['u'])
+        bc_vx = np.array(self.bcs_nodes_hier[-1]["u"])
         # see node numbering notes in util.dof_handler for details..
         bc_v = np.hstack([bc_vx * self.dim + i for i in range(self.dim)])
         x_bc = np.zeros_like(self.b)
@@ -215,51 +225,57 @@ class Stokes(System):
         """
         # TODO cleanup this function
         # 1. use the same meshing approach for both structured and unsturctured grids (might break GMG)
-        assert self.ordering.get('lexicographic', False) and \
-               self.ordering.get('split_by_component', False), \
-            """Construction of Low-order preconditioner currently
+        assert self.ordering.get("lexicographic", False) and self.ordering.get(
+            "split_by_component", False
+        ), """Construction of Low-order preconditioner currently
                 requires the system DoFs to be sorted."""
         from firedrake.mesh import MeshGeometry
-        assert isinstance(self.mesh, MeshGeometry) or \
-               (isinstance(system_param['mesh'], dict) and \
-                system_param['mesh']['mesh_hierarchy']), \
-            """Need to construct mesh hierarchy for lo_fe_precond"""
+
+        assert isinstance(self.mesh, MeshGeometry) or (
+            isinstance(system_param["mesh"], dict)
+            and system_param["mesh"]["mesh_hierarchy"]
+        ), """Need to construct mesh hierarchy for lo_fe_precond"""
 
         # 1) Get Meshes - need both original and refined
         lo_disc = self.disc.copy()
         mesh = None
-        if getattr(self, 'bary', False):
-            assert lo_disc['elem_type'] in [('CG', 'DG'), ('CG', 'CG')], \
-                '''lo_order_sys based on barycentric meshes  have
-                only been tested with CG/DG element-pair.'''
+        if getattr(self, "bary", False):
+            assert lo_disc["elem_type"] in [
+                ("CG", "DG"),
+                ("CG", "CG"),
+            ], """lo_order_sys based on barycentric meshes  have
+                only been tested with CG/DG element-pair."""
             mc, mf = MeshHierarchy(self.mesh, 1)
-            lo_disc['elem_type'] = ('CG', 'CG')
+            lo_disc["elem_type"] = ("CG", "CG")
         else:
             mc, mf = MeshHierarchy(self.mesh, 1)  # .meshes
 
         factor = 4 if self.dim == 2 else 8
-        assert self.mesh.num_cells() * factor == mf.num_cells(), \
-            'Low-order system mesh was not refined via quadsection-ref.'
+        assert (
+            self.mesh.num_cells() * factor == mf.num_cells()
+        ), "Low-order system mesh was not refined via quadsection-ref."
 
         # 2) Construct the P1/P1 system on the refined mesh
-        lo_disc['order'] = (1, 1)
+        lo_disc["order"] = (1, 1)
         form_params = self.form_params.copy()
-        form_params['lo_fe_precond'] = False
-        form_params['solve'] = False
-        form_params['plot'] = False
-        lo_sys_params = {'mesh': mf,
-                         'discretization': lo_disc,
-                         'dof_ordering': self.ordering,
-                         'additional': form_params}
+        form_params["lo_fe_precond"] = False
+        form_params["solve"] = False
+        form_params["plot"] = False
+        lo_sys_params = {
+            "mesh": mf,
+            "discretization": lo_disc,
+            "dof_ordering": self.ordering,
+            "additional": form_params,
+        }
         lo_fe_sys = Stokes(lo_sys_params, lo_fe_sys=True)
         self.lo_fe_sys = lo_fe_sys
 
-        assert lo_disc['elem_type'] in [('CG', 'CG')], \
-            '%s-element might not work here' \
-            % lo_disc['elem_type']
-        assert lo_disc['order'] == (1, 1), \
-            '%s-element-order might not work here' \
-            % str(lo_disc['order'])
+        assert lo_disc["elem_type"] in [("CG", "CG")], (
+            "%s-element might not work here" % lo_disc["elem_type"]
+        )
+        assert lo_disc["order"] == (1, 1), "%s-element-order might not work here" % str(
+            lo_disc["order"]
+        )
 
         # 3) Construct P1 interpolation from coarse to fine
         # pressure field. It will be used to coarsen the pressure
@@ -268,28 +284,29 @@ class Stokes(System):
         # 4) Reorder the DoFs in P_2n_to_n to match lexicographic
         # ordering of operators in self and lo_fe_sys.
         Pp_sort = None
-        if getattr(self, 'bary', False) and self.elem_type == ('CG', 'DG'):
+        if getattr(self, "bary", False) and self.elem_type == ("CG", "DG"):
             # in case when the main pressure field is DG we need to
-            # construct a sorting operator for unque pressure dofs
+            # construct a sorting operator for unique pressure dofs
             mesh = self.mesh
-            P1 = VectorFunctionSpace(mesh, 'CG', 1)
+            P1 = VectorFunctionSpace(mesh, "CG", 1)
             coord = interpolate(SpatialCoordinate(mesh), P1).dat.data_ro.copy()
             Pp_sort, _ = self._get_field_sorting_operator(coord)
-            lo_fe_sys.dof_coord[-1]['p'] = Pp_sort * coord
+            lo_fe_sys.dof_coord[-1]["p"] = Pp_sort * coord
         else:
             Pp_sort = self.Pbmat_sort[1, 1]
 
         try:
             P = lo_fe_sys.Pbmat_sort[1, 1] * P_2n_to_n * Pp_sort.T
         except:
-            print('B_ho.shape=',      self.A_bmat[1,0].shape)
-            print('B_lo.shape=', lo_fe_sys.A_bmat[1,0].shape)
-            print('lo_fe_sys.Pbmat_sort[1, 1].shape=',
-                  lo_fe_sys.Pbmat_sort[1, 1].shape)
-            print('P_2n_to_n.shape=', P_2n_to_n.shape)
-            print('Pp_sort.T.shape', Pp_sort.T.shape)
-            raise Exception("""Low order iso discretization not currently
-                working for discretizations P_{k}/P_{k-1} k > 2.""")
+            print("B_ho.shape=", self.A_bmat[1, 0].shape)
+            print("B_lo.shape=", lo_fe_sys.A_bmat[1, 0].shape)
+            print("lo_fe_sys.Pbmat_sort[1, 1].shape=", lo_fe_sys.Pbmat_sort[1, 1].shape)
+            print("P_2n_to_n.shape=", P_2n_to_n.shape)
+            print("Pp_sort.T.shape", Pp_sort.T.shape)
+            raise Exception(
+                """Low order iso discretization not currently
+                working for discretizations P_{k}/P_{k-1} k > 2."""
+            )
         lo_fe_sys.P_2n_to_n = P.tocsr()
 
         # 5) Restrict Pressure space to a coarser grid to get
@@ -299,7 +316,7 @@ class Stokes(System):
         R = P.T
         lo_fe_sys.A_bmat = R * (lo_fe_sys.A_bmat * P)
 
-        for mat in ['mass_bmat', 'stiffness_bmat']:
+        for mat in ["mass_bmat", "stiffness_bmat"]:
             if hasattr(lo_fe_sys, mat):
                 setattr(lo_fe_sys, mat, R * getattr(lo_fe_sys, mat) * P)
         # TODO: some of these are only used in GMG
@@ -308,45 +325,49 @@ class Stokes(System):
                 setattr(lo_fe_sys, dat, getattr(self, dat))
 
         lo_fe_sys.b = np.zeros_like(self.b)  # dummy
-        if not getattr(self, 'bary', False):
+        if not getattr(self, "bary", False):
             lo_fe_sys.dof_coord = self.dof_coord
 
-        if getattr(self, 'bary', False):
+        if getattr(self, "bary", False):
             # Construct mapping between DG and CG discretizations
-            assert lo_fe_sys.velocity_nodes() == self.velocity_nodes(), \
-                'M dim is wrong.'
-            assert lo_fe_sys.velocity_nodes() == self.velocity_nodes(), \
-                'M dim is wrong.'
+            assert (
+                lo_fe_sys.velocity_nodes() == self.velocity_nodes()
+            ), "M dim is wrong."
+            assert (
+                lo_fe_sys.velocity_nodes() == self.velocity_nodes()
+            ), "M dim is wrong."
 
             Pv_map = identity(self.velocity_nodes())
-            if self.elem_type[1] == 'DG':
+            if self.elem_type[1] == "DG":
                 dg = self.problems[-1].Z.sub(1).collapse()
-                cg = FunctionSpace(dg.mesh(), 'CG', 1)
-                self.P_dg_to_cg = self._get_sv_to_th_operator(dg, cg,
-                                                              self.Pbmat_sort[1, 1],
-                                                              self.velocity_nodes())
-                assert lo_fe_sys.ndofs() == self.P_dg_to_cg.shape[0] and \
-                       self.ndofs() == self.P_dg_to_cg.shape[1], \
-                    'P_cg_to_dg_1to1 dimension is wrong.'
+                cg = FunctionSpace(dg.mesh(), "CG", 1)
+                self.P_dg_to_cg = self._get_sv_to_th_operator(
+                    dg, cg, self.Pbmat_sort[1, 1], self.velocity_nodes()
+                )
+                assert (
+                    lo_fe_sys.ndofs() == self.P_dg_to_cg.shape[0]
+                    and self.ndofs() == self.P_dg_to_cg.shape[1]
+                ), "P_cg_to_dg_1to1 dimension is wrong."
 
-                cg = lo_fe_sys.dof_coord[-1]['p']
-                dg = self.dof_coord[-1]['p']
+                cg = lo_fe_sys.dof_coord[-1]["p"]
+                dg = self.dof_coord[-1]["p"]
                 # TODO: make this match _get_sv_to_th_operator
                 Pp_map = self._get_cg_to_dg_operator(cg, dg)
             else:
                 # can have Taylor-Hood rediscretization on barycentric
                 # meshes too..
-                pdofs = self.dof_coord[-1]['p']
+                pdofs = self.dof_coord[-1]["p"]
                 Pp_map = identity(pdofs.shape[0])
 
             # 1-to-1 mapping from lower-order disc to higher-order
 
-            assert lo_fe_sys.pressure_nodes() == Pp_map.shape[1] and \
-                   self.pressure_nodes() == Pp_map.shape[0], \
-                'P_cg_to_dg_1to1 dimension is wrong.'
-            self.P_cg_to_dg_1to1 = bmat([[Pv_map, None],
-                                         [None, Pp_map]], format='csr',
-                                        dtype=bool)  # int)
+            assert (
+                lo_fe_sys.pressure_nodes() == Pp_map.shape[1]
+                and self.pressure_nodes() == Pp_map.shape[0]
+            ), "P_cg_to_dg_1to1 dimension is wrong."
+            self.P_cg_to_dg_1to1 = bmat(
+                [[Pv_map, None], [None, Pp_map]], format="csr", dtype=bool
+            )  # int)
             if self.keep:
                 self.P_cg_to_dg_1to1_p_only = Pp_map
 
@@ -358,12 +379,16 @@ class Stokes(System):
         -> [u_x^0, u_x^1, ..., u_y^0, u_y^1, ..., u_z^0, u_z^1, ...]
         """
         Pv = self._get_component_splitter(self.velocity_nodes())
-        Ip = identity(self.pressure_nodes(), dtype=float, format='dia')
+        Ip = identity(self.pressure_nodes(), dtype=float, format="dia")
         self.Pbmat_split = BlockMatrix([[Pv, None], [None, Ip]])
 
-        for mat in ['A_bmat', 'mass_bmat', 'stiffness_bmat']:
+        for mat in ["A_bmat", "mass_bmat", "stiffness_bmat"]:
             if hasattr(self, mat):
-                setattr(self, mat, self.Pbmat_split * (getattr(self, mat) * self.Pbmat_split.T))
+                setattr(
+                    self,
+                    mat,
+                    self.Pbmat_split * (getattr(self, mat) * self.Pbmat_split.T),
+                )
 
         for vector in ["b", "b_dirichlet", "up_sol", "nullspace", "x0"]:
             Pcsr = self.Pbmat_split.tocsr()
@@ -382,12 +407,14 @@ class Stokes(System):
         self.pdof_map = []
         self.vdof_map = []
 
-        for coord_lvl, bcs_nodes in zip(self.dof_coord,
-                                        self.bcs_nodes_hier,
-                                        ):
+        for coord_lvl, bcs_nodes in zip(
+            self.dof_coord,
+            self.bcs_nodes_hier,
+        ):
             Ps = []
-            for (cmpnt, coord), dmap in zip(coord_lvl.items(),
-                                            [self.vdof_map, self.pdof_map]):
+            for (cmpnt, coord), dmap in zip(
+                coord_lvl.items(), [self.vdof_map, self.pdof_map]
+            ):
                 P, dof_map = self._get_field_sorting_operator(coord)
                 Ps.append(P)
                 coord_lvl[cmpnt] = P * coord
@@ -396,23 +423,32 @@ class Stokes(System):
 
                 dmap.append(dof_map)
 
-        if self.elem_type[1] == 'DG':
-            """ only needed for geometric_dg Vanka """
+        if self.elem_type[1] == "DG":
+            """only needed for geometric_dg Vanka"""
             dof_cells = self.dof_cells[-1]
-            for cells, dof_map in zip([dof_cells['u'], dof_cells['p']],
-                                      [self.vdof_map[-1], self.pdof_map[-1]]):
+            for cells, dof_map in zip(
+                [dof_cells["u"], dof_cells["p"]], [self.vdof_map[-1], self.pdof_map[-1]]
+            ):
                 for i in range(cells.shape[0]):
                     for j in range(cells.shape[1]):
                         cells[i, j] = dof_map[cells[i, j]]
 
         Pvx, Pp = Ps
-        Pv_sort = bmat([[Pvx if i == j else None for i in range(self.dim)]
-                        for j in range(self.dim)]).tocsr()
+        Pv_sort = bmat(
+            [
+                [Pvx if i == j else None for i in range(self.dim)]
+                for j in range(self.dim)
+            ]
+        ).tocsr()
 
         self.Pbmat_sort = BlockMatrix([[Pv_sort, None], [None, Pp]])
-        for mat in ['A_bmat', 'mass_bmat', 'stiffness_bmat']:
+        for mat in ["A_bmat", "mass_bmat", "stiffness_bmat"]:
             if hasattr(self, mat):
-                setattr(self, mat, self.Pbmat_sort * (getattr(self, mat) * self.Pbmat_sort.T))
+                setattr(
+                    self,
+                    mat,
+                    self.Pbmat_sort * (getattr(self, mat) * self.Pbmat_sort.T),
+                )
 
         for vector in ["b", "b_dirichlet", "up_sol", "nullspace", "x0"]:
             Pcsr = self.Pbmat_sort.tocsr()
@@ -436,7 +472,7 @@ class Stokes(System):
         return self.nvelocities
 
     def pressure_nodes(self):
-        """Return the number of pressure nodes. """
+        """Return the number of pressure nodes."""
         try:
             npressure = self.A_bmat[1, 1].shape[0]
             self.npressure = npressure
@@ -452,7 +488,7 @@ class Stokes(System):
     def _get_bc_nodes(self, bcs_hier):
         bcs_nodes_hier = []
         for bcs in bcs_hier:
-            nodes = {'u': [], 'p': []}
+            nodes = {"u": [], "p": []}
             for bc in bcs:
                 component = bc.function_space().name
                 nodes[component] += list(bc.nodes)
@@ -461,18 +497,18 @@ class Stokes(System):
 
         return bcs_nodes_hier
 
-    def plot(self, up, items=['u', 'div u', 'p', 'grad p'], save_name=None):
+    def plot(self, up, items=["u", "div u", "p", "grad p"], save_name=None):
         """Plot Solution."""
         problem = self.problems[-1]
 
         up0 = up.copy()
         # Unsort/split the vector if needed
-        for P in ['Pbmat_sort', 'Pbmat_split']:
+        for P in ["Pbmat_sort", "Pbmat_split"]:
             if hasattr(self, P):
                 PT_csr = getattr(self, P).tocsr().T
                 up0 = PT_csr * up0
 
-        # Transfer the coeffcients to a firedrake Function
+        # Transfer the coefficients to a firedrake Function
         f_up = Function(problem.Z)
         f_u, f_p = f_up.subfunctions
         nv = self.velocity_nodes()
@@ -483,12 +519,12 @@ class Stokes(System):
 
         problem.plot_solution(f_up, items=items, save_name=save_name)
 
-    def save_solution(self, up, file_name='stokes_sol'):
+    def save_solution(self, up, file_name="stokes_sol"):
         """Save solution to disk."""
-        assert self.keep, '''Need to keep splitting/sorting operators to use
-                            this function.'''
+        assert self.keep, """Need to keep splitting/sorting operators to use
+                            this function."""
         # Unsort/split the vector if needed
-        for P in ['Pbmat_sort', 'Pbmat_split']:
+        for P in ["Pbmat_sort", "Pbmat_split"]:
             if hasattr(self, P):
                 PT_csr = getattr(self, P).tocsr().T
                 up = PT_csr * up
@@ -507,20 +543,23 @@ class Stokes(System):
         ##################################################
         # Pressure
         pguess.vector().dat.data[:] = p_sol
-        self.problems[-1].save_function(up_empty, file_name=f'{file_name}_{nv+self.pressure_nodes()}')
+        self.problems[-1].save_function(
+            up_empty, file_name=f"{file_name}_{nv+self.pressure_nodes()}"
+        )
 
     def _debug(self):
         A0 = self.A_bmat.tocsr()
         import matplotlib.pyplot as plt
+
         fig, (ax1, ax2) = plt.subplots(1, 2)
-        ax1.spy(A0);
+        ax1.spy(A0)
         if self.lo_fe_sys is not None:
             A1 = self.lo_fe_sys.A_bmat.tocsr()
-            ax2.spy(A1);
+            ax2.spy(A1)
         plt.show()
 
         # verify solution correctness
-        if hasattr(self, 'sol'):
+        if hasattr(self, "sol"):
             sol = spsolve(A0, self.b)
             resid_norm = np.linalg.norm(self.b - A0 * sol)
             P_split = self.Pbmat_split.tocsr()
@@ -536,15 +575,15 @@ class Stokes(System):
             tmp1 = self.up_sol[nv:]
             p_err_norm = np.linalg.norm(tmp0 - tmp1)
 
-            assert resid_norm < 1e-9, 'residual is wrong: error=%.2e' \
-                                      % resid_norm
-            assert p_err_norm < 1e-9, \
-                'pressure solution is wrong: error=%.2e' % p_err_norm
-            assert v_err_norm < 1e-9, \
-                'velocity solution is wrong: error=%.2e' % v_err_norm
+            assert resid_norm < 1e-9, "residual is wrong: error=%.2e" % resid_norm
+            assert p_err_norm < 1e-9, (
+                "pressure solution is wrong: error=%.2e" % p_err_norm
+            )
+            assert v_err_norm < 1e-9, (
+                "velocity solution is wrong: error=%.2e" % v_err_norm
+            )
 
     def cleanup(self):
-
         def free_up(stks):
             def _del_attr(obj, attr):
                 if hasattr(obj, attr):
@@ -552,36 +591,37 @@ class Stokes(System):
 
             del stks.meshes
             del stks.mesh
-            _del_attr(stks, 'grid_hierarchy')
-            _del_attr(stks, 'grid_hierarchy_ext')
-            _del_attr(stks, 'dof_coord')
+            _del_attr(stks, "grid_hierarchy")
+            _del_attr(stks, "grid_hierarchy_ext")
+            _del_attr(stks, "dof_coord")
             # _del_attr(stks, 'Pvp_sort')
-            if hasattr(self, 'lo_fe_sys'):
+            if hasattr(self, "lo_fe_sys"):
                 # maybe needed for block-digonal solver when lo_fe_sys is not present
-                _del_attr(stks, 'Pp_sort')
+                _del_attr(stks, "Pp_sort")
             # _del_attr(stks, 'Pv_sort')
             # _del_attr(stks, 'P_split')
-            _del_attr(stks, 'pdof_map')
-            _del_attr(stks, 'vdof_map')
-            _del_attr(stks, 'mesh_orig')
-            _del_attr(stks, 'b_dirichlet')
-            _del_attr(stks, 'x0')
+            _del_attr(stks, "pdof_map")
+            _del_attr(stks, "vdof_map")
+            _del_attr(stks, "mesh_orig")
+            _del_attr(stks, "b_dirichlet")
+            _del_attr(stks, "x0")
 
-            if not hasattr(self, 'grid_hier'):
-                _del_attr(stks, 'bcs_nodes_hier')
+            if not hasattr(self, "grid_hier"):
+                _del_attr(stks, "bcs_nodes_hier")
             from firedrake import mesh
-            if isinstance(stks.params['mesh'], mesh.MeshGeometry):
-                del stks.params['mesh']
+
+            if isinstance(stks.params["mesh"], mesh.MeshGeometry):
+                del stks.params["mesh"]
 
         # clean-up
         if not self.keep and not self.lo_fe_precond:
             free_up(self)
-            if hasattr(self, 'lo_fe_sys'):
+            if hasattr(self, "lo_fe_sys"):
                 lo_stks = self.lo_fe_sys
                 free_up(lo_stks)
                 del lo_stks.b
                 del lo_stks.P_2n_to_n
                 # use the same vector for both hierarchies
-                if hasattr(lo_stks, 'nullspace'):
+                if hasattr(lo_stks, "nullspace"):
                     del lo_stks.nullspace
                     lo_stks.nullspace = self.nullspace

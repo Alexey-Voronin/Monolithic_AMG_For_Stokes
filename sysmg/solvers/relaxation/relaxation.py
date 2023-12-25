@@ -20,9 +20,9 @@ class System_Relaxation(object):
         self.params = params
         self.level = level
 
-        if 'accel' in params:
+        if "accel" in params:
             self.accel = True
-            self.accel_iter = params["accel"]['iterations']
+            self.accel_iter = params["accel"]["iterations"]
         self.eigs = np.zeros((1,))  # place holder
         # check if the setup is even necessary
         relax_iters = params["iterations"]
@@ -77,50 +77,57 @@ class System_Relaxation(object):
         elif self.accel and self.accel_iter > 0:  # wrap relaxation w/ GMRES
             # if relaxation has not been put into linear operator yet
             # do so now.
-            if not hasattr(self, 'M_accel'):
+            if not hasattr(self, "M_accel"):
+
                 def mv(r):
                     xu = self._xt * 0.0
                     xu[:] = self.relax(A, xu, r)
-                    #self.project_out_nullspace(xu)
+                    # self.project_out_nullspace(xu)
                     return xu
 
                 self.M_accel = sp.linalg.LinearOperator(A.shape, matvec=mv)
                 np.random.seed(7)
-                self.eigs = pyamg.krylov.fgmres(A, np.random.rand(A.shape[0]),
-                                                x0=None,
-                                                tol=1e-20,
-                                                maxiter=1,  # = max_outer
-                                                restrt=self.accel_iter,  # = max_inner
-                                                M=self.M_accel,
-                                                eig_bounds=True
-                                                )[2]
-            x[:] = pyamg.krylov.fgmres(A, b, x0=x,
-                                       tol=1e-20,
-                                       maxiter=1,  # = max_outer
-                                       restrt=self.accel_iter,  # = max_inner
-                                       M=self.M_accel)[0]
+                self.eigs = pyamg.krylov.fgmres(
+                    A,
+                    np.random.rand(A.shape[0]),
+                    x0=None,
+                    tol=1e-20,
+                    maxiter=1,  # = max_outer
+                    restrt=self.accel_iter,  # = max_inner
+                    M=self.M_accel,
+                    eig_bounds=True,
+                )[2]
+            x[:] = pyamg.krylov.fgmres(
+                A,
+                b,
+                x0=x,
+                tol=1e-20,
+                maxiter=1,  # = max_outer
+                restrt=self.accel_iter,  # = max_inner
+                M=self.M_accel,
+            )[0]
         else:
             x[:] = self.relax(A, x, b)
 
-        #self.project_out_nullspace(x)
+        # self.project_out_nullspace(x)
 
         return self.level
 
     def project_out_nullspace(self, x):
-        if isinstance(getattr(self, 'nullspace', None), np.ndarray):
+        if isinstance(getattr(self, "nullspace", None), np.ndarray):
             null = self.nullspace
             x[:] -= null * np.dot(null, x) / np.dot(null, null)
 
     def presmoother(self, A, x, b, *args):
         self.relax_iters = self.params["iterations"][0]
         if self.accel:
-            self.accel_iter = self.params["accel"]['iterations'][0]
+            self.accel_iter = self.params["accel"]["iterations"][0]
         self.__call__(A, x, b, *args)
 
     def postsmoother(self, A, x, b, *args):
         self.relax_iters = self.params["iterations"][1]
         if self.accel:
-            self.accel_iter = self.params["accel"]['iterations'][1]
+            self.accel_iter = self.params["accel"]["iterations"][1]
         self.__call__(A, x, b, *args)
 
     def __call__(self, A, x, b, *args):

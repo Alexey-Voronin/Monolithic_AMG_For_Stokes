@@ -44,24 +44,27 @@ class block_solve(System_Relaxation):
 
         """
         super().__init__(params)
-        self._blocksize = params.get('blocksize', 1)
-        self._block_solver = params.get('block_solver', 'inv')
-        self._sa_amg_setup_params = params.get('sa_amg_setup_params', {})
-        self._sa_amg_solve_params = params.get('sa_amg_solve_params', {})
+        self._blocksize = params.get("blocksize", 1)
+        self._block_solver = params.get("block_solver", "inv")
+        self._sa_amg_setup_params = params.get("sa_amg_setup_params", {})
+        self._sa_amg_solve_params = params.get("sa_amg_solve_params", {})
 
         # input
         self._system = stokes
-        self._operator = params.get('operator', 'pressure mass')
-        self._structured = params.get('structured', False)
-        self._M = stokes.mass_bmat[1, 1] if self._operator == "pressure mass"\
-                                            else stokes.stiffness_bmat[1, 1]
+        self._operator = params.get("operator", "pressure mass")
+        self._structured = params.get("structured", False)
+        self._M = (
+            stokes.mass_bmat[1, 1]
+            if self._operator == "pressure mass"
+            else stokes.stiffness_bmat[1, 1]
+        )
         self._Asize = self._M.shape[0]
-        self._debug = params.get('debug', False)
+        self._debug = params.get("debug", False)
         self._dx = np.zeros(self._Asize)
         self._null = getattr(stokes, "nullspace", None)
         if self._null is not None:
             # only keep the nullspace in the pressure space
-            self._null = self._null[stokes.velocity_nodes():]
+            self._null = self._null[stokes.velocity_nodes() :]
 
         if self._blocksize > self._Asize:
             # KLUGE:  Pass in a dummy large blocksize if you do not know
@@ -73,8 +76,10 @@ class block_solve(System_Relaxation):
         if self._blocksize < self._Asize:
             Pp_sort = getattr(stokes, "Pbmat_sort")[1, 1]
             # block-diagonal solve requires the knowledge of how the DoFs are sorted.
-            if stokes.params['dof_ordering'].get('lexicographic', False) \
-                    and not stokes.keep:
+            if (
+                stokes.params["dof_ordering"].get("lexicographic", False)
+                and not stokes.keep
+            ):
                 # if the sorting is lexicographic, then need to keep the sorting
                 # operator around, especially if it is going to be deleted by
                 # stokes_mg later.
@@ -94,7 +99,6 @@ class block_solve(System_Relaxation):
             self._xt = np.zeros((self._Asize,))
 
     def _setup(self):
-
         Psort = self._Psort
         M = self._M
         blocksize = self._blocksize
@@ -106,36 +110,38 @@ class block_solve(System_Relaxation):
 
         if self._structured or self._blocksize == self._Asize:
             M_block = M_sorted[0:blocksize, 0:blocksize]
-            if self._block_solver in ['pinv', 'inv']:
+            if self._block_solver in ["pinv", "inv"]:
                 M_block_inv = getattr(np.linalg, self._block_solver)(M_block.toarray())
                 self.M_block_inv = lambda x: M_block_inv @ x
-            elif self._block_solver == 'splu':
+            elif self._block_solver == "splu":
                 M_block_inv = splu(M_block.tocsc())
                 self.M_block_inv = lambda x: M_block_inv.solve(x)
-            elif self._block_solver == 'diag':
-                M_block_inv = 1. / M_block.diagonal()
+            elif self._block_solver == "diag":
+                M_block_inv = 1.0 / M_block.diagonal()
                 self.M_block_inv = lambda x: x * M_block_inv
-            elif self._block_solver == 'sa_amg':
+            elif self._block_solver == "sa_amg":
                 from pyamg import smoothed_aggregation_solver
-                ml = smoothed_aggregation_solver(M_block.tocsr(), **self._sa_amg_setup_params)
+
+                ml = smoothed_aggregation_solver(
+                    M_block.tocsr(), **self._sa_amg_setup_params
+                )
                 self._ml = ml
-                tol = self._sa_amg_solve_params.get('tol', 1e-12)
-                maxiter = self._sa_amg_solve_params.get('maxiter', 100)
-                self.M_block_inv = lambda r: ml.solve(r,
-                                                      tol=tol,
-                                                      maxiter=maxiter)
+                tol = self._sa_amg_solve_params.get("tol", 1e-12)
+                maxiter = self._sa_amg_solve_params.get("maxiter", 100)
+                self.M_block_inv = lambda r: ml.solve(r, tol=tol, maxiter=maxiter)
                 M_block_inv = None
             else:
                 raise ValueError("Block solver not recognized.")
             self.M_block_inv_unwrapped = M_block_inv
 
         else:
-            assert self._block_solver == 'inv',\
-                    "Only 'inv' solver is supported for unstructured matrices."
+            assert (
+                self._block_solver == "inv"
+            ), "Only 'inv' solver is supported for unstructured matrices."
             M_blocks = np.zeros((blocksize, blocksize, self._nblocks))
             M_sorted.sort_indices()
             for i in range(self._nblocks):
-                row_ptr = M_sorted.indptr[i * blocksize:(i + 1) * blocksize+1]
+                row_ptr = M_sorted.indptr[i * blocksize : (i + 1) * blocksize + 1]
                 col_s, col_e = row_ptr[0], row_ptr[-1]
                 data = M_sorted.data[col_s:col_e].reshape((blocksize, blocksize))
                 M_blocks[:, :, i] = np.linalg.inv(data)
@@ -145,11 +151,13 @@ class block_solve(System_Relaxation):
             assert self._Asize < 1e3, "Use smaller matrix for debugging."
             M_dense = M_sorted.toarray()
             for i in range(M_dense.shape[0] // blocksize):
-                M_dense[i * blocksize:(i + 1) * blocksize,
-                        i * blocksize:(i + 1) * blocksize] -= M_block
+                M_dense[
+                    i * blocksize : (i + 1) * blocksize,
+                    i * blocksize : (i + 1) * blocksize,
+                ] -= M_block
             assert np.sum(np.ravel(M_dense)) < 1e-12, "block-diag solve is not correct."
 
-            print('block-diag solve is correct.')
+            print("block-diag solve is correct.")
             self.M_block = M_block
             self.Msorted = M_sorted
 
@@ -189,22 +197,28 @@ class block_solve(System_Relaxation):
                 r = Psort.T * r
                 x = Psort.T * x
 
-
             if self._blocksize == self._Asize:
                 x += self.M_block_inv(r)
             elif self._structured:
-                if self._block_solver in ['pinv', 'inv']:
-                    np.einsum('ij,kj->ki', self.M_block_inv_unwrapped,
-                              r.reshape((-1, blocksize)), out=x.reshape((-1, blocksize)))
+                if self._block_solver in ["pinv", "inv"]:
+                    np.einsum(
+                        "ij,kj->ki",
+                        self.M_block_inv_unwrapped,
+                        r.reshape((-1, blocksize)),
+                        out=x.reshape((-1, blocksize)),
+                    )
                 else:
                     for i in range(self._nblocks):
                         start, end = i * blocksize, (i + 1) * blocksize
                         x[start:end] += self.M_block_inv(r[start:end])
             else:
-                if self._block_solver in ['pinv', 'inv']:
-                    np.einsum('ijk,kj->ki', self.M_block_inv,
-                              r.reshape((-1, blocksize)),
-                              out=x.reshape((-1, blocksize)))
+                if self._block_solver in ["pinv", "inv"]:
+                    np.einsum(
+                        "ijk,kj->ki",
+                        self.M_block_inv,
+                        r.reshape((-1, blocksize)),
+                        out=x.reshape((-1, blocksize)),
+                    )
                 else:
                     for i in range(self._nblocks):
                         start, end = i * blocksize, (i + 1) * blocksize
@@ -212,6 +226,8 @@ class block_solve(System_Relaxation):
 
             x = Psort * x if needs_sorting else x
             if null is not None:
-                x -= np.dot(null, x) * null / np.dot(null, null)  # project out nullspace
+                x -= (
+                    np.dot(null, x) * null / np.dot(null, null)
+                )  # project out nullspace
 
         return x

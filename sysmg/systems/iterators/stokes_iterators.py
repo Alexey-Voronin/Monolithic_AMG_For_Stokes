@@ -8,6 +8,7 @@ from .system_iterator import SystemIterator
 import os
 import glob
 
+
 class StructuredStokesIterator(SystemIterator):
     """Iterator object that generates structured Stokes systems on demand.
 
@@ -30,7 +31,7 @@ class StructuredStokesIterator(SystemIterator):
         Array containing the number of elements in each direction.
     shape : str
         Shape of the mesh. Currently only square and L-shaped  meshes
-        are supproted. If None, a square mesh is generated.
+        are supported. If None, a square mesh is generated.
 
 
     Sample input:
@@ -49,12 +50,17 @@ class StructuredStokesIterator(SystemIterator):
                     }
     """
 
-    def __init__(self, system_params,
-                 start_idx=None, end_idx=None,
-                 quadrilateral=False,
-                 max_dofs=1e5, dim=2,
-                 NEx=None,
-                 shape=None):
+    def __init__(
+        self,
+        system_params,
+        start_idx=None,
+        end_idx=None,
+        quadrilateral=False,
+        max_dofs=1e5,
+        dim=2,
+        NEx=None,
+        shape=None,
+    ):
         """Initialize the iterator object."""
         super().__init__(system_params, max_dofs)
 
@@ -62,16 +68,17 @@ class StructuredStokesIterator(SystemIterator):
         self.end = end_idx if NEx == None else len(NEx)
         assert self.end != None, "Either provide end_idx or NEx."
 
-        self.NEx = NEx if NEx is not None else \
-            np.array([2 ** i for i in range(0, 20)])
-        self.NEx = self.NEx[self.start:self.end]
+        self.NEx = NEx if NEx is not None else np.array([2**i for i in range(0, 20)])
+        self.NEx = self.NEx[self.start : self.end]
         self.dim = dim
         self.shape = shape
         self.quadrilateral = quadrilateral
 
     def __repr__(self):
-        return 'Structured %dD Stokes: %s'\
-                % (self.dim, self.system_params['discretization']['bcs'])
+        return "Structured %dD Stokes: %s" % (
+            self.dim,
+            self.system_params["discretization"]["bcs"],
+        )
 
     def __next__(self):
         if self.count < len(self.NEx):
@@ -87,30 +94,38 @@ class StructuredStokesIterator(SystemIterator):
             v_dofs *= self.dim
 
             if v_dofs + p_dofs >= self.max_dofs:
-                print('ISSUE: systems is bigger than expected')
+                print("ISSUE: systems is bigger than expected")
                 raise StopIteration
 
-            if self.shape == 'L':
+            if self.shape == "L":
                 from sysmg.systems.util.other_meshes import RectangleMesh_MyCoord
-                mesh = RectangleMesh_MyCoord(NEx, NEx, 2, 2,
-                                             quadrilateral=self.quadrilateral,
-                                             prescribed_coord=None,
-                                             shape="L")
-            elif self.dim == 2:
-                mesh = UnitSquareMesh(NEx, NEx, quadrilateral=self.quadrilateral
-                                      )
-            else:
-                mesh = UnitCubeMesh(NEx, NEx, NEx, #quadrilateral=self.quadrilateral
-                                    )
 
-            self.system_params['mesh'] = mesh
+                mesh = RectangleMesh_MyCoord(
+                    NEx,
+                    NEx,
+                    2,
+                    2,
+                    quadrilateral=self.quadrilateral,
+                    prescribed_coord=None,
+                    shape="L",
+                )
+            elif self.dim == 2:
+                mesh = UnitSquareMesh(NEx, NEx, quadrilateral=self.quadrilateral)
+            else:
+                mesh = UnitCubeMesh(
+                    NEx,
+                    NEx,
+                    NEx,  # quadrilateral=self.quadrilateral
+                )
+
+            self.system_params["mesh"] = mesh
             stokes = Stokes(self.system_params)
-            stokes.NE_hier = getattr(stokes, 'NE_hier', [[NEx] * self.dim])
+            stokes.NE_hier = getattr(stokes, "NE_hier", [[NEx] * self.dim])
 
             self.build_time = (time_ns() - tic) / 1e9
             self.count += 1
             stokes.structured = True
-            if hasattr(stokes, 'lo_fe_sys'):
+            if hasattr(stokes, "lo_fe_sys"):
                 stokes.lo_fe_sys.structured = True
             return stokes
         else:
@@ -149,23 +164,30 @@ class UnstructuredStokesIterator(SystemIterator):
     """
 
     # TODO: cleanup the values
-    mesh_name2 = {2: {
-        "unstructured square"  : "2D/square/square_h_",
-        "flow past a cylinder" : "2D/flow_past_cyl/flow_past_cyl_h_",
-        "pinched channel"      : "2D/pinched_channel/pinched_channel_h_",
-        "airfoil"              : "2D/airfoil/airfoil_h_",
-    },
+    mesh_name2 = {
+        2: {
+            "unstructured square": "2D/square/square_h_",
+            "flow past a cylinder": "2D/flow_past_cyl/flow_past_cyl_h_",
+            "pinched channel": "2D/pinched_channel/pinched_channel_h_",
+            "airfoil": "2D/airfoil/airfoil_h_",
+        },
         3: {
             "pinched channel": "3D/pinched_channel/pinched_channel_h_",
             "split artery": "3D/split_artery/split_artery_h_",
-            #"long artery"      : "3D/long_artery/long_artery_h_"
-        }
+            # "long artery"      : "3D/long_artery/long_artery_h_"
+        },
     }
     mesh_ext2 = {}
 
-    def __init__(self, system_params, name_id=0, dim=None,
-                 start_idx=None, end_idx=None,
-                 max_dofs=10000):
+    def __init__(
+        self,
+        system_params,
+        name_id=0,
+        dim=None,
+        start_idx=None,
+        end_idx=None,
+        max_dofs=10000,
+    ):
         """Initialize the iterator object."""
         super().__init__(system_params, max_dofs)
 
@@ -179,15 +201,17 @@ class UnstructuredStokesIterator(SystemIterator):
         mesh_name = self.mesh_name2[self.dim]
         mesh_ext = self.mesh_ext2
         import os
+
         self.pream = os.path.split(__file__)[0] + "/../meshes/"
         # print(self.pream)
         import glob
+
         # print(mesh_name)
         for k, v in mesh_name.items():
             # print(f"{self.pream}{v}*.msh")
             paths = glob.glob(f"{self.pream}{v}*.msh")
             # print(paths)
-            exts = [i.split('.')[-2].split('_h_')[1] for i in paths]
+            exts = [i.split(".")[-2].split("_h_")[1] for i in paths]
             exts = [int(i) for i in exts]
             # print(exts)
             exts = np.sort(exts)
@@ -200,12 +224,14 @@ class UnstructuredStokesIterator(SystemIterator):
         self.exts = mesh_ext[self.name]
 
     def get_path(self):
-        return self.pream + self.file_name + ('%s' % self.exts[self.count]) + '.msh'
+        return self.pream + self.file_name + ("%s" % self.exts[self.count]) + ".msh"
 
     def __repr__(self):
-        return 'Unstructured %dD Stokes (%s): %s'\
-                % (self.dim, self.file_name,
-                   self.system_params['discretization']['bcs'])
+        return "Unstructured %dD Stokes (%s): %s" % (
+            self.dim,
+            self.file_name,
+            self.system_params["discretization"]["bcs"],
+        )
 
     def __iter__(self):
         self.count = self.start
@@ -222,18 +248,18 @@ class UnstructuredStokesIterator(SystemIterator):
             # P2/P1: v_x+v_y+p
             # slightly overestimates # DoFs
             pdofs = mesh.coordinates.dat.data_ro.shape[0]
-            vdofs = (np.power(pdofs, 1. / self.dim) * 2 + 1) ** self.dim
+            vdofs = (np.power(pdofs, 1.0 / self.dim) * 2 + 1) ** self.dim
             ndofs_approx = vdofs * self.dim + pdofs
             if self.max_dofs <= ndofs_approx:
                 raise StopIteration
 
-            self.system_params['mesh'] = mesh
+            self.system_params["mesh"] = mesh
             stokes = Stokes(self.system_params)
             self.build_time = (time_ns() - tic) / 1e9
 
             self.count += 1
             stokes.structured = False
-            if hasattr(stokes, 'lo_fe_sys'):
+            if hasattr(stokes, "lo_fe_sys"):
                 stokes.lo_fe_sys.structured = False
             return stokes
         else:
