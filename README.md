@@ -49,7 +49,14 @@ To effectively utilize this code, the following dependencies are needed:
 
 The [data\_collection](./data_collection/) directory contains detailed information regarding the methods and scripts used for data collection. Each sub-directory also includes scripts for data visualization.
 
+## Setting Up Pre-commit Hooks
 
+**Quick Start**:
+1. **Install pre-commit**: Run `pip install pre-commit` in your environment.
+2. **Activate hooks**: At the root of the repository, run `pre-commit install` to set up the hooks from `.pre-commit-config.yaml`.
 
-
+**Using Hooks**:
+- The hooks will run automatically on each commit.
+- To manually run all hooks, use `pre-commit run --all-files`.
+- Update hooks with `pre-commit autoupdate`.
 
