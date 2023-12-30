@@ -60,6 +60,7 @@ class StructuredStokesIterator(SystemIterator):
         dim=2,
         NEx=None,
         shape=None,
+        reverse_order=True
     ):
         """Initialize the iterator object."""
         super().__init__(system_params, max_dofs)
@@ -70,6 +71,8 @@ class StructuredStokesIterator(SystemIterator):
 
         self.NEx = NEx if NEx is not None else np.array([2**i for i in range(0, 20)])
         self.NEx = self.NEx[self.start : self.end]
+        if reverse_order:
+            self.NEx = self.NEx[::-1]
         self.dim = dim
         self.shape = shape
         self.quadrilateral = quadrilateral
@@ -187,10 +190,11 @@ class UnstructuredStokesIterator(SystemIterator):
         start_idx=None,
         end_idx=None,
         max_dofs=10000,
+        reverse_order=True
     ):
         """Initialize the iterator object."""
         super().__init__(system_params, max_dofs)
-
+        self.reverse_order = reverse_order
         if dim is None:
             raise ValueError("Please provide the expected dimension of the mesh")
 
@@ -233,13 +237,18 @@ class UnstructuredStokesIterator(SystemIterator):
         )
 
     def __iter__(self):
-        self.count = self.start
+        if self.reverse_order:
+            end = np.iinfo(np.uint64).max if self.end == None else self.end
+            min_count =  min(len(self.exts), end)
+            self.count = min_count-1
+        else:
+            self.count = self.start
         return self
 
     def __next__(self):
         end = np.iinfo(np.uint64).max if self.end == None else self.end
-        if self.count < min(len(self.exts), end):
-            ext = self.exts[self.count]
+        min_count =  min(len(self.exts), end)
+        if self.count < min_count and self.count >= 0:
             path = self.get_path()
 
             tic = time_ns()
@@ -256,7 +265,10 @@ class UnstructuredStokesIterator(SystemIterator):
             stokes = Stokes(self.system_params)
             self.build_time = (time_ns() - tic) / 1e9
 
-            self.count += 1
+            if self.reverse_order:
+                self.count -= 1
+            else: 
+                self.count += 1
             stokes.structured = False
             if hasattr(stokes, "lo_fe_sys"):
                 stokes.lo_fe_sys.structured = False
