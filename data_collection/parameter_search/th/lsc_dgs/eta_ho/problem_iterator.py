@@ -34,7 +34,8 @@ def unstructured_3D_iterator(system_params):
     system_params['discretization']['bcs'] = 'in-out-flow'
     return UnstructuredStokesIterator(   system_params,
                                          name_id=0, dim=3,
-                                         start_idx=5, end_idx=6,
+                                         #start_idx=5, end_idx=6,
+                                         start_idx=4, end_idx=5,
                                          max_dofs=7e7)
 
 ############################################################

@@ -1,2 +1,12 @@
 /home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/
 /home/voronin2/Monolithic_AMG_For_Stokes/sysmg/systems/iterators/../meshes/
+[0]PETSC ERROR: ------------------------------------------------------------------------
+[0]PETSC ERROR: Caught signal number 15 Terminate: Some process (or the batch system) has told this process to end
+[0]PETSC ERROR: Try option -start_in_debugger or -on_error_attach_debugger
+[0]PETSC ERROR: or see https://petsc.org/release/faq/#valgrind and https://petsc.org/release/faq/
+[0]PETSC ERROR: configure using --with-debugging=yes, recompile, link, and run 
+[0]PETSC ERROR: to get more information on the crash.
+application called MPI_Abort(MPI_COMM_WORLD, 59) - process 0
+[unset]: PMIU_write error; fd=-1 buf=:cmd=abort exitcode=59 message=application called MPI_Abort(MPI_COMM_WORLD, 59) - process 0
+:
+system msg for write_line failure : Bad file descriptor
