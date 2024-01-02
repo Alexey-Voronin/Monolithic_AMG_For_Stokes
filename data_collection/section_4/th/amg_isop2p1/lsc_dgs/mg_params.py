@@ -39,11 +39,11 @@ def get_mg_params(msh_type, disc_type, dim, mg_type):
     I = np.ones((2,))
     damp_param = {
         "structured": {
-            "ho" : {"2D": {"eta": I * 0.75}, "3D": {"eta": I * 1.00}},
-            "hlo": {"2D": {"eta": I * 0.92}, "3D": {"eta": I * 0.92}},
+            "ho" : {"2D": {"eta": I * 0.75}, "3D": {"eta": I * 0.92}},
+            "hlo": {"2D": {"eta": I * 1.00}, "3D": {"eta": I * 0.92}},
         },
         "unstructured": {
-            "ho" : {"2D": {"eta": I * 0.95}, "3D": {"eta": I * 0.7}},
+            "ho" : {"2D": {"eta": I * 0.95}, "3D": {"eta": I * 0.70}},
             "hlo": {"2D": {"eta": I * 0.94}, "3D": {"eta": I * 0.95}},
         },
     }

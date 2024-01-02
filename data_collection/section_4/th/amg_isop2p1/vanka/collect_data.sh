@@ -1,8 +1,8 @@
 echo `basename "$PWD"`
 cd  ho/ 
-bash launch.sh
+bash collect_data.sh
 cd  ../hlo/ 
-bash launch.sh
+bash collect_data.sh
 cd  ../lo/ 
-bash launch.sh
+bash collect_data.sh
 cd ..

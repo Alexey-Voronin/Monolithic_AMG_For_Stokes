@@ -10,3 +10,4 @@ ndofs=      212050, resid[ 29]=6.01e-11: system_setup=18.73, mg_setup[lvls= 3]=2
 ndofs=      466334, resid[ 31]=5.07e-11: system_setup=41.98, mg_setup[lvls= 4]=5.20, solve[31]=10.54
 ndofs=     1021759, resid[ 31]=6.25e-11: system_setup=94.17, mg_setup[lvls= 4]=11.87, solve[31]=24.01
 ndofs=     2248204, resid[ 31]=7.37e-11: system_setup=216.90, mg_setup[lvls= 4]=28.77, solve[31]=53.22
+ndofs=     4951877, resid[ 31]=4.59e-11: system_setup=495.41, mg_setup[lvls= 5]=69.59, solve[31]=137.69

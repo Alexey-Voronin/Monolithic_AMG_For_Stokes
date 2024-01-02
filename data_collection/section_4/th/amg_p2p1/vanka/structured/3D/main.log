@@ -1,0 +1,15 @@
+AMG Params:
+{'type': 'monolithic', 'interpolation': {'type': 'algebraic', 'order': 'high', 'params': {'u': {'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 75}, 'p': {'agg_mat': ('stiffness', 0.0), 'smooth_mat': ('stiffness', 0.0), 'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 50}}}, 'relaxation': ('Vanka', {'type': 'algebraic_factorized', 'setup_opt': True, 'cblas': True, 'iterations': (1, 1), 'accel': {'iterations': (2, 2)}, 'update': 'additive', 'patch_solver': 'inv', 'omega': 1.0, 'debug': False}), 'levels': 10, 'coarse_grid_solve': 'splu'}
+
+ndofs=        6934, resid[ 12]=8.72e-11: system_setup=1.07, mg_setup[lvls= 2]=0.41, solve[12]=0.15
+ndofs=       15468, resid[ 12]=8.64e-11: system_setup=0.48, mg_setup[lvls= 2]=0.76, solve[12]=0.41
+ndofs=       49072, resid[ 14]=4.82e-11: system_setup=1.28, mg_setup[lvls= 2]=2.95, solve[14]=1.86
+ndofs=      112724, resid[ 14]=7.73e-11: system_setup=2.94, mg_setup[lvls= 2]=13.26, solve[14]=4.80
+ndofs=      216024, resid[ 15]=3.97e-11: system_setup=5.65, mg_setup[lvls= 3]=15.39, solve[15]=13.99
+ndofs=      368572, resid[ 16]=2.81e-11: system_setup=9.84, mg_setup[lvls= 3]=28.31, solve[16]=26.97
+ndofs=      579968, resid[ 16]=2.87e-11: system_setup=15.63, mg_setup[lvls= 3]=47.16, solve[16]=44.12
+ndofs=      859812, resid[ 16]=3.50e-11: system_setup=23.64, mg_setup[lvls= 3]=71.38, solve[16]=64.16
+ndofs=     1217704, resid[ 16]=6.34e-11: system_setup=33.72, mg_setup[lvls= 3]=114.24, solve[16]=102.08
+ndofs=     1663244, resid[ 16]=4.79e-11: system_setup=46.86, mg_setup[lvls= 3]=161.63, solve[16]=141.38
+ndofs=     2206032, resid[ 16]=6.25e-11: system_setup=62.56, mg_setup[lvls= 3]=227.63, solve[16]=190.28
+ndofs=     3223554, resid[ 16]=5.64e-11: system_setup=93.91, mg_setup[lvls= 3]=363.51, solve[16]=286.01
