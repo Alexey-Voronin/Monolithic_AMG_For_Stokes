@@ -1,0 +1,10 @@
+AMG Params:
+{'type': 'monolithic', 'interpolation': {'type': 'algebraic', 'order': 'low', 'params': {'u': {'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 75}, 'p': {'agg_mat': ('stiffness', 0.0), 'smooth_mat': ('stiffness', 0.0), 'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 50}}}, 'relaxation': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 3, 'iterations': 1}}, 'continuity': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 3, 'iterations': 1}}, 'transform': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 3, 'iterations': 2}}}), 'wrapper_params': {'relax_params': ('Vanka', {'type': 'geometric_dg', 'iterations': (2, 2), 'setup_opt': True, 'cblas': True, 'update': 'additive', 'patch_solver': 'inv', 'omega': 0.87, 'debug': False}), 'tau': (1, 1), 'eta': ((1.0, 2.53), (1.0, 1.0))}, 'levels': 10, 'coarse_grid_solve': 'splu'}
+
+ndofs=        8194, resid[ 23]=4.83e-11: system_setup=2.30, mg_setup[lvls= 2]=0.52, solve[23]=0.29
+ndofs=       32514, resid[ 23]=9.52e-11: system_setup=2.94, mg_setup[lvls= 3]=1.05, solve[23]=0.82
+ndofs=      129538, resid[ 24]=4.03e-11: system_setup=11.28, mg_setup[lvls= 3]=3.25, solve[24]=3.24
+ndofs=      517122, resid[ 24]=9.53e-11: system_setup=45.15, mg_setup[lvls= 4]=11.70, solve[24]=13.62
+ndofs=     2066434, resid[ 25]=4.16e-11: system_setup=184.35, mg_setup[lvls= 4]=48.96, solve[25]=63.77
+ndofs=     8261634, resid[ 25]=8.69e-11: system_setup=762.21, mg_setup[lvls= 5]=215.92, solve[25]=308.09
+ndofs=    15440602, resid[ 26]=4.26e-11: system_setup=1435.17, mg_setup[lvls= 5]=424.33, solve[26]=595.01
