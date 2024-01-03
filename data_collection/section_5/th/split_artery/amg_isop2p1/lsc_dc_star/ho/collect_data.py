@@ -13,7 +13,7 @@ dim = int(dim_str[0])
 ##########################################################
 # Generate Problem Iterator
 ##########################################################
-sys.path.append(os.path.abspath("../../"))
+sys.path.append(os.path.abspath("../../../"))
 from problem_iterator import get_problem_iterator
 
 iterator = get_problem_iterator(msh_type, dim)
