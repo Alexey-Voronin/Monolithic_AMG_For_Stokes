@@ -108,14 +108,20 @@ class LSC(System_Relaxation):
                 return x
 
         elif solver == "sa-amg":
-            solve_params = params.pop("solve_phase")
-            setup_params = params.pop("setup_phase")
+            try:
+                solve_params = params.pop("solve_phase")
+            except:
+                solve_params = {}
+            try:
+                setup_params = params.pop("setup_phase")
+            except:
+                setup_params = {}
             mg = pyamg.smoothed_aggregation_solver(A, **setup_params)
             self._step_solvers[name] = mg
 
             def custom_solver(b):
                 # resid = []
-                max_iter = solve_params.get("iterations", 2)
+                max_iter = solve_params.get("iterations", 1)
                 x = mg.solve(
                     b,
                     maxiter=max_iter,
@@ -134,11 +140,12 @@ class LSC(System_Relaxation):
         Au = self._Au
         B = self._B
         BT = self._BT
+        BBT = (B * BT).tocsr()
 
         name = "momentum"
         iparams = self.params[name]
         self._momentum_solver = self._get_solver(
-            Au, iparams["solver"], iparams["solver_params"], name
+            Au, iparams["solver"], iparams.get("solver_params", {}), name
         )
         name = "continuity"
         iparams = self.params[name]
@@ -147,15 +154,15 @@ class LSC(System_Relaxation):
             if iparams["operator"].lower() == "stiffness"
             else None
         )
-        mat = Ap if iparams["operator"].lower() == "stiffness" else (B * BT).tocsr()
+        mat = Ap if iparams["operator"].lower() == "stiffness" else BBT
         self._continuity_solver = self._get_solver(
-            mat, iparams["solver"], iparams["solver_params"], name
+            mat, iparams["solver"], iparams.get("solver_params", {}), name
         )
         name = "transform"
         iparams = self.params[name]
-        mat = Ap if iparams["operator"].lower() == "stiffness" else (B * BT).tocsr()
+        mat = Ap if iparams["operator"].lower() == "stiffness" else BBT
         self._transform_solver = self._get_solver(
-            mat, iparams["solver"], iparams["solver_params"], name
+            mat, iparams["solver"], iparams.get("solver_params", {}), name
         )
 
         self._BABT = (B * (Au * BT)).tocsr()
