@@ -14,7 +14,7 @@ mg_params = get_mg_params(msh_type, ("CG", "DG"), dim)
 ##########################################################
 # Generate Problem Iterator
 ##########################################################
-sys.path.append(os.path.abspath("../"))
+sys.path.append(os.path.abspath("../../"))
 from problem_iterator import get_problem_iterator
 
 iterator = get_problem_iterator(msh_type, dim)
