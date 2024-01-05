@@ -16,41 +16,38 @@ import matplotlib.ticker as ticker
 ########################################################################
 # Helper Function
 ########################################################################
-import numpy as np
-
-
 def print_opt_values(rho, iters, ETAs, OMEGAs):
+    """Optimal parameters based on the smallest number of iterations is more
+    accurate than based solely on the convergence factor.
     """
-    Optimal parameters based on the smallest number of iterations
-    and centered in the distribution of these iterations.
-    """
-    # Find minimum iterations
-    iters_min = iters.min()
-    idx_min_iters = np.where(iters == iters_min)
-    # Extract corresponding eta and omega values
-    eta_vals = ETAs[idx_min_iters[0]]
-    omega_vals = OMEGAs[idx_min_iters[1]]
-    # Calculate the mean (or median) of eta and omega values
-    eta_mean = np.mean(eta_vals)
-    omega_mean = np.mean(omega_vals)
-    # Calculate the global mean (or median) of eta and omega values
-    eta_mean_g = np.mean(ETAs)
-    omega_mean_g = np.mean(OMEGAs)
-    # Find the index of the closest value to the mean
-    closest_idx = np.argmin(
-        (
-            (np.abs(eta_vals - eta_mean) ** 2) / eta_mean_g**2
-            + (np.abs(omega_vals - omega_mean) ** 2) / omega_mean_g**2
-        )
-    )
-    # Get the optimal eta and omega
-    eta_opt = eta_vals[closest_idx]
-    omega_opt = omega_vals[closest_idx]
-    rho_min = rho[idx_min_iters[0][closest_idx], idx_min_iters[1][closest_idx]]
-    iters_opt = iters[idx_min_iters[0][closest_idx], idx_min_iters[1][closest_idx]]
+    #################################################################
+    # based on rho
+    rho_min = rho.min()
+    idx_opt = np.where(rho == rho_min)
+    eta_id, omega_id = idx_opt[0].item(), idx_opt[1].item()
 
+    eta_opt = ETAs[eta_id]
+    omega_opt = OMEGAs[omega_id]
+    iters_min = iters[eta_id, omega_id]
     print(
-        f"Centered iter-based: (omega_0, eta_p)=({omega_opt:2.3f}, {eta_opt:2.3f}):\titer={iters_opt:1.3f}\trcf={rho_min:1.3f}"
+        f"rho-based:  (omega_0, eta_p)=({omega_opt:2.3f}, {eta_opt:2.3f}):\titer={iters_min:1.3f}\trcf={rho_min:1.3f}"
+    )
+    #################################################################
+    # based on iter
+    # often times there are multiple parameter choices that result in the same
+    # iteration count. Choose the one with the smallest convergence factor
+
+    iters_min = iters.min()
+    idx_opt = np.where(iters == iters_min)
+
+    cf_min_idx = np.argmin(rho[idx_opt[0], idx_opt[1]])
+    eta_id, omega_id = idx_opt[0][cf_min_idx], idx_opt[1][cf_min_idx]
+    eta_opt = ETAs[eta_id]
+    omega_opt = OMEGAs[omega_id]
+    rho_min = rho[eta_id, omega_id]
+    iters_opt = iters[eta_id, omega_id]
+    print(
+        f"iter-based: (omega_0, eta_p)=({omega_opt:2.3f}, {eta_opt:2.3f}):\titer={iters_opt:1.3f}\trcf={rho_min:1.3f}"
     )
 
     return omega_opt, eta_opt
@@ -73,8 +70,9 @@ def loaddata(PATH):
 ########################################################################
 PREAM = "eta_omega_coarse/"
 data_paths = {
-    "Structured": PREAM + "structured/2D/",
+    # "Structured": PREAM + "structured/2D/",
     "Unstructured": PREAM + "unstructured/2D/",
+    "Unstructured0": PREAM + "unstructured/2D/",
 }
 
 ########################################################################

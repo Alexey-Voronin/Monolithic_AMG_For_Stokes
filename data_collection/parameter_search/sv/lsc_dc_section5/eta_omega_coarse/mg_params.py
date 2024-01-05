@@ -3,9 +3,9 @@ from copy import deepcopy
 import numpy as np
 
 
-msh_type  = "unstructured"
+msh_type = "unstructured"
 disc_type = ("CG", "DG")
-dim       = 2
+dim = 2
 
 assert dim in [2], f"dimension is wrong: {dim}"
 assert msh_type in ["structured", "unstructured"], f"mesh type is wrong: {msh_type}"
@@ -61,9 +61,9 @@ lsc_inner_params = {
 # Damping parameter choices
 if dim == 2:
     if msh_type == "unstructured":
-        vanka_outer_params["omega"] = 1.
+        vanka_outer_params["omega"] = 1.0
     else:
-        vanka_outer_params["omega"] = 1.
+        vanka_outer_params["omega"] = 1.0
 
 I = np.ones((2,))
 damp_param = {
@@ -103,4 +103,3 @@ mg_params = {
     "levels": 10,
     "coarse_grid_solve": "splu",
 }
-
