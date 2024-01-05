@@ -46,14 +46,14 @@ opt_values_chosen = {
     names[0]: {
         "2D Structured": 1.00,
         "2D Unstructured": 1.00,
-        "3D Structured": 0.60,
+        "3D Structured": 0.62,
         "3D Unstructured": 1.00,
     },
     names[1]: {
         "2D Structured": 1.00,
         "2D Unstructured": 1.00,
-        "3D Structured": 1.00,
-        "3D Unstructured": 1.00,
+        "3D Structured": 1.1,
+        "3D Unstructured": 1.15,
     },
 }
 
@@ -100,6 +100,8 @@ cf_min = [1e4] * ncols
 cf_max = [-1] * ncols
 iter_min = [1e4] * ncols
 iter_max = [-1] * ncols
+indep_var_min = [1e4] * ncols
+indep_var_max = [-1] * ncols
 for pid, mg in enumerate(data_paths.keys()):
     data = data_paths[mg]
     for i, (prob_type, PATH) in enumerate(data.items()):
@@ -110,7 +112,6 @@ for pid, mg in enumerate(data_paths.keys()):
 
         indep_var = ETAs
         var_name = "$\eta$"  # list(param.keys())[0]
-
         iters0 = np.ravel(iters)
         axes.plot(
             indep_var,
@@ -146,6 +147,8 @@ for pid, mg in enumerate(data_paths.keys()):
         cf_max[i] = max(cf_max[i], max(cf))
         iter_min[i] = min(iter_min[i], min(iters0))
         iter_max[i] = max(iter_max[i], max(iters0))
+        indep_var_min[i] = min(min(indep_var), indep_var_min[i])
+        indep_var_max[i] = max(max(indep_var), indep_var_max[i])
 
         if i == 0:
             axes.set_ylabel("iterations")
@@ -171,13 +174,13 @@ for j, ax in enumerate(AXES):
     ax.set_ylim((min(iter_min) - 1, max(iter_max) + 1))
     ax.xaxis.set_minor_locator(MultipleLocator(0.025))
     ax.grid(None)
-    ax.set_xlim((indep_var[0], indep_var[-1]))
+    ax.set_xlim((indep_var_min[j], indep_var_max[j]))
     ax.set_box_aspect(1)
 
     ax.yaxis.set_minor_locator(MultipleLocator(2))
 
-    xticks = [0.3, 0.5, 0.7, 0.9, 1.1, 1.3]
-    ax.set_xticks(xticks)
+    # xticks = [0.3, 0.5, 0.7, 0.9, 1.1, 1.3]
+    # ax.set_xticks(xticks)
 
 if "--savefig" in sys.argv:
     plt.savefig("fig_5.pdf")

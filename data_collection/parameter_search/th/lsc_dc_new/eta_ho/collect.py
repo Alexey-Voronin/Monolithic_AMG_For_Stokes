@@ -46,7 +46,7 @@ def setter(amg, params):
 
 
 dp = 3  # digits past decimal place
-tau_range = np.round(np.linspace(0.3, 1.3, 70), dp)
+tau_range = np.round(np.linspace(0.3, 1.5, 70), dp)
 param_search = {
     "\eta": (tau_range,),
 }

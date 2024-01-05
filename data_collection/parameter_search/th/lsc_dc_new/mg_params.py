@@ -16,7 +16,7 @@ def get_mg_params(msh_type, disc_type, dim, mg_type):
     step_1_degree = 3 if dim == 2 else 4
     step_1_iters = 1
 
-    step_2_degree = 3 if dim == 2 else 16
+    step_2_degree = 3 if dim == 2 else 4
     step_2_iters = 1
 
     step_3_degree = 6 if dim == 2 else 16
