@@ -9,34 +9,46 @@ def get_mg_params(msh_type, disc_type, dim, mg_type):
     assert disc_type in [("CG", "CG")], f"discretization is wrong: {str(disc_type)}"
 
     ################################################################
-    # Vanka relaxation type
-    vanka_params = {
-        "iterations": (1, 1),
-        "accel": {"iterations": (2, 2)},
-        "type": "algebraic_factorized",
-        "setup_opt": True,
-        "cblas": True,
-        "update": "additive",
-        "patch_solver": "inv",
-        "omega": 1.0,
-        "debug": False,
+    # LSC-DGS relaxation type
+    mat_type = "BBT"
+    lb = (0.5) ** (dim)
+    ub = 1.1
+    degree = 4  # 3 if dim == 2 else 4
+    step_1_iters = 1
+    lsc_params = {
+        "iterations": (3, 3),
+        "momentum": {
+            "solver": "chebyshev",
+            "solver_params": {
+                "lower_bound": lb,
+                "upper_bound": ub,
+                "degree": degree,
+                "iterations": step_1_iters,
+            },
+        },
+        "continuity": {
+            "operator": mat_type,
+            "solver": "sa-amg",
+        },
+        "transform": {
+            "operator": mat_type,
+            "solver": "sa-amg",
+        },
     }
 
-    vanka_inner_params = deepcopy(vanka_params)
-    vanka_outer_params = deepcopy(vanka_params)
+    lsc_inner_params = deepcopy(lsc_params)
+    lsc_outer_params = deepcopy(lsc_params)
     ################################################################
     # Damping parameter choices
     I = np.ones((2,))
     damp_param = {
         "structured": {
-            "ho": {"2D": {"eta": I * 0.86}, "3D": {"eta": I * 1.00}},
-            "lo": {"2D": {"eta": I * 1.00}, "3D": {"eta": I * 1.00}},
-            "hlo": {"2D": {"eta": I * 0.75}, "3D": {"eta": I * 1.00}},
+            "ho": {"2D": {"eta": I * 1.0}, "3D": {"eta": I * 1.00}},
+            "hlo": {"2D": {"eta": I * 1.0}, "3D": {"eta": I * 1.00}},
         },
         "unstructured": {
-            "ho": {"2D": {"eta": I * 0.75}, "3D": {"eta": I * 1.00}},
-            "lo": {"2D": {"eta": I * 1.00}, "3D": {"eta": I * 1.00}},
-            "hlo": {"2D": {"eta": I * 0.80}, "3D": {"eta": I * 1.00}},
+            "ho": {"2D": {"eta": I * 1.00}, "3D": {"eta": I * 1.00}},
+            "hlo": {"2D": {"eta": I * 1.00}, "3D": {"eta": I * 1.00}},
         },
     }
 
@@ -63,9 +75,9 @@ def get_mg_params(msh_type, disc_type, dim, mg_type):
                 },
             },
         },
-        "relaxation": ("Vanka", vanka_inner_params),
+        "relaxation": ("lsc", lsc_inner_params),
         "wrapper_params": {
-            "relax_params": ("Vanka", vanka_outer_params),
+            "relax_params": ("lsc", lsc_outer_params),
             "tau": tau,
             "eta": eta,
         },
