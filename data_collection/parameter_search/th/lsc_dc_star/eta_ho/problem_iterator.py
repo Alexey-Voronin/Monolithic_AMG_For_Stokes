@@ -20,7 +20,7 @@ def structured_2D_iterator(system_params):
 
 def structured_3D_iterator(system_params):
     system_params["discretization"]["bcs"] = "lid-driven-cavity"
-    NEx = [60]
+    NEx = [60]  # 52]
     return StructuredStokesIterator(
         system_params,
         start_idx=0,
