@@ -22,6 +22,8 @@ import matplotlib.ticker as ticker
 names = list(get_robustness_plot_names("p2p1disc"))
 colors = [get_color(n) for n in names]
 markers = [get_marker(n) for n in names]
+names = ["BTP", "DC-all(Vanka)", "DC-all(Vanka($\ell=0$),LSC-DGS($\ell>0$))"]
+markers[-1] = "*"  # '|'
 
 ms = 3
 

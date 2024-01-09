@@ -3,7 +3,7 @@ import sys, os
 sys.path.append(os.path.abspath("../plot_common"))
 from common import set_figure, fig_size
 from dataloader import load_data
-from palettes import get_robustness_plot_names, get_color, get_marker
+from palettes import get_section_4_th_attr
 
 import numpy as np
 import sys
@@ -15,69 +15,75 @@ from matplotlib.ticker import MultipleLocator, FormatStrFormatter, AutoMinorLoca
 import matplotlib.ticker as ticker
 
 ########################################################################
-# Define AMG labels and attributes (colors, etc.)
-# If you change their order, you also need to change the order of
-# paths[ ] below.
 ########################################################################
-names = get_robustness_plot_names("p2p1disc")
-colors = [get_color(n) for n in names]
-markers = [get_marker(n) for n in names]
-
+names, colors, markers, linestyles = get_section_4_th_attr(rlx="Vanka")
 ms = 3
 
 ########################################################################
 # LOAD DATA
 ########################################################################
-COMM_PREAM = "./sv/"
-PREAM_HO = COMM_PREAM + "uzawa/"
-PREAM_LO = COMM_PREAM + "defect_correction/"
+COMM_PREAM0 = "./th/"
+uzawa_dir = "uzawa/"
+COMM_PREAM1 = COMM_PREAM0
+
+rlx_type = "vanka"
+p2p1_dir = f"amg_p2p1/{rlx_type}/"
+isop2p1_dir = f"amg_isop2p1/{rlx_type}/"
 
 all_problems = dict.fromkeys(
     [
         "structured/2D_bfs/",
         "unstructured/2D/",
+        "structured/3D/",
+        "unstructured/3D/",
     ],
     None,
 )
 
 for problem in all_problems.keys():
+    # the order of paths below needs to patch the order of names
     paths = [
-        PREAM_HO + problem,
-        PREAM_LO + problem,
+        COMM_PREAM0 + uzawa_dir + problem,
+        COMM_PREAM1 + p2p1_dir + problem,
+        COMM_PREAM1 + isop2p1_dir + "ho/" + problem,
+        COMM_PREAM1 + isop2p1_dir + "lo/" + problem,
+        COMM_PREAM1 + isop2p1_dir + "hlo/" + problem,
     ]
 
     all_problems[problem] = load_data(names, paths)
+
 
 ########################################################################
 # PLOT DATA
 ########################################################################
 linewidth = 1
 
-nrows = len(list(all_problems.keys()))  # 2
-ncols = 3
+ncols = len(list(all_problems.keys()))  # 4
+nrows = 3
 fs = fig_size.singlefull
-set_figure(width=fs["width"], height=0.6 * fs["width"])
-fig, axs_all = plt.subplots(nrows, ncols, sharex="col")  # sharey='row',
+set_figure(width=fs["width"], height=0.8 * fs["width"])
+fig, axs_all = plt.subplots(nrows, ncols, sharey="row", sharex="col")
 
 # Ylabels (titles of plots - one per row)
-for i, title in enumerate(["iterations", "relative time", "rel. time per iter."]):
-    axs_all[0][i].set_title(title)
+for i, title in enumerate(["iterations", "rel. time", "rel. time per iter."]):
+    axs_all[i][0].set_ylabel(title)
+
 ########################################################################
 # Iterations
-axs = axs_all[:, 0]
+axs = axs_all[0]
 # Plots should share the same data ranges (x is known in advance)
 ymin = 1e4
 ymax = -1
 for i, ((prob_path, data_dict), ax) in enumerate(zip(all_problems.items(), axs)):
     for j, (k, v) in enumerate(data_dict["residuals"].items()):
         size, resid_hist = list(v.keys()), list(v.values())
-        iters = np.array([len(it) for it in resid_hist])
+        iters = [len(it) for it in resid_hist]
 
         ax.semilogx(
             size,
             iters,
             label=k,
-            linestyle="-",
+            linestyle=linestyles[j],
             color=colors[j],
             marker=markers[j],
             markersize=ms,
@@ -88,12 +94,14 @@ for i, ((prob_path, data_dict), ax) in enumerate(zip(all_problems.items(), axs))
 
         ymax = max(ymax, max(iters))
         ymin = min(ymin, min(iters))
+
     # y-ticks
-    ax.yaxis.set_minor_locator(MultipleLocator(5))
-    #
+    ax.set_yticks([20, 30, 40, 50, 60, 70, 80])
+    ax.yaxis.set_minor_locator(MultipleLocator(2))
+
     msh_type, dim = prob_path.split("_")[0].split("/")[:2]
     msh_type = msh_type.capitalize()
-    ax.set_ylabel("%s %s" % (msh_type, dim))
+    ax.set_title("%s %s" % (msh_type, dim))
 
 for ax in axs:
     ax.set_ylim((ymin - 1, ymax + 1))
@@ -101,11 +109,11 @@ for ax in axs:
 
 ########################################################################
 # Time to convergence
-axs = axs_all[:, 1]
+axs = axs_all[1]
 
 ymin = 1e4
 ymax = -1
-for i, ((prob_path, data_dict), ax) in enumerate(zip(all_problems.items(), axs)):
+for (prob_path, data_dict), ax in zip(all_problems.items(), axs):
     ho_id = list(data_dict["timings"].keys())[0]
     ref_dofs = np.array(list(data_dict["timings"][ho_id].keys()))
     ref_time = np.array(
@@ -124,9 +132,8 @@ for i, ((prob_path, data_dict), ax) in enumerate(zip(all_problems.items(), axs))
 
         ax.semilogx(
             dofs,
-            rel_time,
-            label=k,
-            linestyle="-",
+            rel_time,  # label=k,
+            linestyle=linestyles[j],
             color=colors[j],
             marker=markers[j],
             markersize=ms,
@@ -138,15 +145,15 @@ for i, ((prob_path, data_dict), ax) in enumerate(zip(all_problems.items(), axs))
         ymin = min(ymin, min(rel_time))
 
     # y-ticks
-    ax.set_yticks([0.4, 0.6, 0.8, 1.0, 1.2])
-    ax.yaxis.set_minor_locator(MultipleLocator(0.05))
+    ax.set_yticks([0.5, 1, 1.5, 2, 2.5, 3, 3.5])
+    ax.yaxis.set_minor_locator(MultipleLocator(0.125))
 
 for ax in axs:
-    ax.set_ylim((ymin * 0.95, ymax * 1.025))
+    ax.set_ylim((ymin * 0.85, ymax * 1.05))
     ax.set_box_aspect(1)
 ########################################################################
-# Time per iteration
-axs = axs_all[:, 2]
+# Time per iter
+axs = axs_all[2]
 ymin = 1e4
 ymax = -1
 for (prob_path, data_dict), ax in zip(all_problems.items(), axs):
@@ -168,15 +175,12 @@ for (prob_path, data_dict), ax in zip(all_problems.items(), axs):
         dofs = np.array(list(v.keys()))
         solve_time = np.array([d["mg:solve"]["0"] for d in v.values()])
 
-        r_idx = np.in1d(ref_dofs, dofs)
-        idx = np.in1d(dofs, ref_dofs)
-        rel_time = (solve_time[idx] / iters[idx]) / ref_time[r_idx]
-
+        rel_time = (solve_time / iters) / ref_time
         ax.semilogx(
             dofs,
             rel_time,
             label=k,
-            linestyle="-",
+            linestyle=linestyles[j],
             color=colors[j],
             marker=markers[j],
             markersize=ms,
@@ -189,16 +193,16 @@ for (prob_path, data_dict), ax in zip(all_problems.items(), axs):
         ymin = min(ymin, min(rel_time))
 
     # y-ticks
-    ax.set_yticks([1.0, 2.0, 3.0, 4.0])
+    ax.set_yticks([1, 2, 3, 4, 5, 6])
     ax.yaxis.set_minor_locator(MultipleLocator(0.25))
 
 for ax in axs:
-    ax.set_ylim((ymin * 0.85, ymax * 1.05))
+    ax.set_ylim((ymin * 0.85, ymax * 1.025))
     ax.set_box_aspect(1)
 
 #######################################################
-xmin = 1e100
-xmax = 0  # np.zeros((3,))
+xmin = np.ones((len(axs),)) * 1e100
+xmax = np.zeros((len(axs),))
 for r, axs in enumerate(axs_all):
     for ax in axs:
         # x-ticks
@@ -209,33 +213,37 @@ for r, axs in enumerate(axs_all):
         ax.xaxis.set_minor_locator(min_loc)
         ax.tick_params(axis="x", which="major")
         ax.tick_params(axis="x", which="minor")
-        ax.grid(None)
+        ax.grid(True)  # None)
+    if r < 2:
+        ax.tick_params(labelbottom=False)
 
     # fix x-axis alignment
     for (i, data_dict), data in zip(
         enumerate(all_problems.values()), all_problems.values()
     ):
         ndofs = np.array([int(i) for i in data_dict["timings"][names[0]].keys()])
-        xmin = min(xmin, np.min(ndofs))
-        # i=1/column=1 -> unstructured grids, one fewer prob size than expected
-        xmax = max(xmax, np.max(ndofs))  # [:-1]) if i == 1 else np.max(ndofs))
+        xmin[i] = min(xmin[i], np.min(ndofs))
+        xmax[i] = max(xmax[i], np.max(ndofs))
 
 for axs in axs_all:
-    for j, ax in enumerate(axs):
-        ax.set_xlim((xmin * 0.9, xmax * 1.1))
+    for i, ax in enumerate(axs):
+        ax.set_xlim((xmin[i] * 0.9, xmax[i] * 1.05))
 
-axs_all[0, 1].legend(  # custom_lines, names,
+
+axs_all[0, 0].legend(
     loc="lower left",
-    bbox_to_anchor=(-0.1, 1.2, 1.2, 0.2),
+    bbox_to_anchor=(0.2, 1.2, 3.8, 0.2),
     mode="expand",
     borderaxespad=0,
-    ncol=4,
+    ncol=3,
 )
-axs_all[1, 0].set_xlabel("\# DoFs")
-axs_all[1, 1].set_xlabel("\# DoFs")
-axs_all[1, 2].set_xlabel("\# DoFs")
+
+axs_all[2, 0].set_xlabel("\# DoFs")
+axs_all[2, 1].set_xlabel("\# DoFs")
+axs_all[2, 2].set_xlabel("\# DoFs")
+axs_all[2, 3].set_xlabel("\# DoFs")
 
 if "--savefig" in sys.argv:
-    plt.savefig("fig_8.pdf")
+    plt.savefig("p2p1_vanka_results.pdf")
 else:
     plt.show()

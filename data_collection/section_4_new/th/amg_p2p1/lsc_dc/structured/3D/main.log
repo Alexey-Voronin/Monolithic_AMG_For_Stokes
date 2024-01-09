@@ -1,0 +1,15 @@
+AMG Params:
+{'type': 'monolithic', 'interpolation': {'type': 'algebraic', 'order': 'high', 'params': {'u': {'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 75}, 'p': {'agg_mat': ('stiffness', 0.0), 'smooth_mat': ('stiffness', 0.0), 'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 50}}}, 'relaxation': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 1}}, 'continuity': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 1}}, 'transform': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 16, 'iterations': 1}}}), 'levels': 10, 'coarse_grid_solve': 'splu'}
+
+ndofs=     3223554, resid[ 44]=8.12e-11: system_setup=99.25, mg_setup[lvls= 3]=198.75, solve[44]=261.08
+ndofs=     2206032, resid[ 39]=9.02e-11: system_setup=63.36, mg_setup[lvls= 3]=118.33, solve[39]=150.45
+ndofs=     1663244, resid[ 36]=6.72e-11: system_setup=47.27, mg_setup[lvls= 3]=79.16, solve[36]=102.75
+ndofs=     1217704, resid[ 35]=4.71e-11: system_setup=33.85, mg_setup[lvls= 3]=55.13, solve[35]=71.64
+ndofs=      859812, resid[ 33]=4.49e-11: system_setup=23.50, mg_setup[lvls= 3]=34.51, solve[33]=45.62
+ndofs=      579968, resid[ 34]=7.32e-11: system_setup=15.41, mg_setup[lvls= 3]=21.42, solve[34]=30.77
+ndofs=      368572, resid[ 31]=7.30e-11: system_setup=9.63, mg_setup[lvls= 3]=12.74, solve[31]=17.22
+ndofs=      216024, resid[ 32]=3.98e-11: system_setup=5.53, mg_setup[lvls= 3]=6.99, solve[32]=9.92
+ndofs=      112724, resid[ 29]=8.72e-11: system_setup=2.83, mg_setup[lvls= 2]=11.05, solve[29]=4.13
+ndofs=       49072, resid[ 33]=8.23e-11: system_setup=1.28, mg_setup[lvls= 2]=2.11, solve[33]=1.70
+ndofs=       15468, resid[ 37]=9.81e-11: system_setup=0.45, mg_setup[lvls= 2]=0.51, solve[37]=0.53
+ndofs=        6934, resid[ 40]=7.58e-11: system_setup=0.27, mg_setup[lvls= 2]=0.29, solve[40]=0.26

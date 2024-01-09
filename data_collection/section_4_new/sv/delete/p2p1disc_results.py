@@ -1,8 +1,8 @@
 import sys, os
 
-sys.path.append(os.path.abspath("../plot_common"))
-from common import set_figure, fig_size
+sys.path.append(os.path.abspath("../../plot_common"))
 from dataloader import load_data
+from common import set_figure, fig_size
 from palettes import get_robustness_plot_names, get_color, get_marker
 
 import numpy as np
@@ -15,78 +15,89 @@ from matplotlib.ticker import MultipleLocator, FormatStrFormatter, AutoMinorLoca
 import matplotlib.ticker as ticker
 
 ########################################################################
+# Define AMG labels and attributes (colors, etc.)
+# If you change their order, you also need to change the order of
+# paths[ ] below.
 ########################################################################
-names = get_robustness_plot_names("p2p1")
+names = list(get_robustness_plot_names("p2p1disc"))
 colors = [get_color(n) for n in names]
 markers = [get_marker(n) for n in names]
-
+markers[-1] = "|"
 ms = 3
 
 ########################################################################
 # LOAD DATA
 ########################################################################
-COMM_PREAM0 = "./th/"
-uzawa_dir = "uzawa/"
-COMM_PREAM1 = COMM_PREAM0
-p2p1_dir = "amg_p2p1/"
-isop2p1_dir = "amg_isop2p1/"
+COMM_PREAM = "./"  # data_bf/robustness_problems/sv/"
+PREAM_HO = COMM_PREAM + "uzawa/"
+PREAM_LO_0 = COMM_PREAM + "defect_correction/vanka/"
+# PREAM_LO_1  = COMM_PREAM + "defect_correction/lsc_dgs/"
+PREAM_LO_2 = COMM_PREAM + "defect_correction/lsc_dc/"
+
+for i in range(1):
+    names.append(names[-1])
+    colors.append(colors[-1])
+    markers.append(markers[-1])
+names[-2] = f"{names[-2]}(Vanka)"
+names[-1] = f"{names[-1]}(Vanka($\\ell=0$),LSC-DC($\\ell>0$))"
+linestyle = ["solid", "solid", "dashed"]
 
 all_problems = dict.fromkeys(
     [
         "structured/2D_bfs/",
         "unstructured/2D/",
-        "structured/3D/",
-        "unstructured/3D/",
     ],
     None,
 )
 
 for problem in all_problems.keys():
-    # the order of paths below needs to patch the order of names
     paths = [
-        COMM_PREAM0 + uzawa_dir + problem,
-        COMM_PREAM1 + p2p1_dir + problem,
-        COMM_PREAM1 + isop2p1_dir + "ho/" + problem,
-        COMM_PREAM1 + isop2p1_dir + "lo/" + problem,
-        COMM_PREAM1 + isop2p1_dir + "hlo/" + problem,
+        PREAM_HO + problem,
+        PREAM_LO_0 + problem,
+        # PREAM_LO_1 + problem,
+        PREAM_LO_2 + problem,
     ]
 
     all_problems[problem] = load_data(names, paths)
-
 
 ########################################################################
 # PLOT DATA
 ########################################################################
 linewidth = 1
 
-ncols = len(list(all_problems.keys()))  # 4
-nrows = 3
+nrows = len(list(all_problems.keys()))  # 2
+ncols = 3
 fs = fig_size.singlefull
-set_figure(width=fs["width"], height=0.8 * fs["width"])
-fig, axs_all = plt.subplots(nrows, ncols, sharey="row", sharex="col")
+set_figure(width=fs["width"], height=0.6 * fs["width"])
+fig, axs_all = plt.subplots(nrows, ncols, sharex="col")  # sharey='row',
 
 # Ylabels (titles of plots - one per row)
-for i, title in enumerate(["iterations", "rel. time", "rel. time per iter."]):
-    axs_all[i][0].set_ylabel(title)
-
+for i, title in enumerate(["iterations", "relative time", "rel. time per iter."]):
+    axs_all[0][i].set_title(title)
 ########################################################################
 # Iterations
-axs = axs_all[0]
+axs = axs_all[:, 0]
 # Plots should share the same data ranges (x is known in advance)
 ymin = 1e4
 ymax = -1
 for i, ((prob_path, data_dict), ax) in enumerate(zip(all_problems.items(), axs)):
     for j, (k, v) in enumerate(data_dict["residuals"].items()):
         size, resid_hist = list(v.keys()), list(v.values())
-        iters = [len(it) for it in resid_hist]
+        iters = np.array([len(it) for it in resid_hist])
+
+        # names[0] has more data points than need
+        # if prob_path.split('/')[0] == 'structured' and k == names[0]:
+        #    iters = iters[:-1]
+        #    size = size[:-1]
 
         ax.semilogx(
             size,
             iters,
             label=k,
-            linestyle="-",
+            # linestyle='-',
             color=colors[j],
             marker=markers[j],
+            linestyle=linestyle[j],
             markersize=ms,
             linewidth=linewidth,
             clip_on=False,
@@ -95,14 +106,12 @@ for i, ((prob_path, data_dict), ax) in enumerate(zip(all_problems.items(), axs))
 
         ymax = max(ymax, max(iters))
         ymin = min(ymin, min(iters))
-
     # y-ticks
-    ax.set_yticks([20, 30, 40, 50, 60, 70, 80])
-    ax.yaxis.set_minor_locator(MultipleLocator(2))
-
+    ax.yaxis.set_minor_locator(MultipleLocator(5))
+    #
     msh_type, dim = prob_path.split("_")[0].split("/")[:2]
     msh_type = msh_type.capitalize()
-    ax.set_title("%s %s" % (msh_type, dim))
+    ax.set_ylabel("%s %s" % (msh_type, dim))
 
 for ax in axs:
     ax.set_ylim((ymin - 1, ymax + 1))
@@ -110,11 +119,11 @@ for ax in axs:
 
 ########################################################################
 # Time to convergence
-axs = axs_all[1]
+axs = axs_all[:, 1]
 
 ymin = 1e4
 ymax = -1
-for (prob_path, data_dict), ax in zip(all_problems.items(), axs):
+for i, ((prob_path, data_dict), ax) in enumerate(zip(all_problems.items(), axs)):
     ho_id = list(data_dict["timings"].keys())[0]
     ref_dofs = np.array(list(data_dict["timings"][ho_id].keys()))
     ref_time = np.array(
@@ -130,13 +139,19 @@ for (prob_path, data_dict), ax in zip(all_problems.items(), axs):
         r_idx = np.in1d(ref_dofs, dofs)
         idx = np.in1d(dofs, ref_dofs)
         rel_time = solve_time[idx] / ref_time[r_idx]
+        # names[0] has more data points than need
+        # if prob_path.split('/')[0] == 'structured' and k == names[0]:
+        #    rel_time = rel_time[:-1]
+        #    dofs = dofs[idx][:-1]
 
         ax.semilogx(
             dofs,
-            rel_time,  # label=k,
-            linestyle="-",
+            rel_time,
+            label=k,
+            # linestyle='-',
             color=colors[j],
             marker=markers[j],
+            linestyle=linestyle[j],
             markersize=ms,
             linewidth=linewidth,
             clip_on=False,
@@ -146,15 +161,15 @@ for (prob_path, data_dict), ax in zip(all_problems.items(), axs):
         ymin = min(ymin, min(rel_time))
 
     # y-ticks
-    ax.set_yticks([0.5, 1, 1.5, 2, 2.5, 3, 3.5])
-    ax.yaxis.set_minor_locator(MultipleLocator(0.125))
+    ax.set_yticks([0.4, 0.6, 0.8, 1.0, 1.2])
+    ax.yaxis.set_minor_locator(MultipleLocator(0.05))
 
 for ax in axs:
-    ax.set_ylim((ymin * 0.85, ymax * 1.05))
+    ax.set_ylim((ymin * 0.95, ymax * 1.025))
     ax.set_box_aspect(1)
 ########################################################################
-# Time per iter
-axs = axs_all[2]
+# Time per iteration
+axs = axs_all[:, 2]
 ymin = 1e4
 ymax = -1
 for (prob_path, data_dict), ax in zip(all_problems.items(), axs):
@@ -176,14 +191,22 @@ for (prob_path, data_dict), ax in zip(all_problems.items(), axs):
         dofs = np.array(list(v.keys()))
         solve_time = np.array([d["mg:solve"]["0"] for d in v.values()])
 
-        rel_time = (solve_time / iters) / ref_time
+        r_idx = np.in1d(ref_dofs, dofs)
+        idx = np.in1d(dofs, ref_dofs)
+        rel_time = (solve_time[idx] / iters[idx]) / ref_time[r_idx]
+        # names[0] has more data points than need
+        # if prob_path.split('/')[0] == 'structured' and k == names[0]:
+        #    rel_time = rel_time[:-1]
+        #    dofs = dofs[idx][:-1]
+
         ax.semilogx(
             dofs,
             rel_time,
             label=k,
-            linestyle="-",
+            # linestyle='-',
             color=colors[j],
             marker=markers[j],
+            linestyle=linestyle[j],
             markersize=ms,
             linewidth=linewidth,
             clip_on=False,
@@ -194,16 +217,16 @@ for (prob_path, data_dict), ax in zip(all_problems.items(), axs):
         ymin = min(ymin, min(rel_time))
 
     # y-ticks
-    ax.set_yticks([1, 2, 3, 4, 5])
+    ax.set_yticks([1.0, 2.0, 3.0, 4.0])
     ax.yaxis.set_minor_locator(MultipleLocator(0.25))
 
 for ax in axs:
-    ax.set_ylim((ymin * 0.85, ymax * 1.025))
+    ax.set_ylim((ymin * 0.85, ymax * 1.05))
     ax.set_box_aspect(1)
 
 #######################################################
-xmin = np.ones((len(axs),)) * 1e100
-xmax = np.zeros((len(axs),))
+xmin = 1e100
+xmax = 0  # np.zeros((3,))
 for r, axs in enumerate(axs_all):
     for ax in axs:
         # x-ticks
@@ -215,36 +238,45 @@ for r, axs in enumerate(axs_all):
         ax.tick_params(axis="x", which="major")
         ax.tick_params(axis="x", which="minor")
         ax.grid(None)
-    if r < 2:
-        ax.tick_params(labelbottom=False)
+
+        # if r < 2:
+        #    ax.tick_params(labelbottom=False)
 
     # fix x-axis alignment
     for (i, data_dict), data in zip(
         enumerate(all_problems.values()), all_problems.values()
     ):
         ndofs = np.array([int(i) for i in data_dict["timings"][names[0]].keys()])
-        xmin[i] = min(xmin[i], np.min(ndofs))
-        xmax[i] = max(xmax[i], np.max(ndofs))
+        xmin = min(xmin, np.min(ndofs))
+        # xmax[i] = max(xmax[i], np.max(ndofs))
+        # i=1/column=1 -> unstructured grids, one fewer prob size than expected
+        xmax = max(xmax, np.max(ndofs))  # [:-1]) if i == 1 else np.max(ndofs))
 
 for axs in axs_all:
-    for i, ax in enumerate(axs):
-        ax.set_xlim((xmin[i] * 0.9, xmax[i] * 1.05))
+    for j, ax in enumerate(axs):
+        ax.set_xlim((xmin * 0.9, xmax * 1.1))
 
-
+# axs_all[0,1].legend(loc='lower left',
+#                    bbox_to_anchor=(0.0, 1.1, 1.0, 0.2),
+#                    ncol=ncols)
 axs_all[0, 0].legend(
     loc="lower left",
-    bbox_to_anchor=(0.8, 1.2, 2.8, 0.2),
+    bbox_to_anchor=(0.2, 1.2, 3.6, 0.2),  # 0.8,  # 2.8,
     mode="expand",
     borderaxespad=0,
     ncol=3,
 )  # ncols)
-
-axs_all[2, 0].set_xlabel("\# DoFs")
-axs_all[2, 1].set_xlabel("\# DoFs")
-axs_all[2, 2].set_xlabel("\# DoFs")
-axs_all[2, 3].set_xlabel("\# DoFs")
+# axs_all[0,1].legend(#custom_lines, names,
+#                    loc='lower left',
+#                    bbox_to_anchor=(-0.5, 1.2, 1.2, 0.2),
+#                    mode="expand",
+#                    borderaxespad=0,
+#                    ncol=2)
+axs_all[1, 0].set_xlabel("\# DoFs")
+axs_all[1, 1].set_xlabel("\# DoFs")
+axs_all[1, 2].set_xlabel("\# DoFs")
 
 if "--savefig" in sys.argv:
-    plt.savefig("fig_6.pdf")
+    plt.savefig("p2p1disc_results.pdf")
 else:
     plt.show()
