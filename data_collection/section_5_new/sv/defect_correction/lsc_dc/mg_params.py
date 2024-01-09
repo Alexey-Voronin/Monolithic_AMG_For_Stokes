@@ -25,7 +25,7 @@ def get_mg_params(msh_type, disc_type, dim):
     mat_type = "BBT"
     lb = (0.5) ** dim
     ub = 1.1
-    degree = 3 if dim == 2 else 4
+    degree = 3
     step_1_iters = 1
     lsc_inner_params = {
         "iterations": (2, 2),

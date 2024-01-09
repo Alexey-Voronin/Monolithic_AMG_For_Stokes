@@ -6,7 +6,7 @@ import sys, os
 sys.path.append(os.path.abspath("../plot_common"))
 from common import set_figure, fig_size
 from dataloader import load_data
-from palettes import get_hero_plot_names, get_color, get_marker
+from palettes import get_section_5_attr
 
 # plotting
 import matplotlib
@@ -20,18 +20,36 @@ marker_size = 3
 # READ IN DATA
 # P2/P1
 COMM_PREAM = "th/split_artery/"
-p2p1_dir = "amg_p2p1/unstructured/3D/"
-isop2p1_dir = "amg_isop2p1/ho/unstructured/3D/"
-paths = [COMM_PREAM + p2p1_dir, COMM_PREAM + isop2p1_dir]
+p2p1_vanka_dir = "amg_p2p1/vanka/unstructured/3D/"
+isop2p1_vanka_dir = "amg_isop2p1/vanka/ho/unstructured/3D/"
+p2p1_lsc_dir = "amg_p2p1/lsc_dc/unstructured/3D/"
+isop2p1_lsc_dir = "amg_isop2p1/lsc_dc/ho/unstructured/3D/"
+paths = [
+    COMM_PREAM + p2p1_vanka_dir,
+    COMM_PREAM + isop2p1_vanka_dir,
+    COMM_PREAM + p2p1_lsc_dir,
+    COMM_PREAM + isop2p1_lsc_dir,
+]
 
-p2p1_names = get_hero_plot_names("p2p1")
+p2p1_names, p2p1_colors, p2p1_markers, p2p1_linestyles = get_section_5_attr(disc="th")
 p2p1_problems = load_data(p2p1_names, paths)
 # P2/P1disc
 COMM_PREAM = "sv/"
 p2p1_dir = "uzawa/unstructured/2D/"
-isop2p1_dir = "defect_correction/unstructured/2D/"
-paths = [COMM_PREAM + p2p1_dir, COMM_PREAM + isop2p1_dir]
-p2p1disc_names = get_hero_plot_names("p2p1disc")
+isop2p1_vanka_dir = "defect_correction/vanka/unstructured/2D/"
+isop2p1_lsc_dir = "defect_correction/lsc_dc/unstructured/2D/"
+paths = [
+    COMM_PREAM + p2p1_dir,
+    COMM_PREAM + isop2p1_vanka_dir,
+    COMM_PREAM + isop2p1_lsc_dir,
+]
+
+(
+    p2p1disc_names,
+    p2p1disc_colors,
+    p2p1disc_markers,
+    p2p1disc_linestyles,
+) = get_section_5_attr(disc="sv")
 p2p1disc_problems = load_data(p2p1disc_names, paths)
 
 ########################################################################
@@ -47,15 +65,17 @@ fig, AXS_ALL = plt.subplots(nrows, ncols, sharex="col")
 
 xmin = np.ones((nrows,)) * 1e100
 xmax = np.zeros((nrows,))
-for j, (data_dict, disc_name, names) in enumerate(
+for j, (data_dict, disc_name, names, colors, markers, linestyles) in enumerate(
     zip(
         [p2p1_problems, p2p1disc_problems],
         ["3D Artery", "2D Airfoil"],
         [p2p1_names, p2p1disc_names],
+        [p2p1_colors, p2p1disc_colors],
+        [p2p1_markers, p2p1disc_markers],
+        [p2p1_linestyles, p2p1disc_linestyles],
     )
 ):
     print(names)
-    # names      = attr_dict['names']
     axs_all = AXS_ALL[j, :]
 
     if j == 0:
@@ -86,27 +106,28 @@ for j, (data_dict, disc_name, names) in enumerate(
     i = 0
     ax = axs_row[i]
     # Plots should share the same data ranges (x is known in advance)
-    for k, v in data_dict["residuals"].items():
+    for ii, (k, v) in enumerate(data_dict["residuals"].items()):
         size, resid_hist = np.array(list(v.keys())), list(v.values())
         iters = np.array([len(it) for it in resid_hist])
 
         startidx = 0
-        if j == 0:
+        if j == 1:
             startidx = 2
         ax.semilogx(
             size[startidx:],
             iters[startidx:],
             label=k,
-            linestyle="-",
-            marker=get_marker(k),
-            color=get_color(k),
+            linestyle=linestyles[ii],
+            marker=markers[ii],
+            color=colors[ii],
             markersize=marker_size,
+            mfc=("none" if j == 1 and ii == 2 else colors[ii]),
             linewidth=linewidth,
             clip_on=False,
             zorder=10,
         )
 
-    ax.set_xlim(5e4, 1.1e7)
+    # ax.set_xlim(5e4, 1.1e7)
     ax.set_xticks([1e5, 1e6, 1e7])
 
     # y-ticks
@@ -128,29 +149,30 @@ for j, (data_dict, disc_name, names) in enumerate(
         [d["mg:solve"]["0"] for d in data_dict["timings"][ho_id].values()]
     )
 
-    for k, v in data_dict["timings"].items():
+    for ii, (k, v) in enumerate(data_dict["timings"].items()):
         dofs = np.array(list(v.keys()))
         solve_time = np.array([d["mg:solve"]["0"] for d in v.values()])
         dofs = dofs
         rel_time = solve_time / ref_time
 
         startidx = 0
-        if j == 0:
+        if j == 1:
             startidx = 2
         ax.semilogx(
             dofs[startidx:],
             rel_time[startidx:],
             label=k,
-            linestyle="-",
-            marker=get_marker(k),
-            color=get_color(k),
+            linestyle=linestyles[ii],
+            marker=markers[ii],
+            color=colors[ii],
             markersize=marker_size,
+            mfc=("none" if j == 1 and ii == 2 else colors[ii]),
             linewidth=linewidth,
             clip_on=False,
             zorder=10,
         )
 
-    ax.set_xlim(5e4, 1.1e7)
+    # ax.set_xlim(5e4, 1.1e7)
     ax.set_xticks([1e5, 1e6, 1e7])
 
     # y-ticks
@@ -173,8 +195,8 @@ for j, (data_dict, disc_name, names) in enumerate(
     iters = np.array([len(it) for it in resid_hist])
     ref_time = ref_time / iters
 
-    for (k, v), resid_hist in zip(
-        data_dict["timings"].items(), data_dict["residuals"].values()
+    for ii, ((k, v), resid_hist) in enumerate(
+        zip(data_dict["timings"].items(), data_dict["residuals"].values())
     ):
         resid_hist = list(resid_hist.values())
         iters = np.array([len(it) for it in resid_hist])
@@ -183,24 +205,24 @@ for j, (data_dict, disc_name, names) in enumerate(
         rel_time = (solve_time / iters) / ref_time
 
         startidx = 0
-        if j == 0:
-            # skip really small problems
+        if j == 1:
             startidx = 2
 
         ax.semilogx(
             dofs[startidx:],
             rel_time[startidx:],
             label=k,
-            linestyle="-",
-            marker=get_marker(k),
-            color=get_color(k),
+            linestyle=linestyles[ii],
+            marker=markers[ii],
+            color=colors[ii],
             markersize=marker_size,
+            mfc=("none" if j == 1 and ii == 2 else colors[ii]),
             linewidth=linewidth,
             clip_on=False,
             zorder=10,
         )
 
-    ax.set_xlim(5e4, 1.1e7)
+    # ax.set_xlim(5e4, 1.1e7)
     ax.set_xticks([1e5, 1e6, 1e7])
 
     # y-ticks
@@ -209,6 +231,7 @@ for j, (data_dict, disc_name, names) in enumerate(
 
 from matplotlib.lines import Line2D
 
+"""
 names = ["HO-AMG", "DC-skip1", "Uzawa", "DC-all"]
 custom_lines = [
     Line2D(
@@ -225,6 +248,34 @@ AXS_ALL[0, 0].legend(
     borderaxespad=0,
     ncol=4,
 )
+AXS_ALL[0, 0].legend(
+    loc="lower left",
+    bbox_to_anchor=(0.5, 1.2, 2.5, 0.2),
+    mode="expand",
+    borderaxespad=0,
+    ncol=2,
+)
+"""
+
+handles, labels = [], []
+for ax in AXS_ALL[:, 0].ravel():
+    h, l = ax.get_legend_handles_labels()
+    handles.extend(h)
+    labels.extend(l)
+
+# Create a unified legend
+# fig.legend(
+AXS_ALL[0, 0].legend(
+    handles,
+    labels,
+    loc="lower left",
+    # bbox_to_anchor=(0.0, 1.2, 4.0, 0.2),
+    bbox_to_anchor=(0.8, 1.2, 2.4, 0.2),
+    mode="expand",
+    borderaxespad=0,
+    ncol=2,
+)
+
 
 AXS_ALL[1, 0].set_xlabel("\# DoFs")
 AXS_ALL[1, 1].set_xlabel("\# DoFs")
