@@ -15,12 +15,12 @@ __names = [
 _names = {
     "Vanka": [f"{name}(Vanka)" for name in __names[:-1]],
     "LSC-DGS": [f"{name}(LSC-DGS)" for name in [__names[0], __names[2], __names[3]]],
-    # "mixed"   : [f"{name}(Vanka($\ell=0$),LSC-DGS($\ell>0$))" for name in\
-    #                         [__names[3]]],
     "mixed": [
         f"{__names[3]}(Vanka)",
         f"{__names[3]}(Vanka($\ell=0$),LSC-DGS($\ell>0$))",
     ],
+    "Vanka-sec5": [f"{name}(Vanka)" for name in [__names[0], __names[2]]],
+    "LSC-DGS-sec5": [f"{name}(LSC-DGS)" for name in [__names[0], __names[2]]],
 }
 
 __colors = [
@@ -33,6 +33,8 @@ __colors = [
 _colors = {
     "Vanka": __colors[:-1],
     "LSC-DGS": [__colors[0], __colors[2], __colors[3]],
+    "Vanka-sec5": [__colors[0], __colors[2]],
+    "LSC-DGS-sec5": [__colors[0], __colors[2]],
     "mixed": [__colors[3], __colors[3]],
 }
 __markers = [
@@ -46,6 +48,8 @@ _markers = {
     "Vanka": __markers[:-1],
     "LSC-DGS": [__markers[0], __markers[2], __markers[3]],
     "mixed": [__markers[3], __markers[3]],
+    "LSC-DGS-sec5": [__markers[0], __markers[2]],
+    "Vanka-sec5": [__markers[0], __markers[2]],
 }
 
 __linestyles = ["solid", "dotted", "dashdot"]
@@ -53,6 +57,8 @@ _linestyles = {
     "Vanka": [__linestyles[0]] * len(_names["Vanka"]),
     "LSC-DGS": [__linestyles[1]] * len(_names["LSC-DGS"]),
     "mixed": [__linestyles[0], __linestyles[2]],
+    "Vanka-sec5": [__linestyles[0]] * len(_names["Vanka-sec5"]),
+    "LSC-DGS-sec5": [__linestyles[1]] * len(_names["LSC-DGS-sec5"]),
 }
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -109,6 +115,20 @@ def get_section_4_sv_attr():
     linestyles = [__linestyles[0]] + _linestyles[rlx]
 
     return names, colors, markers, linestyles
+
+
+def get_section_5_attr(disc="th"):
+    if disc == "th":
+        rlx0 = "Vanka-sec5"
+        rlx1 = "LSC-DGS-sec5"
+
+        names = _names[rlx0] + _names[rlx1]
+        colors = _colors[rlx0] + _colors[rlx1]
+        markers = _markers[rlx0] + _markers[rlx1]
+        linestyles = _linestyles[rlx0] + _linestyles[rlx1]
+        return names, colors, markers, linestyles
+    else:
+        return get_section_4_sv_attr()
 
 
 def get_color(name):
