@@ -1,6 +1,6 @@
 echo $(basename $PWD)
 
-cd th/  
+cd th/
 bash collect_data.sh
 
 cd ../sv/

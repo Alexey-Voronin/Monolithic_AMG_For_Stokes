@@ -149,12 +149,13 @@ for j, (data_dict, disc_name, names, colors, markers, linestyles) in enumerate(
         [d["mg:solve"]["0"] for d in data_dict["timings"][ho_id].values()]
     )
 
+    print(ho_id)
     for ii, (k, v) in enumerate(data_dict["timings"].items()):
         dofs = np.array(list(v.keys()))
         solve_time = np.array([d["mg:solve"]["0"] for d in v.values()])
         dofs = dofs
         rel_time = solve_time / ref_time
-
+        print(k, solve_time)
         startidx = 0
         if j == 1:
             startidx = 2
@@ -190,7 +191,6 @@ for j, (data_dict, disc_name, names, colors, markers, linestyles) in enumerate(
     ref_time = np.array(
         [d["mg:solve"]["0"] for d in data_dict["timings"][ho_id].values()]
     )
-
     resid_hist = list(data_dict["residuals"][ho_id].values())
     iters = np.array([len(it) for it in resid_hist])
     ref_time = ref_time / iters
@@ -228,34 +228,6 @@ for j, (data_dict, disc_name, names, colors, markers, linestyles) in enumerate(
     # y-ticks
     # ax.set_yticks([0.8, 1.0, 1.2, 1.4, 1.6, 1.8, 2.0])
     ax.yaxis.set_minor_locator(MultipleLocator(0.25))
-
-from matplotlib.lines import Line2D
-
-"""
-names = ["HO-AMG", "DC-skip1", "Uzawa", "DC-all"]
-custom_lines = [
-    Line2D(
-        [0], [0], color=get_color(k), marker=get_marker(k), lw=1, markersize=marker_size
-    )
-    for k in names
-]
-AXS_ALL[0, 0].legend(
-    custom_lines,
-    names,
-    loc="lower left",
-    bbox_to_anchor=(0.3, 1.2, 2.8, 0.2),
-    mode="expand",
-    borderaxespad=0,
-    ncol=4,
-)
-AXS_ALL[0, 0].legend(
-    loc="lower left",
-    bbox_to_anchor=(0.5, 1.2, 2.5, 0.2),
-    mode="expand",
-    borderaxespad=0,
-    ncol=2,
-)
-"""
 
 handles, labels = [], []
 for ax in AXS_ALL[:, 0].ravel():
