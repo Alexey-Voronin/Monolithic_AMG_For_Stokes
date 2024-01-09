@@ -15,6 +15,7 @@ setup(
         "pyamg>=4.0.0",
         "pandas>=1.4.0",
         "pympler>=1.0.1",
+        "networkx>=3.0.0"
     ],
     package_data={
         "sysmg": ["data/**/*.sh", "data/**/*.py", "data/**/*.json", "data/**/*/.md"],
