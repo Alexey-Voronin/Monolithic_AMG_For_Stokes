@@ -1,6 +1,6 @@
 import gc
 import json
-from time import time_ns
+from time import time_ns, time
 
 import numpy as np
 
@@ -39,6 +39,8 @@ def collect_conv_data(
     Notes:
         Work in progress..
     """
+
+    tic_total = time()
 
     RESID_HIST = {}
     MG_PARAM = {}
@@ -104,7 +106,8 @@ def collect_conv_data(
                 cycle_type=cycle_type,
                 accel=solver_type,
             )
-
+            # import matplotlib.pyplot as plt
+            # plt.semilogy(np.abs(up-stokes.up_sol)); plt.show()
             timing_tables.append(amg.get_solution_timings())
             amg.reset_timers(reset=["solution:solver"])
 
@@ -175,5 +178,15 @@ def collect_conv_data(
         del A0_csr
         # del stokes
         gc.collect()
+
+    # total run-time
+    total_time = time() - tic_total
+    hours = int(total_time // 3600)
+    minutes = int((total_time % 3600) // 60)
+    seconds = int(total_time % 60)
+    msg = f"Overall run-time: {hours}h {minutes}min {seconds}s"
+    f = open("main.log", "a")
+    f.write(msg + "\n")
+    f.close()
 
     return None
