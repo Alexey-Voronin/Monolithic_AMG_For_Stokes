@@ -35,7 +35,13 @@ class DoFHandler(object):
             ):
                 mesh = V.mesh()
                 order = V.ufl_element().degree()
-                Vspace = VectorFunctionSpace(mesh, elem, order)
+                if V.ufl_element().family() == "Lagrange": 
+                    Vspace = VectorFunctionSpace(mesh, elem, order)
+                else: #DG
+                    # The default varient "spectral" breaks _get_cg_to_dg_operator
+                    # because DG and CG DoFs are no longer collocated.
+                    elem0 = FiniteElement("DG", mesh.ufl_cell(), degree=order, variant='equispaced')
+                    Vspace = VectorFunctionSpace(mesh, elem0)
                 coord_field = interpolate(
                     SpatialCoordinate(mesh), Vspace
                 ).dat.data_ro.copy()
@@ -266,8 +272,6 @@ class DoFHandler(object):
 
         TODO: Replace with firedrake's function calls.
         """
-        print(cg)
-        print(dg)
         n_dg, n_cg = dg.shape[0], cg.shape[0]
         rows = np.zeros((n_dg,))
         cols = np.zeros((n_dg,))
@@ -282,7 +286,6 @@ class DoFHandler(object):
                     break
 
         P_1to1 = sp.csr_matrix((np.ones(n_dg), (cols, rows)), shape=(n_dg, n_cg))
-        #print(P_1to1*cg-dg)
         assert np.allclose(P_1to1 * cg, dg), "CG->DG mapping is broken."
 
         return P_1to1
