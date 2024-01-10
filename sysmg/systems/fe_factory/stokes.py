@@ -42,12 +42,16 @@ class StokesProblem(Problem):
         assert not scalar, "Vector field."
         U = super().function_space(msh, elem_type[0], order[0], name[0], scalar=False)
         if elem_type[1] == "DG":
-            # The default varient "spectral" breaks _get_cg_to_dg_operator
+            # The default variant "spectral" breaks _get_cg_to_dg_operator
             # because DG and CG DoFs are no longer collocated.
-            element = FiniteElement(elem_type[1], msh.ufl_cell(), degree=order[1], variant='equispaced')
+            element = FiniteElement(
+                elem_type[1], msh.ufl_cell(), degree=order[1], variant="equispaced"
+            )
             P = FunctionSpace(msh, element, name=name[1])
         else:
-            P = super().function_space(msh, elem_type[1], order[1], name[1], scalar=True)
+            P = super().function_space(
+                msh, elem_type[1], order[1], name[1], scalar=True
+            )
         self.Z = U * P
         return self.Z
 

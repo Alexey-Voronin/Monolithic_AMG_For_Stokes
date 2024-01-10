@@ -35,12 +35,14 @@ class DoFHandler(object):
             ):
                 mesh = V.mesh()
                 order = V.ufl_element().degree()
-                if V.ufl_element().family() == "Lagrange": 
+                if V.ufl_element().family() == "Lagrange":
                     Vspace = VectorFunctionSpace(mesh, elem, order)
-                else: #DG
-                    # The default varient "spectral" breaks _get_cg_to_dg_operator
+                else:  # DG
+                    # The default variant "spectral" breaks _get_cg_to_dg_operator
                     # because DG and CG DoFs are no longer collocated.
-                    elem0 = FiniteElement("DG", mesh.ufl_cell(), degree=order, variant='equispaced')
+                    elem0 = FiniteElement(
+                        "DG", mesh.ufl_cell(), degree=order, variant="equispaced"
+                    )
                     Vspace = VectorFunctionSpace(mesh, elem0)
                 coord_field = interpolate(
                     SpatialCoordinate(mesh), Vspace
