@@ -4,45 +4,37 @@ import numpy as np
 
 
 def get_mg_params(msh_type, disc_type, dim, mg_type):
-    assert dim in [2, 3], f"dimension is wrong: {dim}"
+    assert dim in [3], f"dimension is wrong: {dim}"
     assert msh_type in ["structured", "unstructured"], f"mesh type is wrong: {msh_type}"
     assert disc_type in [("CG", "CG")], f"discretization is wrong: {str(disc_type)}"
 
     ################################################################
-    # LSC-DC relaxation type
-    mat_type       = 'BBT' 
-    lb             = (0.5)**dim
-    ub             = 1.1
-    degree         = 3 if dim == 2 else 4
-    steps_12_iters = 1
-    step_3_iters   = 2 if dim == 2 else 4
-    lsc_params     = {'iterations': (2, 2),
-                      'momentum'   : {'solver' : 'chebyshev',
-                                      'solver_params' :{'lower_bound' : lb,
-                                                        'upper_bound' : ub,
-                                                        'degree'      : degree,
-                                                        'iterations'  : steps_12_iters,
-                                                        },
-                                      },
-
-                      'continuity'   : {
-                                      'operator' : mat_type,
-                                      'solver' : 'chebyshev',
-                                      'solver_params' :{'lower_bound' : lb,
-                                                        'upper_bound' : ub,
-                                                        'degree'      : degree,
-                                                        'iterations'  : steps_12_iters,
-                                                        },
-                                      },
-                      'transform'  : {'operator' : mat_type,
-                                      'solver'   : 'chebyshev',
-                                      'solver_params' :{'lower_bound' : lb,
-                                                        'upper_bound' : ub,
-                                                        'degree'      : degree,
-                                                        'iterations'  : step_3_iters,
-                                                        },
-                                     }
-                     }
+    # LSC-DGS relaxation type
+    mat_type = "BBT"
+    lb = (0.5) ** (dim)
+    ub = 1.1
+    degree = 4
+    step_1_iters = 1
+    lsc_params = {
+        "iterations": (3, 3),
+        "momentum": {
+            "solver": "chebyshev",
+            "solver_params": {
+                "lower_bound": lb,
+                "upper_bound": ub,
+                "degree": degree,
+                "iterations": step_1_iters,
+            },
+        },
+        "continuity": {
+            "operator": mat_type,
+            "solver": "sa-amg",
+        },
+        "transform": {
+            "operator": mat_type,
+            "solver": "sa-amg",
+        },
+    }
 
     lsc_inner_params = deepcopy(lsc_params)
     lsc_outer_params = deepcopy(lsc_params)
@@ -51,12 +43,12 @@ def get_mg_params(msh_type, disc_type, dim, mg_type):
     I = np.ones((2,))
     damp_param = {
         "structured": {
-            "ho" : {"2D": {"eta": I * 1.0}, "3D": {"eta": I * 0.50}},
-            "hlo": {"2D": {"eta": I * 1.0}, "3D": {"eta": I * 1.00}},
+            "ho": {"2D": {"eta": I * 1.0}, "3D": {"eta": I * 0.60}},
+            "hlo": {"2D": {"eta": I * 1.0}, "3D": {"eta": I * 1.10}},
         },
         "unstructured": {
-            "ho" : {"2D": {"eta": I * 1.00}, "3D": {"eta": I * 1.00}},
-            "hlo": {"2D": {"eta": I * 1.00}, "3D": {"eta": I * 1.00}},
+            "ho": {"2D": {"eta": I * 1.00}, "3D": {"eta": I * 1.00}},
+            "hlo": {"2D": {"eta": I * 1.00}, "3D": {"eta": I * 1.06}},
         },
     }
 

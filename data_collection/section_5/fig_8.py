@@ -20,16 +20,23 @@ marker_size = 3
 # READ IN DATA
 # P2/P1
 COMM_PREAM = "th/split_artery/"
-p2p1_dir = "amg_p2p1/unstructured/3D/"
-isop2p1_dir = "amg_isop2p1/ho/unstructured/3D/"
-paths = [COMM_PREAM + p2p1_dir, COMM_PREAM + isop2p1_dir]
+p2p1_vanka_dir = "amg_p2p1/vanka/unstructured/3D/"
+isop2p1_vanka_dir = "amg_isop2p1/vanka/ho/unstructured/3D/"
+p2p1_lsc_dir = "amg_p2p1/vanka/unstructured/3D/"
+isop2p1_lsc_dir = "amg_isop2p1/vanka/ho/unstructured/3D/"
+paths = [
+    COMM_PREAM + p2p1_vanka_dir,
+    COMM_PREAM + p2p1_lsc_dir,
+    COMM_PREAM + isop2p1_vanka_dir,
+    COMM_PREAM + isop2p1_lsc_dir,
+]
 
 p2p1_names = get_hero_plot_names("p2p1")
 p2p1_problems = load_data(p2p1_names, paths)
 # P2/P1disc
 COMM_PREAM = "sv/"
 p2p1_dir = "uzawa/unstructured/2D/"
-isop2p1_dir = "defect_correction/unstructured/2D/"
+isop2p1_dir = "defect_correction/vanka/unstructured/2D/"
 paths = [COMM_PREAM + p2p1_dir, COMM_PREAM + isop2p1_dir]
 p2p1disc_names = get_hero_plot_names("p2p1disc")
 p2p1disc_problems = load_data(p2p1disc_names, paths)

@@ -11,7 +11,12 @@ from palettes import get_section_5_attr
 # plotting
 import matplotlib
 import matplotlib.pyplot as plt
-from matplotlib.ticker import MultipleLocator, FormatStrFormatter, AutoMinorLocator
+from matplotlib.ticker import (
+    MultipleLocator,
+    FormatStrFormatter,
+    AutoMinorLocator,
+    MaxNLocator,
+)
 import matplotlib.ticker as ticker
 
 marker_size = 3
@@ -110,7 +115,7 @@ for j, (data_dict, disc_name, names, colors, markers, linestyles) in enumerate(
         size, resid_hist = np.array(list(v.keys())), list(v.values())
         iters = np.array([len(it) for it in resid_hist])
 
-        startidx = 0
+        startidx = 2
         if j == 1:
             startidx = 2
         ax.semilogx(
@@ -129,6 +134,7 @@ for j, (data_dict, disc_name, names, colors, markers, linestyles) in enumerate(
 
     # ax.set_xlim(5e4, 1.1e7)
     ax.set_xticks([1e5, 1e6, 1e7])
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
 
     # y-ticks
     if j == 0:
@@ -155,8 +161,8 @@ for j, (data_dict, disc_name, names, colors, markers, linestyles) in enumerate(
         solve_time = np.array([d["mg:solve"]["0"] for d in v.values()])
         dofs = dofs
         rel_time = solve_time / ref_time
-        print(k, solve_time)
-        startidx = 0
+        # print(k, solve_time)
+        startidx = 2
         if j == 1:
             startidx = 2
         ax.semilogx(
@@ -204,7 +210,7 @@ for j, (data_dict, disc_name, names, colors, markers, linestyles) in enumerate(
         solve_time = np.array([d["mg:solve"]["0"] for d in v.values()])
         rel_time = (solve_time / iters) / ref_time
 
-        startidx = 0
+        startidx = 2
         if j == 1:
             startidx = 2
 
@@ -242,7 +248,7 @@ AXS_ALL[0, 0].legend(
     labels,
     loc="lower left",
     # bbox_to_anchor=(0.0, 1.2, 4.0, 0.2),
-    bbox_to_anchor=(0.8, 1.2, 2.4, 0.2),
+    bbox_to_anchor=(0.3, 1.2, 2.8, 0.2),
     mode="expand",
     borderaxespad=0,
     ncol=2,
@@ -254,6 +260,6 @@ AXS_ALL[1, 1].set_xlabel("\# DoFs")
 AXS_ALL[1, 2].set_xlabel("\# DoFs")
 
 if "--savefig" in sys.argv:
-    plt.savefig("fig_8.pdf")
+    plt.savefig("sec_5_results.pdf")
 else:
     plt.show()

@@ -1,6 +1,6 @@
 echo $(basename $PWD)
 
 cd split_artery/  
-bash launch.sh
+bash collect_data.sh
 
 cd ..

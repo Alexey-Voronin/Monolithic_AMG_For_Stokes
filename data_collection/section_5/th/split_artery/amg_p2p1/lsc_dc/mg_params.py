@@ -2,39 +2,31 @@
 # Generate MG parameters
 def get_mg_params(dim):
     # LSC-DGS relaxation type
-    mat_type       = 'BBT' 
-    lb             = (0.5)**dim
-    ub             = 1.1
-    degree         = 3 if dim == 2 else 4
-    steps_12_iters = 1
-    step_3_iters   = 2 if dim == 2 else 4
-    lsc_dc_params = {'iterations': (2, 2),
-                      'momentum'   : {'solver' : 'chebyshev',
-                                      'solver_params' :{'lower_bound' : lb,
-                                                        'upper_bound' : ub,
-                                                        'degree'      : degree,
-                                                        'iterations'  : steps_12_iters,
-                                                        },
-                                      },
-
-                      'continuity'   : {
-                                      'operator' : mat_type,
-                                      'solver' : 'chebyshev',
-                                      'solver_params' :{'lower_bound' : lb,
-                                                        'upper_bound' : ub,
-                                                        'degree'      : degree,
-                                                        'iterations'  : steps_12_iters,
-                                                        },
-                                      },
-                      'transform'  : {'operator' : mat_type,
-                                      'solver'   : 'chebyshev',
-                                      'solver_params' :{'lower_bound' : lb,
-                                                        'upper_bound' : ub,
-                                                        'degree'      : degree,
-                                                        'iterations'  : step_3_iters,
-                                                        },
-                                     }
-                     }
+    mat_type = "BBT"
+    lb = (0.5) ** (dim)
+    ub = 1.1
+    degree = 4
+    step_1_iters = 1
+    lsc_params = {
+        "iterations": (3, 3),
+        "momentum": {
+            "solver": "chebyshev",
+            "solver_params": {
+                "lower_bound": lb,
+                "upper_bound": ub,
+                "degree": degree,
+                "iterations": step_1_iters,
+            },
+        },
+        "continuity": {
+            "operator": mat_type,
+            "solver": "sa-amg",
+        },
+        "transform": {
+            "operator": mat_type,
+            "solver": "sa-amg",
+        },
+    }
 
     mg_params = {
         "type": "monolithic",
@@ -54,7 +46,7 @@ def get_mg_params(dim):
                 },
             },
         },
-        "relaxation": ("lsc", lsc_dc_params),
+        "relaxation": ("lsc", lsc_params),
         "levels": 10,
         "coarse_grid_solve": "splu",
     }

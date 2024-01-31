@@ -3,7 +3,7 @@ import sys, os
 
 sys.path.append(os.path.abspath("../../../plot_common"))
 from common import set_figure, fig_size
-from palettes import get_sensitivity_plot_names, get_color, get_marker
+from palettes import get_sensitivity_th_attr
 
 import numpy as np
 import itertools
@@ -18,10 +18,8 @@ import matplotlib.ticker as ticker
 # If you change their order, you also need to change the order of
 # paths[ ] below.
 ########################################################################
-names = get_sensitivity_plot_names("p2p1")
-colors = [get_color(n) for n in names]
-markers = [get_marker(n) for n in names]
 markersize = 3
+names, colors, markers, linestyles = get_sensitivity_th_attr("LSC-DGS")
 
 ########################################################################
 # LOAD DATA
@@ -117,7 +115,7 @@ for pid, mg in enumerate(data_paths.keys()):
             indep_var,
             iters,
             label=mg,
-            linestyle="-",
+            linestyle=linestyles[pid],
             lw=1,
             clip_on=False,
             color=colors[pid],
@@ -183,6 +181,6 @@ for j, ax in enumerate(AXES):
     # ax.set_xticks(xticks)
 
 if "--savefig" in sys.argv:
-    plt.savefig("fig_5.pdf")
+    plt.savefig("th_sensitivity_lsc.pdf")
 else:
     plt.show()
