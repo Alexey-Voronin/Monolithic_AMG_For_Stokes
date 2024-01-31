@@ -1,0 +1,15 @@
+AMG Params:
+{'type': 'monolithic', 'interpolation': {'type': 'algebraic', 'order': 'low', 'params': {'u': {'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 75}, 'p': {'agg_mat': ('stiffness', 0.0), 'smooth_mat': ('stiffness', 0.0), 'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 50}}}, 'relaxation': ('Vanka', {'iterations': (1, 1), 'accel': {'iterations': (2, 2)}, 'type': 'algebraic_factorized', 'setup_opt': True, 'cblas': True, 'update': 'additive', 'patch_solver': 'inv', 'omega': 1.0, 'debug': False}), 'wrapper_params': {'relax_params': ('Vanka', {'iterations': (1, 1), 'accel': {'iterations': (2, 2)}, 'type': 'algebraic_factorized', 'setup_opt': True, 'cblas': True, 'update': 'additive', 'patch_solver': 'inv', 'omega': 1.0, 'debug': False}), 'tau': (1, 1), 'eta': (array([1., 1.]), (1, 1))}, 'levels': 10, 'coarse_grid_solve': 'splu'}
+
+ndofs=     3223554, resid[ 12]=8.39e-11: system_setup=583.68, mg_setup[lvls= 3]=314.41, solve[12]=297.59
+ndofs=     2206032, resid[ 12]=6.62e-11: system_setup=390.84, mg_setup[lvls= 3]=200.82, solve[12]=210.96
+ndofs=     1663244, resid[ 12]=5.49e-11: system_setup=292.13, mg_setup[lvls= 3]=146.23, solve[12]=150.63
+ndofs=     1217704, resid[ 12]=3.98e-11: system_setup=209.99, mg_setup[lvls= 3]=102.41, solve[12]=106.80
+ndofs=      859812, resid[ 12]=3.36e-11: system_setup=145.56, mg_setup[lvls= 3]=65.88, solve[12]=72.22
+ndofs=      579968, resid[ 12]=1.83e-11: system_setup=96.74, mg_setup[lvls= 3]=44.75, solve[12]=49.44
+ndofs=      368572, resid[ 11]=8.19e-11: system_setup=60.14, mg_setup[lvls= 3]=27.35, solve[11]=27.65
+ndofs=      216024, resid[ 11]=4.92e-11: system_setup=34.66, mg_setup[lvls= 3]=15.04, solve[11]=15.45
+ndofs=      112724, resid[ 11]=1.45e-11: system_setup=17.69, mg_setup[lvls= 2]=14.33, solve[11]=6.35
+ndofs=       49072, resid[ 10]=5.05e-11: system_setup=7.49, mg_setup[lvls= 2]=3.30, solve[10]=2.28
+ndofs=       15468, resid[ 10]=1.11e-11: system_setup=2.36, mg_setup[lvls= 2]=0.79, solve[10]=0.59
+ndofs=        6934, resid[  9]=7.53e-11: system_setup=1.14, mg_setup[lvls= 2]=0.43, solve[ 9]=0.21

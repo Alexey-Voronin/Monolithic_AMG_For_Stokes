@@ -1,0 +1,10 @@
+AMG Params:
+{'type': 'Uzawa', 'interpolation': {'order': 'high'}, 'iterations': (1, 1), 'u': {'solver': ('sa_amg', {'strength': 'evolution', 'smooth': ('jacobi', {'omega': 1.3333333333333333, 'degree': 1}), 'presmoother': ('fgmres_smoother', {'iterations': 2, 'preconditioner': ('jacobi', {'iterations': 1})}), 'postsmoother': ('fgmres_smoother', {'iterations': 2, 'preconditioner': ('jacobi', {'iterations': 1})})})}, 'p': {'solver': ('sa_amg', {'operator': 'pressure mass', 'structured': True, 'blocksize': 1e+100, 'iterations': (1, 1), 'block_solver': 'sa_amg', 'sa_amg_setup_params': {'strength': 'evolution', 'smooth': ('jacobi', {'omega': 1.3333333333333333, 'degree': 1}), 'presmoother': ('fgmres_smoother', {'iterations': 2, 'preconditioner': ('jacobi', {'iterations': 1})}), 'postsmoother': ('fgmres_smoother', {'iterations': 2, 'preconditioner': ('jacobi', {'iterations': 1})})}, 'sa_amg_solve_params': {'tol': 1e-16, 'maxiter': 1}})}, 'debug': False}
+
+ndofs=     4145768, resid[ 48]=8.35e-11: system_setup=138.49, mg_setup[lvls= 5]=317.48, solve[48]=577.80
+ndofs=     1821303, resid[ 48]=7.59e-11: system_setup=58.06, mg_setup[lvls= 4]=123.39, solve[48]=213.84
+ndofs=      797014, resid[ 48]=7.52e-11: system_setup=24.15, mg_setup[lvls= 4]=45.37, solve[48]=70.61
+ndofs=      338818, resid[ 48]=6.39e-11: system_setup=9.70, mg_setup[lvls= 4]=16.36, solve[48]=24.61
+ndofs=      141047, resid[ 46]=8.93e-11: system_setup=3.87, mg_setup[lvls= 4]=5.84, solve[46]=8.82
+ndofs=       55436, resid[ 47]=9.15e-11: system_setup=1.44, mg_setup[lvls= 3]=1.84, solve[47]=3.04
+ndofs=        3921, resid[ 44]=5.81e-11: system_setup=0.23, mg_setup[lvls= 3]=0.16, solve[44]=0.30

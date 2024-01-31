@@ -1,21 +1,22 @@
 import gc
 import json
-from time import time_ns
+from time import time_ns, time
 
 import numpy as np
 
 from sysmg import StokesMG, BlockDiagMG
 
 
-def collect_conv_data(stokes_iter,
-                      MG_PARAMS,
-                      TOL=1e-12, MAX_ITER=80,
-                      solver_type={'module': ('pyamg', 'fgmres'),
-                                   'resid': 'abs'},
-                      rerun=None,
-                      cycle_type='V',
-                      save_solution=False
-                      ):
+def collect_conv_data(
+    stokes_iter,
+    MG_PARAMS,
+    TOL=1e-12,
+    MAX_ITER=80,
+    solver_type={"module": ("pyamg", "fgmres"), "resid": "abs"},
+    rerun=None,
+    cycle_type="V",
+    save_solution=False,
+):
     """
     Collect convergence data.
 
@@ -39,6 +40,8 @@ def collect_conv_data(stokes_iter,
         Work in progress..
     """
 
+    tic_total = time()
+
     RESID_HIST = {}
     MG_PARAM = {}
     MG_LVLs = {}
@@ -54,19 +57,20 @@ def collect_conv_data(stokes_iter,
     # setup system
     for stokes in stokes_iter:
         A0_csr = stokes.A_bmat.tocsr()
-        #print(A0_csr.shape)
-        #continue
+        # print(A0_csr.shape)
+        # continue
         #########################################
         # MG SET-UP
         tic = time_ns()
-        precond_type = MG_PARAMS.get('type', None)
-        if precond_type.lower() == 'monolithic':
+        precond_type = MG_PARAMS.get("type", None)
+        if precond_type.lower() == "monolithic":
             amg = StokesMG(stokes, MG_PARAMS, keep=False)
-        elif precond_type.lower() in ['uzawa', 'physics']:
+        elif precond_type.lower() in ["uzawa", "physics"]:
             amg = BlockDiagMG(stokes, MG_PARAMS)
         else:
             raise ValueError(
-                "Parameter list needs to include the following key/values: {'type': 'monolithic' or 'block-diagonal'}")
+                "Parameter list needs to include the following key/values: {'type': 'monolithic' or 'block-diagonal'}"
+            )
         t_amg = (time_ns() - tic) / 1e9
 
         b0 = stokes.b
@@ -85,7 +89,7 @@ def collect_conv_data(stokes_iter,
         gc.collect()
 
         timing_tables = []
-        up = None;
+        up = None
         resid = None
         for _ in range(rerun):
             #########################################
@@ -93,18 +97,23 @@ def collect_conv_data(stokes_iter,
             b = b0.copy()
 
             up0 = np.zeros_like(b)
-            up, resid = amg.solve(b, up0, A=A0_csr,
-                                 maxiter=MAX_ITER, tol=TOL,
-                                 cycle_type=cycle_type,
-                                 accel=solver_type,
-                                 )
-
+            up, resid = amg.solve(
+                b,
+                up0,
+                A=A0_csr,
+                maxiter=MAX_ITER,
+                tol=TOL,
+                cycle_type=cycle_type,
+                accel=solver_type,
+            )
+            # import matplotlib.pyplot as plt
+            # plt.semilogy(np.abs(up-stokes.up_sol)); plt.show()
             timing_tables.append(amg.get_solution_timings())
-            amg.reset_timers(reset=['solution:solver'])
+            amg.reset_timers(reset=["solution:solver"])
 
         if save_solution:
-            stokes.save_solution(up, 'solution')
-        
+            stokes.save_solution(up, "solution")
+
         ###########################################
         # Save data for later.
         # (overwrite file each system size in case the job
@@ -112,39 +121,41 @@ def collect_conv_data(stokes_iter,
         mg_id = len(up)
         mg_setup_timings_json[mg_id] = amg.get_setup_timings().to_json()
         system_setup_timings_json[mg_id] = stokes_setup_time
-        amg.reset_timers(reset=['setup:solver'])
+        amg.reset_timers(reset=["setup:solver"])
         # stokes.reset_timers()
-        json.dump(mg_setup_timings_json, open("mg_setup_timings.json", 'w'), indent=2)
-        json.dump(system_setup_timings_json, open("stokes_setup_timings.json", 'w'), indent=2)
+        json.dump(mg_setup_timings_json, open("mg_setup_timings.json", "w"), indent=2)
+        json.dump(
+            system_setup_timings_json, open("stokes_setup_timings.json", "w"), indent=2
+        )
         ###########################################
         # Save solution phase timings
-        fastest_id = np.argmin([t['mg:solve'].sum() for t in timing_tables])
+        fastest_id = np.argmin([t["mg:solve"].sum() for t in timing_tables])
         fastest_slv = timing_tables[fastest_id]
         solve_timings_json[len(up)] = fastest_slv.to_json()
-        json.dump(solve_timings_json, open("solve_timings.json", 'w'), indent=2)
+        json.dump(solve_timings_json, open("solve_timings.json", "w"), indent=2)
         ###########################################
         # Hierarchy Information
         MG_PARAM[mg_id] = MG_PARAMS
         MG_LVLs[mg_id] = len(amg.ml.levels)
         mg_hier_json[len(up)] = amg.to_pandas().to_json()
-        json.dump(mg_hier_json, open("hierarchy_info.json", 'w'), indent=2)
+        json.dump(mg_hier_json, open("hierarchy_info.json", "w"), indent=2)
         ###########################################
         # convergence histories
         RESID_HIST[mg_id] = resid / resid[0]
-        np.save('resid_hist.npy', RESID_HIST)
+        np.save("resid_hist.npy", RESID_HIST)
         ##########################################
         # Log-file output
-        f = open('main.log', 'a')
+        f = open("main.log", "a")
         if first_write:
-            out = 'AMG Params:\n' + str(MG_PARAMS) + '\n' + '\n'
+            out = "AMG Params:\n" + str(MG_PARAMS) + "\n" + "\n"
             f.write(out)
             first_write = False
-        out = f'ndofs={A0_csr.shape[0]:>12}, resid[{len(resid):>3}]={resid[-1]:2.2e}: '
-        out += 'system_setup=%2.2f, ' % (stokes_iter.get_build_time())
-        t_solve = fastest_slv['mg:solve'].sum()
-        out += f'mg_setup[lvls={MG_LVLs[mg_id]:>2d}]={t_amg:>4.2f}, solve[{len(resid):>2}]={t_solve:>4.2f}'
+        out = f"ndofs={A0_csr.shape[0]:>12}, resid[{len(resid):>3}]={resid[-1]:2.2e}: "
+        out += "system_setup=%2.2f, " % (stokes_iter.get_build_time())
+        t_solve = fastest_slv["mg:solve"].sum()
+        out += f"mg_setup[lvls={MG_LVLs[mg_id]:>2d}]={t_amg:>4.2f}, solve[{len(resid):>2}]={t_solve:>4.2f}"
         print(out)
-        f.write(out + '\n')
+        f.write(out + "\n")
         f.close()
         ##########################################
         # Patch info output
@@ -167,5 +178,15 @@ def collect_conv_data(stokes_iter,
         del A0_csr
         # del stokes
         gc.collect()
+
+    # total run-time
+    total_time = time() - tic_total
+    hours = int(total_time // 3600)
+    minutes = int((total_time % 3600) // 60)
+    seconds = int(total_time % 60)
+    msg = f"Overall run-time: {hours}h {minutes}min {seconds}s"
+    f = open("main.log", "a")
+    f.write(msg + "\n")
+    f.close()
 
     return None

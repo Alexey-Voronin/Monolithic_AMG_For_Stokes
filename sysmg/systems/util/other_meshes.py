@@ -9,13 +9,21 @@ from pyop2.mpi import COMM_WORLD
 # in each col/ may not have exactly the same x coordinate (round-off error)
 # Fix: just round all coardinates to some reasonable value.
 
-def RectangleMesh_MyCoord(nx, ny, Lx, Ly, quadrilateral=False, reorder=None,
-                          shape='rectangle',
-                          diagonal="left",
-                          distribution_parameters=None,
-                          comm=COMM_WORLD,
-                          prescribed_coord=None):
-    """Function addopted from firedrake source code.
+
+def RectangleMesh_MyCoord(
+    nx,
+    ny,
+    Lx,
+    Ly,
+    quadrilateral=False,
+    reorder=None,
+    shape="rectangle",
+    diagonal="left",
+    distribution_parameters=None,
+    comm=COMM_WORLD,
+    prescribed_coord=None,
+):
+    """Function adopted from firedrake source code.
     It allows one to specify the coordinates of the vertices of the mesh.
     In addition, one can generate flow over a step (or L-shaped domain) by
     specifying shape='L'.
@@ -24,7 +32,7 @@ def RectangleMesh_MyCoord(nx, ny, Lx, Ly, quadrilateral=False, reorder=None,
     """
     for n in (nx, ny):
         if n <= 0 or n % 1:
-            raise ValueError("Number of cells must be a postive integer")
+            raise ValueError("Number of cells must be a positive integer")
 
     xcoords = np.linspace(0.0, Lx, nx + 1, dtype=np.double)
     ycoords = np.linspace(0.0, Ly, ny + 1, dtype=np.double)
@@ -44,19 +52,24 @@ def RectangleMesh_MyCoord(nx, ny, Lx, Ly, quadrilateral=False, reorder=None,
         # |  4  |
         # | / \ |
         # 0-----1
-        cells = [i * (ny + 1) + j,
-                 i * (ny + 1) + j + 1,
-                 (i + 1) * (ny + 1) + j,
-                 (i + 1) * (ny + 1) + j + 1,
-                 (nx + 1) * (ny + 1) + i * ny + j]
+        cells = [
+            i * (ny + 1) + j,
+            i * (ny + 1) + j + 1,
+            (i + 1) * (ny + 1) + j,
+            (i + 1) * (ny + 1) + j + 1,
+            (nx + 1) * (ny + 1) + i * ny + j,
+        ]
         cells = np.asarray(cells).swapaxes(0, 2).reshape(-1, 5)
         idx = [0, 1, 4, 0, 2, 4, 2, 3, 4, 3, 1, 4]
         cells = cells[:, idx].reshape(-1, 3)
 
-
     else:
-
-        cells = [i * (ny + 1) + j, i * (ny + 1) + j + 1, (i + 1) * (ny + 1) + j + 1, (i + 1) * (ny + 1) + j]
+        cells = [
+            i * (ny + 1) + j,
+            i * (ny + 1) + j + 1,
+            (i + 1) * (ny + 1) + j + 1,
+            (i + 1) * (ny + 1) + j,
+        ]
         cells = np.asarray(cells).swapaxes(0, 2).reshape(-1, 4)
         if not quadrilateral:
             if diagonal == "left":
@@ -72,7 +85,12 @@ def RectangleMesh_MyCoord(nx, ny, Lx, Ly, quadrilateral=False, reorder=None,
             keep_nodes = []
             rm_nodes = []
             for i in range(coords.shape[0]):
-                if coords[i, 0] >= 1 and coords[i, 1] >= 1 or coords[i, 0] >= 1 or coords[i, 1] >= 1:
+                if (
+                    coords[i, 0] >= 1
+                    and coords[i, 1] >= 1
+                    or coords[i, 0] >= 1
+                    or coords[i, 1] >= 1
+                ):
                     keep_nodes.append(i)
 
             keep_nodes = np.array(keep_nodes)
@@ -114,6 +132,7 @@ def RectangleMesh_MyCoord(nx, ny, Lx, Ly, quadrilateral=False, reorder=None,
 
     from firedrake.mesh import plex_from_cell_list
     from pyop2.mpi import dup_comm
+
     comm = dup_comm(COMM_WORLD)
     if prescribed_coord is None:
         plex = plex_from_cell_list(2, cells, coords, comm)
@@ -158,7 +177,9 @@ def RectangleMesh_MyCoord(nx, ny, Lx, Ly, quadrilateral=False, reorder=None,
                 if abs(face_coords[1] - Ly) < ytol and abs(face_coords[3] - Ly) < ytol:
                     plex.setLabelValue(dmcommon.FACE_SETS_LABEL, face, 4)
 
-    return mesh.Mesh(plex, reorder=reorder, distribution_parameters=distribution_parameters)
+    return mesh.Mesh(
+        plex, reorder=reorder, distribution_parameters=distribution_parameters
+    )
 
 
 def get_entities(mesh, save=None):
@@ -204,11 +225,9 @@ def get_entities(mesh, save=None):
     cStart, cEnd = plex.getDepthStratum(cell_id)
     cells = np.zeros((cEnd - cStart, dim + 1))
     for i, v in enumerate(range(cStart, cEnd)):
-        cells[i, :] = plex.getTransitiveClosure(v)[0][-(dim + 1):] - cEnd
-
+        cells[i, :] = plex.getTransitiveClosure(v)[0][-(dim + 1) :] - cEnd
 
     if save is not None:
         np.savez(save, vertices=vertices, cells=cells)
 
     return vertices, cells
-

@@ -37,9 +37,9 @@ class HighOrderWrapper(object):
         self.elem_type = stokes.elem_type
 
         self.params = params
-        self.tau = self.params.get('tau', (1, 1))
-        self.eta = self.params.get('eta', [(1, 1), (1, 1)])
-        self.gamma = self.params.get('gamma', 1)
+        self.tau = self.params.get("tau", (1, 1))
+        self.eta = self.params.get("eta", [(1, 1), (1, 1)])
+        self.gamma = self.params.get("gamma", 1)
 
         if params.get("relax_params"):
             self.outer_relaxation = self._setup_relaxation(params["relax_params"])
@@ -54,8 +54,13 @@ class HighOrderWrapper(object):
         relax_name, relax_params = params
         if relax_name.lower() == "vanka":
             rlx = Vanka(self.stokes, params=relax_params)
+        elif relax_name.lower() == "lsc":
+            from sysmg import LSC
+
+            rlx = LSC(self.stokes, params=relax_params, level=0)
         elif relax_name.lower() == "uzawa":
             from sysmg import BlockDiagMG
+
             rlx = BlockDiagMG(self.stokes, relax_params)
         else:
             raise ValueError("%s relaxation has not been integrated yet." % relax_name)
@@ -63,7 +68,7 @@ class HighOrderWrapper(object):
         # remove operators that will not be used anymore
         if not self.keep:
             system = self.stokes
-            for attr in ['B', 'BT', 'C', 'M', 'dof_cells']:
+            for attr in ["B", "BT", "C", "M", "dof_cells"]:
                 try:
                     delattr(system, attr)
                 except:
@@ -71,21 +76,19 @@ class HighOrderWrapper(object):
 
         return rlx
 
-    def construct_preconditioner(self, ml, cycle='V'):
+    def construct_preconditioner(self, ml, cycle="V"):
         """
         Construct preconditioner for higher-order system.
         This function figures out whether higher-order system is TH or SV.
         """
 
         self.cycle = cycle
-        assert self.elem_order == (2, 1), \
-            "Only element orders (2,1) have been tested."
+        assert self.elem_order == (2, 1), "Only element orders (2,1) have been tested."
         disc = self.elem_type
         if disc == ("CG", "CG"):
             self.M = self._th_preconditioner(ml, cycle)
         elif disc == ("CG", "DG"):
-            self.timings = {'P_01(t)': 0.0, 'P_01(c)': 0,
-                            'P_10(t)': 0.0, 'P_10(c)': 0}
+            self.timings = {"P_01(t)": 0.0, "P_01(c)": 0, "P_10(t)": 0.0, "P_10(c)": 0}
             self.M = self._sv_preconditioner(ml, cycle)
         else:
             raise ValueError("%s discretization has not been integrated yet." % disc)
@@ -122,10 +125,10 @@ class HighOrderWrapper(object):
                 tau = self.tau
                 eta_0, eta_ell = self.eta
                 gamma = self.gamma
-                x = self.x;
-                x *= 0.
-                dx = self.dx;
-                dx *= 0.
+                x = self.x
+                x *= 0.0
+                dx = self.dx
+                dx *= 0.0
 
                 #  MG correction
                 # using __solve because avoids unnecessary residual comp
@@ -141,11 +144,13 @@ class HighOrderWrapper(object):
                 x[nv:] += tau[1] * dx[nv:]
                 outer_rlx.postsmoother(A0, x, b)
                 return x
+
         else:
+
             @timeit("solution:solver:wrapper:")
             def mv(b):
-                x = self.x;
-                x *= 0.
+                x = self.x
+                x *= 0.0
                 gamma = self.gamma
                 eta_0, eta_ell = self.eta
                 tau = self.tau
@@ -179,7 +184,7 @@ class HighOrderWrapper(object):
 
         stokes = self.stokes
         A0 = stokes.A_bmat.tocsr()
-        assert A0.shape[0] == stokes.ndofs(), 'A0 dimensions are wrong.'
+        assert A0.shape[0] == stokes.ndofs(), "A0 dimensions are wrong."
         self.x = np.zeros(A0.shape[0])
         self.dx = np.zeros(stokes.lo_fe_sys.ndofs())
         # Grid Transfer Operators
@@ -187,9 +192,9 @@ class HighOrderWrapper(object):
         P_0to1 = stokes.P_dg_to_cg
         # null1 might be left out by accident in some cases (no relax on l=0)
         null1 = None
-        if stokes.bcs_type == 'washer':
+        if stokes.bcs_type == "washer":
             null1 = np.zeros_like(self.dx)
-            null1[stokes.lo_fe_sys.velocity_nodes():] = 1
+            null1[stokes.lo_fe_sys.velocity_nodes() :] = 1
 
         outer_rlx = self.outer_relaxation
 
@@ -199,10 +204,10 @@ class HighOrderWrapper(object):
             tau = self.tau
             eta_0, eta_ell = self.eta
             gamma = self.gamma
-            dx = self.dx;
-            dx *= 0.
-            x = self.x;
-            x *= 0.
+            dx = self.dx
+            dx *= 0.0
+            x = self.x
+            x *= 0.0
 
             if self.outer_relaxation != None:
                 outer_rlx.presmoother(A0, x, b)
@@ -223,7 +228,7 @@ class HighOrderWrapper(object):
             else:
                 dx = ml.solve(r, tol=1e-25, maxiter=gamma, cycle=cycle)
             """
-            if hasattr(null1, '__len__'):
+            if hasattr(null1, "__len__"):
                 dx -= np.dot(null1, dx) * null1 / np.dot(null1, null1)
 
             # interpolate correction from K_1 to K_0

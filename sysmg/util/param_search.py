@@ -25,17 +25,20 @@ def fgmres_solver(problem, mg, tol, maxiter):
     """
 
     # System
-    A0      = problem.A_bmat.tocsr()
-    b       = problem.b
-    x0      = np.zeros_like(b)
+    A0 = problem.A_bmat.tocsr()
+    b = problem.b
+    x0 = np.zeros_like(b)
     # Solver
-    x, resids = mg.solve(b, x0, A=A0,
-                         maxiter=maxiter,
-                         tol=tol/np.linalg.norm(b),
-                         cycle_type='V',
-                         accel={'module': ('pyamg', 'fgmres'),
-                                'resid': 'abs'}, )
-    
+    x, resids = mg.solve(
+        b,
+        x0,
+        A=A0,
+        maxiter=maxiter,
+        tol=tol / np.linalg.norm(b),
+        cycle_type="V",
+        accel={"module": ("pyamg", "fgmres"), "resid": "abs"},
+    )
+
     norm_resid = resids / resids[0]
     norm_resid = norm_resid[np.where(norm_resid >= tol)]
     return norm_resid
@@ -46,12 +49,10 @@ def geom_mean(iters):
     return scaled.prod() ** (1.0 / float(len(scaled)))
 
 
-def parameter_scan(sys_iterator, mg_fxn, mg_params,
-                   setter, param_search,
-                   tol=1e-8,
-                   max_iter=50
-                   ):
-    """Generalizes paramter search functionality
+def parameter_scan(
+    sys_iterator, mg_fxn, mg_params, setter, param_search, tol=1e-8, max_iter=50
+):
+    """Generalizes parameter search functionality
 
     tau_u_range    = np.linspace(0.5, 2., 3)
     tau_p_range    = np.linspace(0.5, 2., 3)
@@ -82,7 +83,7 @@ def parameter_scan(sys_iterator, mg_fxn, mg_params,
             name_to_range[k].append(vi)
         param_idxs += ids
 
-    np.save('param_ranges.npy', name_to_range)
+    np.save("param_ranges.npy", name_to_range)
 
     def get_params(param_idxs):
         return tuple([arr[i] for i, arr in zip(param_idxs, param_arrs)])
@@ -96,7 +97,7 @@ def parameter_scan(sys_iterator, mg_fxn, mg_params,
         results[args] = {}
         sv_max = max(sv_max, len(str(args)))
     sv_max += 1
-    sn = str(param_names);
+    sn = str(param_names)
     sn_len = len(sn)
 
     # assemble the sysstem
@@ -105,7 +106,7 @@ def parameter_scan(sys_iterator, mg_fxn, mg_params,
         total_problems += 1
         # assembel the solver
         mg = mg_fxn(problem, mg_params)
-        f = open('hierarchy.log', 'a')
+        f = open("hierarchy.log", "a")
         f.write(mg.__repr__())
         f.close()
 
@@ -128,27 +129,29 @@ def parameter_scan(sys_iterator, mg_fxn, mg_params,
             iters_data[idx] = len(resids)
             cf_data[idx] = cf
             # write to disc
-            f = open('main.log', 'a')
+            f = open("main.log", "a")
             f.write(
-                f'ndofs={ndofs:10}: {sn:{sn_len}}={sv:{sv_max}} | resids[{len(resids):3}]={resids[-1]:2.2e} cf={cf:2.3f}\n')
+                f"ndofs={ndofs:10}: {sn:{sn_len}}={sv:{sv_max}} | resids[{len(resids):3}]={resids[-1]:2.2e} cf={cf:2.3f}\n"
+            )
             f.close()
 
         np.save("iters_data_%d.npy" % total_problems, iters_data)
         np.save("cf_data_%d.npy" % total_problems, cf_data)
 
     if total_problems > 1:
-        f = open('main_sorted.log', 'a')
+        f = open("main_sorted.log", "a")
         for args, resids in results.items():
             sv = str(args)
             for ndofs, resid in resids.items():
                 cf = geom_mean(resid)
                 f.write(
-                    f'ndofs={ndofs:10}: {sn:{sn_len}}={sv:{sv_max}} | resids[{len(resid):3}]={resid[-1]:2.2e} cf={cf:2.3f}\n')
+                    f"ndofs={ndofs:10}: {sn:{sn_len}}={sv:{sv_max}} | resids[{len(resid):3}]={resid[-1]:2.2e} cf={cf:2.3f}\n"
+                )
         f.close()
 
 
 def parameter_scan_old(sys_iterator, mg_fxn, mg_params, param_search):
-    """Generalizes paramter search functionality
+    """Generalizes parameter search functionality
     def set_tau(amg, tau):
         amg.wrapper.set_tau(tau)
 
@@ -168,8 +171,8 @@ def parameter_scan_old(sys_iterator, mg_fxn, mg_params, param_search):
     param_ranges = []
     param_setters = []
     for k in param_names:
-        v = param_search[k]['range']
-        s = param_search[k]['setter']
+        v = param_search[k]["range"]
+        s = param_search[k]["setter"]
         param_ranges.append(list(itertools.product(*v)) if type(v) == tuple else v)
         param_setters.append(s)
 
@@ -180,7 +183,7 @@ def parameter_scan_old(sys_iterator, mg_fxn, mg_params, param_search):
         results[args] = {}
         sv_max = max(sv_max, len(str(args)))
     sv_max += 1
-    sn = str(param_names);
+    sn = str(param_names)
     sn_len = len(sn)
 
     # assemble the sysstem
@@ -189,7 +192,7 @@ def parameter_scan_old(sys_iterator, mg_fxn, mg_params, param_search):
         total_problems += 1
         # assembel the solver
         mg = mg_fxn(problem, mg_params)
-        f = open('hierarchy.log', 'a')
+        f = open("hierarchy.log", "a")
         f.write(mg.__repr__())
         f.close()
 
@@ -206,36 +209,43 @@ def parameter_scan_old(sys_iterator, mg_fxn, mg_params, param_search):
             cf = geom_mean(resids)
             sv = str(args)
             # write to disc
-            f = open('main.log', 'a')
+            f = open("main.log", "a")
             f.write(
-                f'ndofs={ndofs:10}: {sn:{sn_len}}={sv:{sv_max}} | resids[{len(resids):3}]={resids[-1]:2.2e} cf={cf:2.3f}\n')
+                f"ndofs={ndofs:10}: {sn:{sn_len}}={sv:{sv_max}} | resids[{len(resids):3}]={resids[-1]:2.2e} cf={cf:2.3f}\n"
+            )
             f.close()
 
     if total_problems > 1:
-        f = open('main_sorted.log', 'a')
+        f = open("main_sorted.log", "a")
         for args, resids in results.items():
             sv = str(args)
             for ndofs, resid in resids.items():
                 cf = geom_mean(resid)
                 f.write(
-                    f'ndofs={ndofs:10}: {sn:{sn_len}}={sv:{sv_max}} | resids[{len(resid):3}]={resid[-1]:2.2e} cf={cf:2.3f}\n')
+                    f"ndofs={ndofs:10}: {sn:{sn_len}}={sv:{sv_max}} | resids[{len(resid):3}]={resid[-1]:2.2e} cf={cf:2.3f}\n"
+                )
         f.close()
 
 
-def param_search(fxn, x0, args=(), callback=None,
-                 bounds=None, tol=1e-8,
-                 options={'maxiter': 50, 'disp': False}
-                 ):
+def param_search(
+    fxn,
+    x0,
+    args=(),
+    callback=None,
+    bounds=None,
+    tol=1e-8,
+    options={"maxiter": 50, "disp": False},
+):
     """
     Automatic parameter optimization.
 
     Arguments:
         fxn: objective function that takes x0 as input and outputs a scalar value.
-        x0: array with paramaters being optimized
-        args: additiona/optional parameters fed to fxn
+        x0: array with parameters being optimized
+        args: additional/optional parameters fed to fxn
 
     Returns:
-        test_param: paramters evaluated
+        test_param: parameters evaluated
         test_obj_vals: respective objective functions
         dict: output of the minimization algorithm
 
@@ -274,18 +284,19 @@ def param_search(fxn, x0, args=(), callback=None,
     test_obj_vals = []
 
     if not callback:
-        output_template = 'iter={}:\t'
+        output_template = "iter={}:\t"
         for _ in range(len(x0)):
-            output_template += '{}, '
-        output_template += '\tf(x)={}'
+            output_template += "{}, "
+        output_template += "\tf(x)={}"
 
         def cb(xk):
-            f = open('main.log', 'a')
-            out = output_template.format('%3d' % len(test_param),
-                                         *tuple(['%2.4f' % i for i in xk]),
-                                         ('%2.5f' % test_obj_vals[-1])
-                                         )
-            out += '\n'
+            f = open("main.log", "a")
+            out = output_template.format(
+                "%3d" % len(test_param),
+                *tuple(["%2.4f" % i for i in xk]),
+                ("%2.5f" % test_obj_vals[-1]),
+            )
+            out += "\n"
             f.write(out)
             f.close()
 
@@ -296,50 +307,57 @@ def param_search(fxn, x0, args=(), callback=None,
         test_obj_vals.append(fxn(x, *args))
         return test_obj_vals[-1]
 
-    out = minimize(wrapped_fun, x0, args=args,
-                   method=None, jac=None, hess=None, hessp=None,
-                   bounds=bounds, constraints=(),
-                   tol=tol,
-                   callback=callback,
-                   options=options
-                   )
+    out = minimize(
+        wrapped_fun,
+        x0,
+        args=args,
+        method=None,
+        jac=None,
+        hess=None,
+        hessp=None,
+        bounds=bounds,
+        constraints=(),
+        tol=tol,
+        callback=callback,
+        options=options,
+    )
 
     return np.array(test_param), np.array(test_obj_vals), out
 
 
-def plot_min_results(xvec, fval,
-                     labels=['$\\tau_u$', '$\\tau_p$', '$\\omega$'],
-                     title='', filename='tmp'):
+def plot_min_results(
+    xvec, fval, labels=["$\\tau_u$", "$\\tau_p$", "$\\omega$"], title="", filename="tmp"
+):
     lines = []
     fig, ax = plt.subplots()
 
     # Rho values
-    ax.plot(fval, linestyle='-.', c='k')
-    ax.set_ylabel('$\\rho$', fontsize=20)
-    ax.set_xlabel('iteration \#', fontsize=20)
+    ax.plot(fval, linestyle="-.", c="k")
+    ax.set_ylabel("$\\rho$", fontsize=20)
+    ax.set_xlabel("iteration \#", fontsize=20)
     # lines+=line
-    ax.annotate(str(round(fval[-1], 3)),
-                (len(fval) * 0.93, fval[-1] * 1.05),
-                fontsize=13)
+    ax.annotate(
+        str(round(fval[-1], 3)), (len(fval) * 0.93, fval[-1] * 1.05), fontsize=13
+    )
 
     # Parameters
     ax = ax.twinx()
     for i in range(xvec.shape[1]):
         line = ax.plot(xvec[:, i], label=labels[i])
         lines += line
-    ax.set_ylabel('parameter values', fontsize=20)
-    ax.grid('on')
+    ax.set_ylabel("parameter values", fontsize=20)
+    ax.grid("on")
 
     # Title
-    title += ': p_opt=('
+    title += ": p_opt=("
     for i in range(xvec.shape[1] - 1):
-        title += '%2.3f,' % round(xvec[-1, i], 3)
-    title += '%2.3f)' % round(xvec[-1, -1], 3)
+        title += "%2.3f," % round(xvec[-1, i], 3)
+    title += "%2.3f)" % round(xvec[-1, -1], 3)
     ax.set_title(title, fontsize=20)
     # Legend
     labs = [line.get_label() for line in lines]
-    lgd = ax.legend(lines, labs, loc='center left',
-                    bbox_to_anchor=(1.2, 0.5), fontsize=20)
+    lgd = ax.legend(
+        lines, labs, loc="center left", bbox_to_anchor=(1.2, 0.5), fontsize=20
+    )
     # Save
-    plt.savefig(filename + '.pdf', bbox_extra_artists=(lgd,),
-                bbox_inches='tight')
+    plt.savefig(filename + ".pdf", bbox_extra_artists=(lgd,), bbox_inches="tight")

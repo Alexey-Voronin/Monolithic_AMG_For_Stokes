@@ -1,4 +1,3 @@
-
 class SystemIterator(object):
     """System Iterator Interface.
 
@@ -6,20 +5,20 @@ class SystemIterator(object):
     problem.
     """
 
-    count      = None
-    build_time = -1 # time to construct the system
+    count = None
+    build_time = -1  # time to construct the system
 
     def __init__(self, system_params, max_dofs):
         """Initialize System Iterator."""
         self.system_params = system_params
-        self.max_dofs      = max_dofs
+        self.max_dofs = max_dofs
 
     def __repr__(self):
         """Return string representation of SystemIterator."""
         pass
 
     def __iter__(self):
-        self.count =  0
+        self.count = 0
         return self
 
     def __next__(self):

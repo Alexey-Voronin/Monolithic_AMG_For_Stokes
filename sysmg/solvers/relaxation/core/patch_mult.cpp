@@ -308,7 +308,6 @@ void extract_vector_laplacian_matrix(int n_vertices, int n_cols,
 static inline
 void extract_divergence_operator(int p_idx, int n_vertices, int n_cols,
                                  const int* rowptr_B_ptr,
-                                 const int* col_indices_B_ptr,
                                  const double* data_B_ptr,
                                  double* Aloc_ptr)
 {
@@ -429,8 +428,7 @@ void th_patch_setup(
                                         data_M_ptr, v_ids_ptr, Aloc_ptr);
 
         extract_divergence_operator(p, n_vertices, n_cols,
-                                    rowptr_B_ptr, col_indices_B_ptr,
-                                    data_B_ptr, Aloc_ptr);
+                                    rowptr_B_ptr, data_B_ptr, Aloc_ptr);
     } // p_idx
 
     // Compute inverse via  LU factorization
@@ -543,16 +541,16 @@ void th_bf_patch_setup(
     int l_work    = max_block_size*max_block_size*20;
     double* work  = (double*) malloc(l_work * sizeof(double));
 
-    long int Bloc_offset = 0;
+    long int Block_offset = 0;
     long int M_offset = 0;
-    for (int p_idx = 0; p_idx < patch_num; ++p_idx) {
+    for (size_t p_idx = 0; p_idx < patch_num; ++p_idx) {
         //long int M_offset   = M_offsets[p_idx];
 
         int n_vertices      = rowptr_B_ptr[p_idx + 1] - rowptr_B_ptr[p_idx];
         int n_cols          = n_vertices;
         double* Minv        =   Minv_ptr +    M_offset;
-        const double* Bloc  = data_B_ptr + Bloc_offset;
-        double* Uhat        =   Uhat_ptr + Bloc_offset;
+        const double* Block = data_B_ptr + Block_offset;
+        double* Uhat        =   Uhat_ptr + Block_offset;
 
         // unique velocity nodes
         const int* v_ids    = col_indices_B_ptr + rowptr_B_ptr[p_idx];
@@ -575,7 +573,7 @@ void th_bf_patch_setup(
                         -1.0, // alpha
                         &Minv[M_size2], // A
                         bs, // leading dimension of A
-                        &Bloc[M_size],  // pointer to the first element of x
+                        &Block[M_size],  // pointer to the first element of x
                         1, // stride between elements of the x
                         0, // beta
                         &Uhat[M_size], // y
@@ -587,9 +585,9 @@ void th_bf_patch_setup(
          } // j
 
          Sinv_ptr[p_idx] = 1.0/my_cblas_ddot(M_size,
-                                              Bloc, 1,
+                                              Block, 1,
                                               Uhat, 1);
-         Bloc_offset += n_cols;
+         Block_offset += n_cols;
          M_offset += M_size2;
     } // p_idx
 
@@ -671,7 +669,7 @@ void block_fact_patch_setup(
     const py::array_t<double>& data_M,
     const py::array_t<int>& rowptr_B,
     const py::array_t<int>& col_indices_B,
-    const py::array_t<double>& data_B,
+    //const py::array_t<double>& data_B,
     const py::array_t<int>& Ps_ordered,
     const py::array_t<int>& Mloc_x_sizes_padded,
     py::array_t<double>& M_inv_padded,
@@ -683,7 +681,7 @@ void block_fact_patch_setup(
     const double* data_M_ptr     = data_M.data();
     const int* rowptr_B_ptr      = rowptr_B.data();
     const int* col_indices_B_ptr = col_indices_B.data();
-    const double* data_B_ptr     = data_B.data();
+    //const double* data_B_ptr     = data_B.data();
     const int* Ps_ordered_ptr    = Ps_ordered.data();
 
     const int* Mloc_x_sizes_padded_ptr = Mloc_x_sizes_padded.data();
@@ -695,10 +693,11 @@ void block_fact_patch_setup(
     double* work_ptr = (double*) malloc(l_work * sizeof(double));
 
     long M_inv_nnz_offset_padded = 0;
-    long B_nnz_offset_padded = 0;
-    long B_nnz_offset = 0;
+    //long B_nnz_offset_padded = 0;
+    //long B_nnz_offset = 0;
 
-    for (size_t i = 0; i < Ps_ordered.size(); ++i)
+    size_t size = Ps_ordered.size();
+    for (size_t i = 0; i < size; ++i)
     {
         int p_idx          = Ps_ordered_ptr[i];
         int Ux_size_padded = Mloc_x_sizes_padded_ptr[i];
@@ -798,12 +797,14 @@ void n_part_bs(const py::array_t<int>& Mloc_x_sizes,
 PYBIND11_MODULE(patch_mult, m) {
     m.doc() = "Matrix operations using pybind11";
     m.def("n_part"      ,      &n_part, "n_part patch-vector multiplication");
-    m.def("n_part_batch",      &n_part_batch, "Batched patch-vector multiplication");  
-    m.def("n_part_factorized", &n_part_factorized, "Factorized patch-vector multiplication");
     m.def("n_part_bs", &n_part_bs, "(simplified) Block Factorized patch-vector multiplication");
-    m.def("th_patch_setup", &th_patch_setup, "Taylor-Hood algebraic patch setup all");
-    m.def("th_bf_patch_setup", &th_bf_patch_setup, "Taylor-Hood block-factorized algebraic patch setup");
+    m.def("n_part_batch",      &n_part_batch, "Batched patch-vector multiplication");  
+    
     m.def("sv_patch_setup", &sv_patch_setup, "Scott-Vogelius algebraic patch setup all");
+    m.def("th_bf_patch_setup", &th_bf_patch_setup, "Taylor-Hood block-factorized algebraic patch setup");
+    m.def("th_patch_setup", &th_patch_setup, "Taylor-Hood algebraic patch setup all");
+    // not used atm. 
+    m.def("n_part_factorized", &n_part_factorized, "Factorized patch-vector multiplication");
     m.def("block_fact_patch_setup", &block_fact_patch_setup, "Taylor-Hood algebraic block-factorized patch setup");
 }
 

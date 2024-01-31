@@ -1,0 +1,10 @@
+AMG Params:
+{'type': 'monolithic', 'interpolation': {'type': 'algebraic', 'order': 'low', 'params': {'u': {'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 75}, 'p': {'agg_mat': ('stiffness', 0.0), 'smooth_mat': ('stiffness', 0.0), 'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 50}}}, 'relaxation': ('lsc', {'iterations': (3, 3), 'momentum': {'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 1}}, 'continuity': {'operator': 'BBT', 'solver': 'sa-amg'}, 'transform': {'operator': 'BBT', 'solver': 'sa-amg'}}), 'wrapper_params': {'relax_params': ('lsc', {'iterations': (3, 3), 'momentum': {'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 1}}, 'continuity': {'operator': 'BBT', 'solver': 'sa-amg'}, 'transform': {'operator': 'BBT', 'solver': 'sa-amg'}}), 'tau': (1, 1), 'eta': (array([1., 1.]), (1, 1)), 'modify_mg_rlx': [(0, (0, 0))]}, 'levels': 10, 'coarse_grid_solve': 'splu'}
+
+ndofs=    10308622, resid[ 27]=6.16e-11: system_setup=2123.02, mg_setup[lvls= 4]=431.14, solve[27]=953.30
+ndofs=     4329642, resid[ 26]=4.24e-11: system_setup=839.63, mg_setup[lvls= 3]=185.58, solve[26]=305.09
+ndofs=     1783530, resid[ 19]=3.69e-11: system_setup=328.70, mg_setup[lvls= 3]=62.76, solve[19]=74.50
+ndofs=      709961, resid[ 19]=3.94e-11: system_setup=121.38, mg_setup[lvls= 3]=20.17, solve[19]=26.56
+ndofs=      276801, resid[ 20]=5.95e-11: system_setup=44.00, mg_setup[lvls= 3]=6.50, solve[20]=9.70
+ndofs=       25502, resid[ 23]=4.96e-11: system_setup=3.33, mg_setup[lvls= 2]=0.52, solve[23]=0.68
+ndofs=       12887, resid[ 16]=8.97e-11: system_setup=1.69, mg_setup[lvls= 2]=0.33, solve[16]=0.24

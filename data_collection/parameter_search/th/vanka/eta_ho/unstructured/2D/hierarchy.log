@@ -1,0 +1,20 @@
+Stokes MultilevelSolver
+Number of Levels:     4
+Operator Complexity:  1.269: 1.29 1.29 1.28
+Grid Complexity:      1.145
+Coarse Solver:        'splu'
+  level   unknowns     nonzeros           Ratio[v/p]   CR[vx,vy,p]
+     0     1021759     14808704 [78.78%]     8.0       [ 7.76, 7.76, 7.90]
+     1      131354      3291894 [17.51%]     8.1       [ 8.93, 8.93, 8.92]
+     2       14710       611013 [ 3.25%]     8.1       [ 9.29, 9.27, 9.03]
+     3        1590        85039 [ 0.45%]     7.9       [ 9.16,     ,     ]
+Stokes MultilevelSolver
+Number of Levels:     4
+Operator Complexity:  1.269: 1.29 1.29 1.28
+Grid Complexity:      1.145
+Coarse Solver:        'splu'
+  level   unknowns     nonzeros           Ratio[v/p]   CR[vx,vy,p]
+     0     1021759     14808704 [78.78%]     8.0       [ 7.76, 7.76, 7.90]
+     1      131354      3291894 [17.51%]     8.1       [ 8.93, 8.93, 8.92]
+     2       14710       611013 [ 3.25%]     8.1       [ 9.29, 9.27, 9.03]
+     3        1590        85039 [ 0.45%]     7.9       [ 9.16,     ,     ]

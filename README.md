@@ -41,7 +41,7 @@ The primary code is located in the [sysmg](./sysmg/) directory. The scripts requ
 ## Dependencies
 
 To effectively utilize this code, the following dependencies are needed:
-- [Custom fork of PyAMG](https://github.com/Alexey-Voronin/pyamg-1/tree/e96af2b77a3baaf91ffb7ab4be43892c67ef39c0)
+- [Custom fork of PyAMG](https://github.com/Alexey-Voronin/pyamg-1/tree/sysmg_krylov_accel)
 - [Firedrake](https://www.firedrakeproject.org/) (Compatibility tested with version 0.13.0)
 - An indication of the OpenBLAS path in `sysmg/solvers/relaxation/core/setup.py`
 
@@ -49,7 +49,14 @@ To effectively utilize this code, the following dependencies are needed:
 
 The [data\_collection](./data_collection/) directory contains detailed information regarding the methods and scripts used for data collection. Each sub-directory also includes scripts for data visualization.
 
+## Setting Up Pre-commit Hooks
 
+**Quick Start**:
+1. **Install pre-commit**: Run `pip install pre-commit` in your environment.
+2. **Activate hooks**: At the root of the repository, run `pre-commit install` to set up the hooks from `.pre-commit-config.yaml`.
 
-
+**Using Hooks**:
+- The hooks will run automatically on each commit.
+- To manually run all hooks, use `pre-commit run --all-files`.
+- Update hooks with `pre-commit autoupdate`.
 

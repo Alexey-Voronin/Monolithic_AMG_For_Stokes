@@ -5,13 +5,15 @@ __pycache__/
 *.bin
 *.msh
 *.pyc
-*.npz
-*.npy
+#*.npz
+#*.npy
 *.data
 *.ipynb_checkpoints
 *.DS_Store
 *dSYM/
 *sysmg.egg-info
+nohup.out
 dist
 build
 sysmg/version.py
+sysmg/systems/meshes/*
