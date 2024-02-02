@@ -11,14 +11,14 @@ preconditioner for the Taylor-Hood ($\pmb{\mathbb{P}}_2/\mathbb{P}_1$) and Scott
     We investigate two relaxation strategies in this setting.
     Specifically, a novel block factorization approach is devised for Vanka patch systems, which 
     significantly reduces storage requirements and computational overhead, and a Chebyshev
-    adaptation of the LSC-DGS relaxation from [Wang and Chen, 2013](https://link.springer.com/article/10.1007/s10915-013-9684-1) is developed to improve parallelism.
+    adaptation of the LSC-DGS relaxation from [[Wang and Chen, 2013]](https://link.springer.com/article/10.1007/s10915-013-9684-1) is developed to improve parallelism.
 The preconditioner demonstrates robust performance across a variety of 2D and 3D
 Stokes problems, often matching or exceeding the effectiveness of an 
 inexact block-triangular (or Uzawa) preconditioner,
 especially in challenging scenarios such as elongated-domain problems.
 
 ## Authors
-- Alexey Voronin (voronin2@illinois.edu)
+- Alexey Voronin (axvsim [at] proton.me)
 - Scott MacLachlan
 - Luke N. Olson
 - Raymond Tuminaro
@@ -43,15 +43,3 @@ To effectively utilize this code, the following dependencies are needed:
 ## Data Collection and Results
 
 The [data\_collection](./data_collection/) directory contains detailed information regarding the methods and scripts used for data collection. Each sub-directory also includes scripts for data visualization.
-
-## Setting Up Pre-commit Hooks
-
-**Quick Start**:
-1. **Install pre-commit**: Run `pip install pre-commit` in your environment.
-2. **Activate hooks**: At the root of the repository, run `pre-commit install` to set up the hooks from `.pre-commit-config.yaml`.
-
-**Using Hooks**:
-- The hooks will run automatically on each commit.
-- To manually run all hooks, use `pre-commit run --all-files`.
-- Update hooks with `pre-commit autoupdate`.
-
