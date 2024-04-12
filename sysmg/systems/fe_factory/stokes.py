@@ -27,6 +27,9 @@ class StokesProblem(Problem):
         self.grad_div_stab = grad_div_stab
         self.Z = self.function_space(self.msh, elem_type, elem_order)
 
+        self.TrialFunctions = TrialFunctions(self.Z)
+        self.TestFunctions = TestFunctions(self.Z)
+
         if elem_type[0] == "CG" and elem_type[1] == "CG":
             self.disc = "Taylor-Hood"
         elif elem_type[0] == "CG" and elem_type[1] == "DG":
@@ -56,8 +59,8 @@ class StokesProblem(Problem):
         return self.Z
 
     def residual(self):
-        u, p = TrialFunctions(self.Z)
-        v, q = TestFunctions(self.Z)
+        u, p = self.TrialFunctions
+        v, q = self.TestFunctions
 
         a = (inner(grad(u), grad(v)) - div(v) * p - q * div(u)) * dx
 
@@ -72,8 +75,8 @@ class StokesProblem(Problem):
 
         return a
 
-    def rhs(self, Z):
-        v, _ = TestFunctions(Z)
+    def rhs(self):
+        v, _ = self.TestFunctions
         f = Constant(tuple([0] * self.dim))
         L = inner(f, v) * dx
         return L
@@ -214,29 +217,30 @@ class StokesProblem(Problem):
             return None
 
     def mass_matrix(self, component, bcs):
+        u, p = self.TrialFunctions
+        v, q = self.TestFunctions
+
         if component == "u":
-            F = self.Z.sub(0)
+            a = inner(u, v) * dx
         elif component == "p":
-            F = self.Z.sub(1)
+            a = inner(p, q) * dx
         else:
             raise ValueError('component must be "u" or "p".')
 
-        u = TrialFunction(F)
-        v = TestFunction(F)
-
-        a = inner(u, v) * dx
-        M = assemble(a, bcs=bcs)
+        M = assemble(a, bcs=bcs, mat_type="nest", sub_mat_type="aij")
         return M
 
     def stiffness_matrix(self, component, bcs):
+        u, p = self.TrialFunctions
+        v, q = self.TestFunctions
+
         if component == "u":
-            F = self.Z.sub(0)
+            u, v = self.TrialFunctions[0], self.TestFunctions[0]
         elif component == "p":
-            F = self.Z.sub(1)
+            u, v = self.TrialFunctions[1], self.TestFunctions[1]
         else:
             raise ValueError('component must be "u" or "p".')
 
-        u, v = TrialFunction(F), TestFunction(F)
         if F.ufl_element().family() == "Lagrange":
             a = inner(grad(u), grad(v)) * dx
         elif F.ufl_element().family() == "Discontinuous Lagrange":
@@ -257,7 +261,7 @@ class StokesProblem(Problem):
         else:
             raise ValueError(f"Unknown element type: {F.ufl_element().family()}.")
 
-        K = assemble(a, bcs=bcs)
+        K = assemble(a, bcs=bcs, mat_type="nest", sub_mat_type="aij")
         return K
 
     def plot_solution(
