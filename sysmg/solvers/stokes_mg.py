@@ -274,6 +274,8 @@ class StokesMG(MG):
             level.A_bmat[0, 1].eliminate_zeros()
             stks = Stokes_tmp(level.A_bmat, system.dim, system.structured)
             stks.stiffness_bmat = system.stiffness_bmat if i == 0 else None
+            stks.mass_bmat = system.mass_bmat if i == 0 else None
+
             stks.dim = self.dim
             stks_levels.append(stks)
             level.A = level.A_bmat.tocsr()
