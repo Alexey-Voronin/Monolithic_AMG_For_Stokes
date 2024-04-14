@@ -1,6 +1,6 @@
 import numpy as np
 from firedrake import *
-
+from firedrake.pyplot import *
 from .problem import Problem
 
 
@@ -236,8 +236,10 @@ class StokesProblem(Problem):
 
         if component == "u":
             u, v = self.TrialFunctions[0], self.TestFunctions[0]
+            F = self.Z.sub(0)
         elif component == "p":
             u, v = self.TrialFunctions[1], self.TestFunctions[1]
+            F = self.Z.sub(1)
         else:
             raise ValueError('component must be "u" or "p".')
 
@@ -284,8 +286,8 @@ class StokesProblem(Problem):
         if "u" in items:
             ax = axs[counter]
             counter += 1
-            l = streamplot(u, axes=ax)
-            # l = tricontourf(u, axes=ax)
+            # l = streamplot(u, axes=ax)
+            l = tricontourf(u, axes=ax)
             ax.set_aspect("equal")
             ax.set_title(r"$u$", fontsize=20)
             plt.colorbar(l)
