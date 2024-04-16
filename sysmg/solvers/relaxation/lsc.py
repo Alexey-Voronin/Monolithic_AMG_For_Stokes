@@ -69,8 +69,12 @@ class LSC(System_Relaxation):
         self._B = Abmat[1, 0].copy().tocsr()
         self._BT = Abmat[0, 1].copy().tocsr()
 
-        self._Mu = stokes.mass_bmat[0, 0]
-        self._Mp = stokes.mass_bmat[1, 1]
+        if "mass" in self.params.keys():
+            self._Mu = stokes.mass_bmat[0, 0]
+            self._Mp = stokes.mass_bmat[1, 1]
+            if getattr(self.params, "identity", False):
+                self._Mp = sp.identity(self._Mp.shape[0]).tocsr()
+                self._Mu = sp.identity(self._Mu.shape[0]).tocsr()
 
         self._Ap = None  # stokes.stiffness_bmat[1,1] if hasattr(stokes, "stiffness_bmat") else None
 
@@ -176,7 +180,8 @@ class LSC(System_Relaxation):
             Mu_inv = self._get_solver(
                 self._Mu, iparams["solver"], iparams.get("solver_params", {}), "Mu_inv0"
             )
-            BBT = (B * (Mu_inv(BT))).tocsr() if self._Ap is None else self._Ap
+
+            BBT = (B * (Mu_inv(BT))).tocsr()  # if self._Ap is None else self._Ap
 
             iparams = self.params["mass"]["u"]
             self._mass_u_inv = self._get_solver(
@@ -186,6 +191,8 @@ class LSC(System_Relaxation):
             self._mass_p_inv = self._get_solver(
                 self._Mp, iparams["solver"], iparams.get("solver_params", {}), "Mp_inv"
             )
+
+            self._BABT = (B * Mu_inv(Au * Mu_inv(BT))).tocsr()
 
             self.relax = self.relax_mass
         else:
@@ -232,9 +239,9 @@ class LSC(System_Relaxation):
             vstar = self._momentum_solver(f - Au * u - BT * p)
             q = self._continuity_solver(g - B * (u + vstar))
 
-            dpstar = self._transform_solver(-1 * q)
+            dp = self._transform_solver(-1 * self._BABT * q)
             u[:] = u + vstar + self._mass_u_inv(BT * q)
-            p[:] = p + self._mass_p_inv(dpstar)
+            p[:] = p + dp
 
         return up
 
