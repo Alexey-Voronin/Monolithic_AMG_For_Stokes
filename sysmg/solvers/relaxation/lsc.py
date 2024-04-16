@@ -44,8 +44,6 @@ class LSC(System_Relaxation):
             },
             "mass": {
                 "u": {"solver": "direct", "solver_params": {}},
-                "p": {"solver": "direct", "solver_params": {}},
-                "Ap": {"solver": "direct_assembled", "solver_params": {}},
             },
         },
         omega=1,
@@ -71,12 +69,8 @@ class LSC(System_Relaxation):
 
         if "mass" in self.params.keys():
             self._Mu = stokes.mass_bmat[0, 0]
-            self._Mp = stokes.mass_bmat[1, 1]
-            if getattr(self.params, "identity", False):
-                self._Mp = sp.identity(self._Mp.shape[0]).tocsr()
-                self._Mu = sp.identity(self._Mu.shape[0]).tocsr()
-
-        self._Ap = None  # stokes.stiffness_bmat[1,1] if hasattr(stokes, "stiffness_bmat") else None
+            # self._Mp = stokes.mass_bmat[1, 1]
+            # self._Mp_inv = self._Mp.diagonal()
 
         self.nullspace = getattr(stokes, "nullspace", None)
         self._vdofs = stokes.velocity_nodes()
@@ -175,28 +169,31 @@ class LSC(System_Relaxation):
         BT = self._BT
 
         if "mass" in self.params.keys():
-            print("setup mass")
-            iparams = self.params["mass"]["Ap"]
+            iparams = self.params["mass"]["u"]
             Mu_inv = self._get_solver(
                 self._Mu, iparams["solver"], iparams.get("solver_params", {}), "Mu_inv0"
             )
 
-            BBT = (B * (Mu_inv(BT))).tocsr()  # if self._Ap is None else self._Ap
-
-            iparams = self.params["mass"]["u"]
-            self._mass_u_inv = self._get_solver(
-                self._Mu, iparams["solver"], iparams.get("solver_params", {}), "Mu_inv"
-            )
-            iparams = self.params["mass"]["p"]
-            self._mass_p_inv = self._get_solver(
-                self._Mp, iparams["solver"], iparams.get("solver_params", {}), "Mp_inv"
-            )
-
+            BBT = (B * (Mu_inv(BT))).tocsr()
+            self._mass_u_inv = Mu_inv
             self._BABT = (B * Mu_inv(Au * Mu_inv(BT))).tocsr()
+
+            """
+            Mu_solve = self._get_solver(
+                self._Mu, "direct", iparams.get("solver_params", {}),
+                "Mu_inv_direct"
+            )
+            self._mass_u_inv = Mu_solve
+
+            from scipy.sparse.linalg import LinearOperator
+            def mv(v):
+                return B * Mu_solve(Au * Mu_solve(BT*v))
+
+            self._BABT = LinearOperator((B.shape[0],B.shape[0]), matvec=mv)
+            """
 
             self.relax = self.relax_mass
         else:
-            print("setup no mass")
             self._BABT = (B * (Au * BT)).tocsr()
             BBT = (B * BT).tocsr()
             self.relax = self.relax_no_mass
@@ -208,25 +205,19 @@ class LSC(System_Relaxation):
         )
         name = "continuity"
         iparams = self.params[name]
-        Ap = None
-        # Ap = (
-        #     self.system.stiffness_bmat[1, 1]
-        #     if iparams["operator"].lower() == "stiffness"
-        #     else None
-        # )
-        mat = Ap if iparams["operator"].lower() == "stiffness" else BBT
+
+        mat = BBT
         self._continuity_solver = self._get_solver(
             mat, iparams["solver"], iparams.get("solver_params", {}), name
         )
         name = "transform"
         iparams = self.params[name]
-        mat = Ap if iparams["operator"].lower() == "stiffness" else BBT
+        mat = BBT
         self._transform_solver = self._get_solver(
             mat, iparams["solver"], iparams.get("solver_params", {}), name
         )
 
     def relax_mass(self, K, up, rhs):
-        # print('compute w/ mass')
         Nu = self._vdofs
         u, p = up[:Nu], up[Nu:]
         f, g = rhs[:Nu], rhs[Nu:]
@@ -239,14 +230,13 @@ class LSC(System_Relaxation):
             vstar = self._momentum_solver(f - Au * u - BT * p)
             q = self._continuity_solver(g - B * (u + vstar))
 
-            dp = self._transform_solver(-1 * self._BABT * q)
+            dp = -1 * self._transform_solver(self._BABT * q)
             u[:] = u + vstar + self._mass_u_inv(BT * q)
             p[:] = p + dp
 
         return up
 
     def relax_no_mass(self, K, up, rhs):
-        # print('compute w/out mass')
         Nu = self._vdofs
         u, p = up[:Nu], up[Nu:]
         f, g = rhs[:Nu], rhs[Nu:]
