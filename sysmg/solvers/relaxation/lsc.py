@@ -92,7 +92,7 @@ class LSC(System_Relaxation):
                 return self._step_solvers[name] * b
 
         elif solver == "diag_inv":
-            self._step_solvers[name] = sp.diags(1.0 / A.diagonal())
+            self._step_solvers[name] = sp.diags(1.0 / A.diagonal()).tocsr()
 
             def custom_solver(b):
                 return self._step_solvers[name] * b
