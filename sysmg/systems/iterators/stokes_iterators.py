@@ -60,7 +60,7 @@ class StructuredStokesIterator(SystemIterator):
         dim=2,
         NEx=None,
         shape=None,
-        reverse_order=True
+        reverse_order=False,  # True
     ):
         """Initialize the iterator object."""
         super().__init__(system_params, max_dofs)
@@ -190,7 +190,7 @@ class UnstructuredStokesIterator(SystemIterator):
         start_idx=None,
         end_idx=None,
         max_dofs=10000,
-        reverse_order=True
+        reverse_order=False,  # True
     ):
         """Initialize the iterator object."""
         super().__init__(system_params, max_dofs)
@@ -207,9 +207,9 @@ class UnstructuredStokesIterator(SystemIterator):
         import os
 
         self.pream = os.path.split(__file__)[0] + "/../meshes/"
+        self.name = list(mesh_name.keys())[name_id]
         import glob
 
-        # print(mesh_name)
         for k, v in mesh_name.items():
             # print(f"{self.pream}{v}*.msh")
             paths = glob.glob(f"{self.pream}{v}*.msh")
@@ -221,13 +221,14 @@ class UnstructuredStokesIterator(SystemIterator):
             mesh_ext[k] = [str(i).zfill(2) for i in exts]
         # print('\n\nmesh_ext:\n', mesh_ext)
         # print("\n\nmesh_name:\n", mesh_name)
+        # print("\n\next:\n", mesh_ext[self.name])
 
-        self.name = list(mesh_name.keys())[name_id]
         self.file_name = mesh_name[self.name]
         self.exts = mesh_ext[self.name]
 
     def get_path(self):
-        return self.pream + self.file_name + ("%s" % self.exts[self.count]) + ".msh"
+        path = self.pream + self.file_name + ("%s" % self.exts[self.count]) + ".msh"
+        return path
 
     def __repr__(self):
         return "Unstructured %dD Stokes (%s): %s" % (
@@ -239,21 +240,21 @@ class UnstructuredStokesIterator(SystemIterator):
     def __iter__(self):
         if self.reverse_order:
             end = np.iinfo(np.uint64).max if self.end == None else self.end
-            min_count =  min(len(self.exts), end)
-            self.count = min_count-1
+            min_count = min(len(self.exts), end)
+            self.count = min_count - 1
         else:
             self.count = self.start
         return self
 
     def __next__(self):
         end = np.iinfo(np.uint64).max if self.end == None else self.end
-        min_count =  min(len(self.exts), end)
+        min_count = min(len(self.exts), end)
         if self.count < min_count and self.count >= 0:
             path = self.get_path()
 
             tic = time_ns()
             mesh = Mesh(path)
-            # P2/P1: v_x+v_y+p
+            # P2/P1: v)_x+v_y+p
             # slightly overestimates # DoFs
             pdofs = mesh.coordinates.dat.data_ro.shape[0]
             vdofs = (np.power(pdofs, 1.0 / self.dim) * 2 + 1) ** self.dim
@@ -267,7 +268,7 @@ class UnstructuredStokesIterator(SystemIterator):
 
             if self.reverse_order:
                 self.count -= 1
-            else: 
+            else:
                 self.count += 1
             stokes.structured = False
             if hasattr(stokes, "lo_fe_sys"):
