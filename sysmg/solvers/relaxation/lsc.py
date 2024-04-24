@@ -92,7 +92,8 @@ class LSC(System_Relaxation):
                 return self._step_solvers[name] * b
 
         elif solver == "diag_inv":
-            self._step_solvers[name] = sp.diags(1.0 / A.diagonal()).tocsr()
+            Du = A.diagonal()
+            self._step_solvers[name] = sp.diags(1.0 / Du).tocsr()
 
             def custom_solver(b):
                 return self._step_solvers[name] * b
@@ -178,19 +179,12 @@ class LSC(System_Relaxation):
             self._mass_u_inv = Mu_inv
             self._BABT = (B * Mu_inv(Au * Mu_inv(BT))).tocsr()
 
-            """
-            Mu_solve = self._get_solver(
-                self._Mu, "direct", iparams.get("solver_params", {}),
-                "Mu_inv_direct"
-            )
-            self._mass_u_inv = Mu_solve
-
             from scipy.sparse.linalg import LinearOperator
-            def mv(v):
-                return B * Mu_solve(Au * Mu_solve(BT*v))
 
-            self._BABT = LinearOperator((B.shape[0],B.shape[0]), matvec=mv)
-            """
+            def mv(v):
+                return B * Mu_inv(Au * Mu_inv(BT * v))
+
+            self._BABT = LinearOperator((B.shape[0], B.shape[0]), matvec=mv)
 
             self.relax = self.relax_mass
         else:
@@ -206,15 +200,14 @@ class LSC(System_Relaxation):
         name = "continuity"
         iparams = self.params[name]
 
-        mat = BBT
         self._continuity_solver = self._get_solver(
-            mat, iparams["solver"], iparams.get("solver_params", {}), name
+            BBT, iparams["solver"], iparams.get("solver_params", {}), name
         )
+
         name = "transform"
         iparams = self.params[name]
-        mat = BBT
         self._transform_solver = self._get_solver(
-            mat, iparams["solver"], iparams.get("solver_params", {}), name
+            BBT, iparams["solver"], iparams.get("solver_params", {}), name
         )
 
     def relax_mass(self, K, up, rhs):
@@ -227,11 +220,14 @@ class LSC(System_Relaxation):
         BT = self._BT
 
         for _ in range(self.relax_iters):
+            # Step 1
             vstar = self._momentum_solver(f - Au * u - BT * p)
             q = self._continuity_solver(g - B * (u + vstar))
-
+            # Step 2
             dp = -1 * self._transform_solver(self._BABT * q)
-            u[:] = u + vstar + self._mass_u_inv(BT * q)
+            du = vstar + self._mass_u_inv(BT * q)
+            # Step 3
+            u[:] = u + du
             p[:] = p + dp
 
         return up
