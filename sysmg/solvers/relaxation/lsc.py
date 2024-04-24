@@ -170,21 +170,27 @@ class LSC(System_Relaxation):
         BT = self._BT
 
         if "mass" in self.params.keys():
+            from scipy.sparse.linalg import LinearOperator
+
             iparams = self.params["mass"]["u"]
             Mu_inv = self._get_solver(
                 self._Mu, iparams["solver"], iparams.get("solver_params", {}), "Mu_inv0"
             )
-
-            BBT = (B * (Mu_inv(BT))).tocsr()
             self._mass_u_inv = Mu_inv
-            self._BABT = (B * Mu_inv(Au * Mu_inv(BT))).tocsr()
 
-            from scipy.sparse.linalg import LinearOperator
+            if iparams["solver"] in ["direct", "sa-amg"]:
+
+                def mv0(v):
+                    return B * Mu_inv(BT * v)
+
+                BBT = LinearOperator((B.shape[0], BT.shape[1]), matvec=mv0)
+            else:
+                BBT = (B * (Mu_inv(BT))).tocsr()
 
             def mv(v):
                 return B * Mu_inv(Au * Mu_inv(BT * v))
 
-            self._BABT = LinearOperator((B.shape[0], B.shape[0]), matvec=mv)
+            self._BABT = LinearOperator((B.shape[0], BT.shape[1]), matvec=mv)
 
             self.relax = self.relax_mass
         else:
