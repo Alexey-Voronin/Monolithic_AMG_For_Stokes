@@ -280,15 +280,16 @@ class StokesMG(MG):
             # In some cases, like with LSC relaxation, we may need to propagate
             # auxiliary operators such as mass-matrices to the coarse grids.
             if i == 0:
-                stks.stiffness_bmat = system.stiffness_bmat
-                stks.mass_bmat = system.mass_bmat
+                #stks.stiffness_bmat = system.stiffness_bmat
+                if hasattr(system, "mass_bmat"): 
+                    stks.mass_bmat = system.mass_bmat
             else:
-                stks.stiffness_bmat = level.stiffness_bmat
-                stks.mass_bmat = level.mass_bmat
+                #stks.stiffness_bmat = level.stiffness_bmat
+                if hasattr(level, "mass_bmat"): 
+                    stks.mass_bmat = level.mass_bmat
 
-            if i < len(levels) - 1:
+            if i < len(levels) - 1 and hasattr(stks, "mass_bmat"):
                 P, R = level.P_bmat, level.R_bmat
-                levels[i + 1].stiffness_bmat = R * stks.stiffness_bmat * P
                 levels[i + 1].mass_bmat = R * stks.mass_bmat * P
 
             stks.dim = self.dim
