@@ -1,6 +1,10 @@
 import numpy as np
 from firedrake import *
-from firedrake.pyplot import *
+try:
+    from firedrake.pyplot import *
+except:
+    from firedrake import *
+
 from .problem import Problem
 
 
