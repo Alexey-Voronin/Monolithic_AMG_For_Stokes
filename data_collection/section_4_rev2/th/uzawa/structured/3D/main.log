@@ -1,0 +1,15 @@
+AMG Params:
+{'type': 'Uzawa', 'interpolation': {'order': 'high'}, 'iterations': (1, 1), 'u': {'solver': ('sa_amg', {'strength': 'evolution', 'smooth': ('jacobi', {'omega': 1.3333333333333333, 'degree': 1}), 'presmoother': ('fgmres_smoother', {'iterations': 2, 'preconditioner': ('jacobi', {'iterations': 1})}), 'postsmoother': ('fgmres_smoother', {'iterations': 2, 'preconditioner': ('jacobi', {'iterations': 1})})})}, 'p': {'solver': ('sa_amg', {'operator': 'pressure mass', 'structured': True, 'blocksize': 1e+100, 'iterations': (1, 1), 'block_solver': 'sa_amg', 'sa_amg_setup_params': {'strength': 'evolution', 'smooth': ('jacobi', {'omega': 1.3333333333333333, 'degree': 1}), 'presmoother': ('fgmres_smoother', {'iterations': 2, 'preconditioner': ('jacobi', {'iterations': 1})}), 'postsmoother': ('fgmres_smoother', {'iterations': 2, 'preconditioner': ('jacobi', {'iterations': 1})})}, 'sa_amg_solve_params': {'tol': 1e-16, 'maxiter': 1}})}, 'debug': False}
+
+ndofs=     3223554, resid[ 65]=8.76e-11: system_setup=95.67, mg_setup[lvls= 4]=106.16, solve[65]=247.90
+ndofs=     2206032, resid[ 64]=9.59e-11: system_setup=62.59, mg_setup[lvls= 4]=69.48, solve[64]=160.79
+ndofs=     1663244, resid[ 63]=8.94e-11: system_setup=47.24, mg_setup[lvls= 4]=50.13, solve[63]=116.72
+ndofs=     1217704, resid[ 63]=7.59e-11: system_setup=33.66, mg_setup[lvls= 4]=35.93, solve[63]=84.31
+ndofs=      859812, resid[ 63]=9.49e-11: system_setup=23.47, mg_setup[lvls= 4]=24.03, solve[63]=58.55
+ndofs=      579968, resid[ 64]=8.20e-11: system_setup=15.32, mg_setup[lvls= 4]=15.06, solve[64]=39.18
+ndofs=      368572, resid[ 63]=8.05e-11: system_setup=9.55, mg_setup[lvls= 4]=8.96, solve[63]=23.65
+ndofs=      216024, resid[ 62]=9.29e-11: system_setup=5.50, mg_setup[lvls= 4]=4.82, solve[62]=13.32
+ndofs=      112724, resid[ 64]=9.17e-11: system_setup=2.83, mg_setup[lvls= 3]=2.23, solve[64]=6.67
+ndofs=       49072, resid[ 65]=7.24e-11: system_setup=1.28, mg_setup[lvls= 3]=0.92, solve[65]=2.61
+ndofs=       15468, resid[ 62]=9.20e-11: system_setup=0.44, mg_setup[lvls= 3]=0.28, solve[62]=0.82
+ndofs=        6934, resid[ 59]=6.69e-11: system_setup=0.27, mg_setup[lvls= 3]=0.18, solve[59]=0.44

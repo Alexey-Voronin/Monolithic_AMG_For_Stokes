@@ -1,0 +1,33 @@
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+Structured 3D Stokes: lid-driven-cavity
+ndofs=        6934, resid[  8]=6.35e-11: system_setup=0.72, mg_setup[lvls= 2]=0.29, solve[ 8]=0.04
+ndofs=       15468, resid[  9]=7.53e-11: system_setup=0.47, mg_setup[lvls= 2]=0.49, solve[ 9]=0.10
+ndofs=       49072, resid[ 11]=1.41e-11: system_setup=1.49, mg_setup[lvls= 2]=2.11, solve[11]=0.47
+ndofs=      112724, resid[ 11]=6.01e-11: system_setup=3.48, mg_setup[lvls= 2]=11.10, solve[11]=1.29
+ndofs=      216024, resid[ 12]=2.77e-11: system_setup=6.77, mg_setup[lvls= 3]=6.68, solve[12]=2.88
+ndofs=      368572, resid[ 12]=4.66e-11: system_setup=11.87, mg_setup[lvls= 3]=12.29, solve[12]=5.19
+ndofs=      579968, resid[ 12]=7.80e-11: system_setup=18.85, mg_setup[lvls= 3]=20.56, solve[12]=8.60
+ndofs=      859812, resid[ 12]=8.97e-11: system_setup=28.64, mg_setup[lvls= 3]=33.28, solve[12]=13.14
+ndofs=     1217704, resid[ 13]=1.94e-11: system_setup=40.84, mg_setup[lvls= 3]=53.29, solve[13]=21.04
+ndofs=     1663244, resid[ 13]=2.21e-11: system_setup=56.84, mg_setup[lvls= 3]=77.71, solve[13]=29.57
+ndofs=     2206032, resid[ 13]=2.56e-11: system_setup=78.23, mg_setup[lvls= 3]=113.89, solve[13]=40.86
+ndofs=     3223554, resid[ 13]=3.08e-11: system_setup=117.48, mg_setup[lvls= 3]=195.95, solve[13]=64.21
+Unstructured 3D Stokes (3D/pinched_channel/pinched_channel_h_): in-out-flow
+ndofs=        3921, resid[ 16]=2.27e-11: system_setup=0.66, mg_setup[lvls= 2]=0.47, solve[16]=0.07
+ndofs=       55436, resid[ 16]=3.04e-11: system_setup=1.80, mg_setup[lvls= 2]=4.13, solve[16]=1.09
+ndofs=      141047, resid[ 17]=2.06e-11: system_setup=4.67, mg_setup[lvls= 2]=21.95, solve[17]=3.45
+ndofs=      338818, resid[ 21]=5.82e-11: system_setup=11.79, mg_setup[lvls= 3]=22.70, solve[21]=11.98
+ndofs=      797014, resid[ 38]=5.10e-11: system_setup=28.77, mg_setup[lvls= 3]=63.54, solve[38]=65.46
+ndofs=     1821303, resid[ 25]=3.16e-11: system_setup=68.78, mg_setup[lvls= 3]=176.42, solve[25]=128.63
+ndofs=     4145768, resid[ 60]=1.38e-06: system_setup=174.80, mg_setup[lvls= 3]=566.28, solve[60]=876.39

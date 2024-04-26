@@ -1,0 +1,16 @@
+AMG Params:
+{'type': 'monolithic', 'interpolation': {'type': 'algebraic', 'order': 'high', 'params': {'u': {'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 75}, 'p': {'agg_mat': ('stiffness', 0.0), 'smooth_mat': ('stiffness', 0.0), 'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 50}}}, 'relaxation': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'gauss-seidel', 'solver_params': {'iterations': 1, 'sweep': 'symmetric'}}, 'continuity': {'operator': 'BBT', 'solver': 'gauss-seidel', 'solver_params': {'iterations': 1, 'sweep': 'symmetric'}}, 'transform': {'operator': 'BBT', 'solver': 'gauss-seidel', 'solver_params': {'iterations': 2, 'sweep': 'symmetric'}}, 'mass': {'u': {'solver': 'diag_inv', 'solver_params': {}}}}), 'levels': 10, 'coarse_grid_solve': 'splu'}
+
+ndofs=     3223554, resid[ 13]=2.89e-11: system_setup=162.90, mg_setup[lvls= 3]=203.83, solve[13]=70.83
+ndofs=     2206032, resid[ 13]=2.38e-11: system_setup=108.26, mg_setup[lvls= 3]=121.79, solve[13]=46.92
+ndofs=     1663244, resid[ 13]=2.11e-11: system_setup=80.84, mg_setup[lvls= 3]=83.48, solve[13]=34.51
+ndofs=     1217704, resid[ 13]=1.85e-11: system_setup=58.47, mg_setup[lvls= 3]=58.27, solve[13]=24.95
+ndofs=      859812, resid[ 12]=8.70e-11: system_setup=40.51, mg_setup[lvls= 3]=37.21, solve[12]=15.65
+ndofs=      579968, resid[ 12]=7.52e-11: system_setup=26.54, mg_setup[lvls= 3]=22.46, solve[12]=10.19
+ndofs=      368572, resid[ 12]=4.67e-11: system_setup=16.39, mg_setup[lvls= 3]=13.62, solve[12]=6.24
+ndofs=      216024, resid[ 12]=2.62e-11: system_setup=9.38, mg_setup[lvls= 3]=7.49, solve[12]=3.44
+ndofs=      112724, resid[ 11]=5.64e-11: system_setup=4.78, mg_setup[lvls= 2]=11.47, solve[11]=1.51
+ndofs=       49072, resid[ 11]=1.44e-11: system_setup=1.99, mg_setup[lvls= 2]=2.21, solve[11]=0.55
+ndofs=       15468, resid[  9]=7.25e-11: system_setup=0.62, mg_setup[lvls= 2]=0.49, solve[ 9]=0.12
+ndofs=        6934, resid[  8]=6.08e-11: system_setup=0.31, mg_setup[lvls= 2]=0.26, solve[ 8]=0.05
+Overall run-time: 0h 35min 57s

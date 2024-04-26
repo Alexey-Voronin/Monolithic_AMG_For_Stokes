@@ -1,0 +1,80 @@
+Structured 2D Stokes: in-out-flow
+Traceback (most recent call last):
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/data_collection/section_4_rev2/th/amg_p2p1/lsc_dc_mass/collect_data.py", line 29, in <module>
+    conv_data = collect_conv_data(
+                ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/collect_data.py", line 67, in collect_conv_data
+    amg = StokesMG(stokes, MG_PARAMS, keep=False)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 21, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/stokes_mg.py", line 125, in __init__
+    rlx_levels = self._setup_relaxation(levels)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 21, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/stokes_mg.py", line 330, in _setup_relaxation
+    relax = LSC(stks, params=rlx_param_copy, level=(i + 1))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 21, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/relaxation/lsc.py", line 71, in __init__
+    self._Mu = stokes.mass_bmat[0, 0]
+               ^^^^^^^^^^^^^^^^
+AttributeError: 'Stokes_tmp' object has no attribute 'mass_bmat'
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+Structured 2D Stokes: in-out-flow
+ndofs=        1891, resid[ 15]=4.86e-11: system_setup=0.56, mg_setup[lvls= 2]=0.26, solve[15]=0.04
+ndofs=        7235, resid[ 15]=8.03e-11: system_setup=0.20, mg_setup[lvls= 2]=0.35, solve[15]=0.08
+ndofs=       28291, resid[ 15]=2.65e-11: system_setup=0.55, mg_setup[lvls= 3]=0.79, solve[15]=0.32
+ndofs=      111875, resid[ 15]=3.79e-11: system_setup=1.96, mg_setup[lvls= 3]=2.36, solve[15]=1.33
+ndofs=      444931, resid[ 15]=9.72e-11: system_setup=8.08, mg_setup[lvls= 4]=8.39, solve[15]=5.78
+ndofs=     1774595, resid[ 16]=2.51e-11: system_setup=32.53, mg_setup[lvls= 4]=37.63, solve[16]=26.39
+ndofs=     3314503, resid[ 16]=9.48e-11: system_setup=62.88, mg_setup[lvls= 5]=68.05, solve[16]=47.82
+ndofs=     4328003, resid[ 16]=7.05e-11: system_setup=85.30, mg_setup[lvls= 5]=96.94, solve[16]=64.59
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+Unstructured 2D Stokes (2D/flow_past_cyl/flow_past_cyl_h_): in-out-flow
+ndofs=        2522, resid[ 12]=3.13e-11: system_setup=0.61, mg_setup[lvls= 2]=0.29, solve[12]=0.04
+ndofs=        8291, resid[ 13]=3.58e-11: system_setup=0.21, mg_setup[lvls= 2]=0.38, solve[13]=0.09
+ndofs=       18814, resid[ 13]=8.31e-11: system_setup=0.36, mg_setup[lvls= 2]=0.60, solve[13]=0.20
+ndofs=       42289, resid[ 13]=7.78e-11: system_setup=0.68, mg_setup[lvls= 3]=1.01, solve[13]=0.45
+ndofs=       95533, resid[ 14]=2.67e-11: system_setup=1.46, mg_setup[lvls= 3]=1.81, solve[14]=1.09
+ndofs=      212050, resid[ 15]=3.19e-11: system_setup=3.24, mg_setup[lvls= 3]=4.36, solve[15]=2.70
+ndofs=      466334, resid[ 14]=9.90e-11: system_setup=7.40, mg_setup[lvls= 4]=8.69, solve[14]=5.90
+ndofs=     1021759, resid[ 16]=2.00e-11: system_setup=16.95, mg_setup[lvls= 4]=21.53, solve[16]=15.11
+ndofs=     2248204, resid[ 16]=6.23e-11: system_setup=37.23, mg_setup[lvls= 4]=52.16, solve[16]=33.09
+ndofs=     4951877, resid[ 16]=6.97e-11: system_setup=91.07, mg_setup[lvls= 5]=127.26, solve[16]=73.96
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+firedrake:WARNING No comm specified for VectorSpaceBasis, COMM_WORLD assumed
+Unstructured 3D Stokes (3D/pinched_channel/pinched_channel_h_): in-out-flow
+ndofs=        3921, resid[ 36]=3.82e-11: system_setup=0.69, mg_setup[lvls= 2]=0.35, solve[36]=0.22
+ndofs=       55436, resid[ 18]=3.58e-11: system_setup=2.75, mg_setup[lvls= 2]=5.36, solve[18]=1.59
+ndofs=      141047, resid[ 19]=5.69e-11: system_setup=7.88, mg_setup[lvls= 2]=26.94, solve[19]=4.99
+ndofs=      338818, resid[ 17]=8.76e-11: system_setup=19.85, mg_setup[lvls= 3]=38.28, solve[17]=14.92
+ndofs=      797014, resid[ 18]=7.40e-11: system_setup=53.32, mg_setup[lvls= 3]=107.10, solve[18]=38.98
+ndofs=     1821303, resid[ 17]=3.38e-11: system_setup=100.79, mg_setup[lvls= 3]=243.16, solve[17]=107.76
+ndofs=     4145768, resid[ 18]=2.40e-11: system_setup=245.90, mg_setup[lvls= 3]=725.71, solve[18]=323.71
+Structured 3D Stokes: lid-driven-cavity
+ndofs=        6934, resid[ 38]=9.74e-11: system_setup=0.94, mg_setup[lvls= 2]=0.53, solve[38]=0.29
+ndofs=       15468, resid[ 33]=9.87e-11: system_setup=0.75, mg_setup[lvls= 2]=0.68, solve[33]=0.57
+ndofs=       49072, resid[ 34]=5.65e-11: system_setup=2.45, mg_setup[lvls= 2]=2.81, solve[34]=2.05
+ndofs=      112724, resid[ 27]=6.19e-11: system_setup=5.77, mg_setup[lvls= 2]=13.35, solve[27]=4.43
+ndofs=      216024, resid[ 27]=6.49e-11: system_setup=11.41, mg_setup[lvls= 3]=10.11, solve[27]=9.27
+ndofs=      368572, resid[ 31]=7.57e-11: system_setup=19.34, mg_setup[lvls= 3]=17.77, solve[31]=18.91
+ndofs=      579968, resid[ 33]=6.52e-11: system_setup=30.87, mg_setup[lvls= 3]=29.77, solve[33]=33.28
+ndofs=      859812, resid[ 37]=5.43e-11: system_setup=45.79, mg_setup[lvls= 3]=47.61, solve[37]=56.90
+ndofs=     1217704, resid[ 36]=9.24e-11: system_setup=68.74, mg_setup[lvls= 3]=77.80, solve[36]=83.32
+ndofs=     1663244, resid[ 35]=4.76e-11: system_setup=96.10, mg_setup[lvls= 3]=112.37, solve[35]=111.45
+ndofs=     2206032, resid[ 41]=8.88e-11: system_setup=128.98, mg_setup[lvls= 3]=162.69, solve[41]=166.20
+ndofs=     3223554, resid[ 44]=6.98e-11: system_setup=169.17, mg_setup[lvls= 3]=248.73, solve[44]=292.71

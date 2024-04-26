@@ -1,0 +1,50 @@
+Unstructured 2D Stokes (2D/flow_past_cyl/flow_past_cyl_h_): in-out-flow
+Traceback (most recent call last):
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/data_collection/section_4_rev2/th/amg_isop2p1/lsc_dc_mass/ho/collect_data.py", line 41, in <module>
+    conv_data = collect_conv_data(
+                ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/collect_data.py", line 67, in collect_conv_data
+    amg = StokesMG(stokes, MG_PARAMS, keep=False)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 21, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/stokes_mg.py", line 125, in __init__
+    rlx_levels = self._setup_relaxation(levels)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 21, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/stokes_mg.py", line 263, in _setup_relaxation
+    self.wrapper = HighOrderWrapper(
+                   ^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 21, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/ho_wrapper.py", line 45, in __init__
+    self.outer_relaxation = self._setup_relaxation(params["relax_params"])
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 21, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/ho_wrapper.py", line 60, in _setup_relaxation
+    rlx = LSC(self.stokes, params=relax_params, level=0)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/util/decorators.py", line 21, in timeit_wrapper
+    result = f(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/voronin2/Monolithic_AMG_For_Stokes/sysmg/solvers/relaxation/lsc.py", line 71, in __init__
+    self._Mu = stokes.mass_bmat[0, 0]
+               ^^^^^^^^^^^^^^^^
+AttributeError: 'Stokes' object has no attribute 'mass_bmat'
+Unstructured 2D Stokes (2D/flow_past_cyl/flow_past_cyl_h_): in-out-flow
+ndofs=        2522, resid[ 12]=3.85e-11: system_setup=1.05, mg_setup[lvls= 2]=0.27, solve[12]=0.04
+ndofs=        8291, resid[ 13]=5.60e-11: system_setup=0.78, mg_setup[lvls= 2]=0.32, solve[13]=0.08
+ndofs=       18814, resid[ 13]=8.29e-11: system_setup=1.56, mg_setup[lvls= 2]=0.44, solve[13]=0.15
+ndofs=       42289, resid[ 13]=3.13e-11: system_setup=3.32, mg_setup[lvls= 3]=0.76, solve[13]=0.36
+ndofs=       95533, resid[ 13]=2.25e-11: system_setup=7.58, mg_setup[lvls= 3]=1.12, solve[13]=0.80
+ndofs=      212050, resid[ 14]=2.19e-11: system_setup=17.05, mg_setup[lvls= 3]=2.52, solve[14]=2.01
+ndofs=      466334, resid[ 14]=1.94e-11: system_setup=38.14, mg_setup[lvls= 4]=4.91, solve[14]=4.67
+ndofs=     1021759, resid[ 14]=3.58e-11: system_setup=85.39, mg_setup[lvls= 4]=11.97, solve[14]=10.70
+ndofs=     2248204, resid[ 15]=3.78e-11: system_setup=190.95, mg_setup[lvls= 4]=27.08, solve[15]=27.16
+ndofs=     4951877, resid[ 15]=7.60e-11: system_setup=406.58, mg_setup[lvls= 5]=70.48, solve[15]=67.83
