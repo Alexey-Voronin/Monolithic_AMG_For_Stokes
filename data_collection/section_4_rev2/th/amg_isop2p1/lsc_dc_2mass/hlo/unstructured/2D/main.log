@@ -1,0 +1,14 @@
+AMG Params:
+{'type': 'monolithic', 'interpolation': {'type': 'algebraic', 'order': 'low', 'params': {'u': {'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 75}, 'p': {'agg_mat': ('stiffness', 0.0), 'smooth_mat': ('stiffness', 0.0), 'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 50}}}, 'relaxation': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 3, 'iterations': 1}}, 'continuity': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 3, 'iterations': 1}}, 'transform': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 6, 'iterations': 1}}, 'mass': {'u': {'solver': 'diag_inv', 'solver_params': {}}}}), 'wrapper_params': {'relax_params': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 3, 'iterations': 1}}, 'continuity': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 3, 'iterations': 1}}, 'transform': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 6, 'iterations': 1}}, 'mass': {'u': {'solver': 'diag_inv', 'solver_params': {}}}}), 'tau': (1, 1), 'eta': (array([1., 1.]), (1, 1))}, 'levels': 10, 'coarse_grid_solve': 'splu'}
+
+ndofs=        2522, resid[  8]=3.28e-11: system_setup=1.15, mg_setup[lvls= 2]=0.28, solve[ 8]=0.05
+ndofs=        8291, resid[  9]=6.85e-11: system_setup=0.80, mg_setup[lvls= 2]=0.33, solve[ 9]=0.10
+ndofs=       18814, resid[  9]=5.46e-11: system_setup=1.60, mg_setup[lvls= 2]=0.46, solve[ 9]=0.19
+ndofs=       42289, resid[ 10]=1.01e-11: system_setup=3.39, mg_setup[lvls= 3]=0.81, solve[10]=0.47
+ndofs=       95533, resid[ 10]=3.84e-11: system_setup=7.73, mg_setup[lvls= 3]=1.29, solve[10]=1.05
+ndofs=      212050, resid[ 10]=7.20e-11: system_setup=17.27, mg_setup[lvls= 3]=2.80, solve[10]=2.44
+ndofs=      466334, resid[ 11]=8.77e-12: system_setup=38.88, mg_setup[lvls= 4]=5.65, solve[11]=6.26
+ndofs=     1021759, resid[ 11]=2.90e-11: system_setup=82.14, mg_setup[lvls= 4]=14.57, solve[11]=14.68
+ndofs=     2248204, resid[ 11]=5.79e-11: system_setup=185.20, mg_setup[lvls= 4]=31.51, solve[11]=35.21
+ndofs=     4951877, resid[ 12]=1.37e-11: system_setup=420.98, mg_setup[lvls= 5]=93.46, solve[12]=99.58
+Overall run-time: 0h 17min 54s

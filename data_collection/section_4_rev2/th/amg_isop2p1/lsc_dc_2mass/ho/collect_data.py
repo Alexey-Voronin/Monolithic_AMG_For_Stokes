@@ -43,6 +43,6 @@ conv_data = collect_conv_data(
     mg_params,
     TOL=1e-10,
     MAX_ITER=60,
-    rerun=5,
+    rerun=1,
 )
 ##########################################################

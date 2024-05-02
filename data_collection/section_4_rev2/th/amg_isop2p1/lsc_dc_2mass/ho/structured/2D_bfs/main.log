@@ -1,0 +1,12 @@
+AMG Params:
+{'type': 'monolithic', 'interpolation': {'type': 'algebraic', 'order': 'low', 'params': {'u': {'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 75}, 'p': {'agg_mat': ('stiffness', 0.0), 'smooth_mat': ('stiffness', 0.0), 'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 50}}}, 'relaxation': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 3, 'iterations': 1}}, 'continuity': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 3, 'iterations': 1}}, 'transform': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 6, 'iterations': 1}}, 'mass': {'u': {'solver': 'diag_inv', 'solver_params': {}}}}), 'wrapper_params': {'relax_params': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 3, 'iterations': 1}}, 'continuity': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 3, 'iterations': 1}}, 'transform': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.25, 'upper_bound': 1.1, 'degree': 6, 'iterations': 1}}, 'mass': {'u': {'solver': 'diag_inv', 'solver_params': {}}}}), 'tau': (1, 1), 'eta': (array([1., 1.]), (1, 1)), 'modify_mg_rlx': [(0, (0, 0))]}, 'levels': 10, 'coarse_grid_solve': 'splu'}
+
+ndofs=     4328003, resid[ 15]=5.96e-11: system_setup=372.26, mg_setup[lvls= 5]=51.90, solve[15]=61.31
+ndofs=     3314503, resid[ 15]=6.22e-11: system_setup=280.50, mg_setup[lvls= 5]=37.76, solve[15]=44.03
+ndofs=     1774595, resid[ 14]=6.64e-11: system_setup=148.47, mg_setup[lvls= 4]=18.66, solve[14]=20.71
+ndofs=      444931, resid[ 14]=4.67e-11: system_setup=36.20, mg_setup[lvls= 4]=4.32, solve[14]=4.80
+ndofs=      111875, resid[ 14]=3.81e-11: system_setup=8.87, mg_setup[lvls= 3]=1.28, solve[14]=1.13
+ndofs=       28291, resid[ 14]=9.18e-11: system_setup=2.26, mg_setup[lvls= 3]=0.59, solve[14]=0.28
+ndofs=        7235, resid[ 15]=8.04e-11: system_setup=0.71, mg_setup[lvls= 2]=0.28, solve[15]=0.09
+ndofs=        1891, resid[ 15]=4.09e-11: system_setup=0.30, mg_setup[lvls= 2]=0.25, solve[15]=0.04
+Overall run-time: 0h 18min 20s
