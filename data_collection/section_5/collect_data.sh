@@ -1,9 +1,10 @@
 echo $(basename $PWD)
 
-cd th/  
-bash launch.sh
+cd th/
+bash collect_data.sh
 
 cd ../sv/
-bash launch.sh
+bash collect_data.sh
 
 cd ..
+

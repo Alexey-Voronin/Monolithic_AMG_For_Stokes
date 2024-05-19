@@ -3,6 +3,4 @@ cd  ho/
 bash collect_data.sh
 cd  ../hlo/ 
 bash collect_data.sh
-#cd  ../lo/ 
-#bash collect_data.sh
 cd ..

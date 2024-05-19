@@ -12,7 +12,7 @@ def unstructured_2D_iterator(system_params):
         name_id=3,
         dim=2,
         start_idx=2,
-        end_idx=9,
+        end_idx=4,  # 9,
         # start_idx=2, end_idx=4,
         max_dofs=2e9,
     )

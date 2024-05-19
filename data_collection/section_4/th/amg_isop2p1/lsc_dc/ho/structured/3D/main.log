@@ -1,15 +1,15 @@
 AMG Params:
-{'type': 'monolithic', 'interpolation': {'type': 'algebraic', 'order': 'low', 'params': {'u': {'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 75}, 'p': {'agg_mat': ('stiffness', 0.0), 'smooth_mat': ('stiffness', 0.0), 'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 50}}}, 'relaxation': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 1}}, 'continuity': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 1}}, 'transform': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 4}}}), 'wrapper_params': {'relax_params': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 1}}, 'continuity': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 1}}, 'transform': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 4}}}), 'tau': (1, 1), 'eta': (array([0.5, 0.5]), (1, 1)), 'modify_mg_rlx': [(0, (0, 0))]}, 'levels': 10, 'coarse_grid_solve': 'splu'}
+{'type': 'monolithic', 'interpolation': {'type': 'algebraic', 'order': 'low', 'params': {'u': {'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 75}, 'p': {'agg_mat': ('stiffness', 0.0), 'smooth_mat': ('stiffness', 0.0), 'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 50}}}, 'relaxation': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 1}}, 'continuity': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 1}}, 'transform': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 16, 'iterations': 1}}}), 'wrapper_params': {'relax_params': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 1}}, 'continuity': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 4, 'iterations': 1}}, 'transform': {'operator': 'BBT', 'solver': 'chebyshev', 'solver_params': {'lower_bound': 0.125, 'upper_bound': 1.1, 'degree': 16, 'iterations': 1}}}), 'tau': (1, 1), 'eta': (array([0.6, 0.6]), (1, 1)), 'modify_mg_rlx': [(0, (0, 0))]}, 'levels': 10, 'coarse_grid_solve': 'splu'}
 
-ndofs=        6934, resid[ 33]=9.04e-11: system_setup=4.09, mg_setup[lvls= 2]=0.38, solve[33]=0.27
-ndofs=       15468, resid[ 33]=7.08e-11: system_setup=2.82, mg_setup[lvls= 2]=0.61, solve[33]=0.58
-ndofs=       49072, resid[ 39]=9.28e-11: system_setup=9.12, mg_setup[lvls= 2]=2.31, solve[39]=2.46
-ndofs=      112724, resid[ 38]=8.06e-11: system_setup=21.42, mg_setup[lvls= 2]=12.41, solve[38]=6.61
-ndofs=      216024, resid[ 40]=5.46e-11: system_setup=42.62, mg_setup[lvls= 3]=5.58, solve[40]=13.22
-ndofs=      368572, resid[ 39]=7.47e-11: system_setup=74.75, mg_setup[lvls= 3]=10.50, solve[39]=23.49
-ndofs=      579968, resid[ 40]=8.59e-11: system_setup=119.64, mg_setup[lvls= 3]=16.84, solve[40]=39.45
-ndofs=      859812, resid[ 40]=8.65e-11: system_setup=180.26, mg_setup[lvls= 3]=25.05, solve[40]=60.26
-ndofs=     1217704, resid[ 42]=9.66e-11: system_setup=260.58, mg_setup[lvls= 3]=41.19, solve[42]=90.83
-ndofs=     1663244, resid[ 39]=9.16e-11: system_setup=364.19, mg_setup[lvls= 3]=60.05, solve[39]=116.06
-ndofs=     2206032, resid[ 45]=5.77e-11: system_setup=485.81, mg_setup[lvls= 3]=86.75, solve[45]=180.02
-ndofs=     3223554, resid[ 38]=9.68e-11: system_setup=725.05, mg_setup[lvls= 3]=146.74, solve[38]=237.57
+ndofs=     3223554, resid[ 38]=8.50e-11: system_setup=588.26, mg_setup[lvls= 3]=119.94, solve[38]=204.08
+ndofs=     2206032, resid[ 39]=8.03e-11: system_setup=395.70, mg_setup[lvls= 3]=70.06, solve[39]=133.76
+ndofs=     1663244, resid[ 37]=7.00e-11: system_setup=295.04, mg_setup[lvls= 3]=47.45, solve[37]=92.65
+ndofs=     1217704, resid[ 36]=7.48e-11: system_setup=212.94, mg_setup[lvls= 3]=32.83, solve[36]=64.95
+ndofs=      859812, resid[ 36]=4.91e-11: system_setup=147.16, mg_setup[lvls= 3]=19.86, solve[36]=44.04
+ndofs=      579968, resid[ 35]=8.62e-11: system_setup=94.55, mg_setup[lvls= 3]=13.28, solve[35]=28.35
+ndofs=      368572, resid[ 35]=6.34e-11: system_setup=59.05, mg_setup[lvls= 3]=8.15, solve[35]=17.34
+ndofs=      216024, resid[ 36]=5.43e-11: system_setup=33.83, mg_setup[lvls= 3]=4.46, solve[36]=9.98
+ndofs=      112724, resid[ 38]=6.93e-11: system_setup=17.34, mg_setup[lvls= 2]=10.92, solve[38]=5.62
+ndofs=       49072, resid[ 39]=4.96e-11: system_setup=7.34, mg_setup[lvls= 2]=1.89, solve[39]=1.94
+ndofs=       15468, resid[ 34]=3.78e-11: system_setup=2.29, mg_setup[lvls= 2]=0.45, solve[34]=0.48
+ndofs=        6934, resid[ 33]=8.40e-11: system_setup=1.09, mg_setup[lvls= 2]=0.29, solve[33]=0.21

@@ -1,9 +1,9 @@
 echo `basename "$PWD"`
 
 cd sv/
-bash launch.sh
+bash collect_data.sh
 
-#cd ../th/
-#bash launch.sh
+cd ../th/
+bash collect_data.sh
 
 cd ..
