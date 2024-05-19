@@ -1,21 +1,7 @@
 # Monolithic Algebraic Multigrid Preconditioners for the Stokes Equations
 
 ## Abstract
-We investigate a novel monolithic algebraic multigrid (AMG)
-preconditioner for the Taylor-Hood ($\pmb{\mathbb{P}}_2/\mathbb{P}_1$) and Scott-Vogelius ($\pmb{\mathbb{P}}_2/\mathbb{P}_1^{disc}$) discretizations of the Stokes equations. The algorithms is based on the use of the lower-order
-     $\pmb{\mathbb{P}}_1 \text{iso}\kern1pt\pmb{ \mathbb{P}}_2/\mathbb{P}_1$ operator within a defect-correction setting, in combination with
-    AMG construction of
-    interpolation operators for velocities and pressures. The 
-    preconditioning framework is primarily algebraic, though the  $\pmb{\mathbb{P}}_1 \text{iso}\kern1pt\pmb{ \mathbb{P}}_2/\mathbb{P}_1$ 
-    operator must be provided.
-    We investigate two relaxation strategies in this setting.
-    Specifically, a novel block factorization approach is devised for Vanka patch systems, which 
-    significantly reduces storage requirements and computational overhead, and a Chebyshev
-    adaptation of the LSC-DGS relaxation from [[Wang and Chen, 2013]](https://link.springer.com/article/10.1007/s10915-013-9684-1) is developed to improve parallelism.
-The preconditioner demonstrates robust performance across a variety of 2D and 3D
-Stokes problems, often matching or exceeding the effectiveness of an 
-inexact block-triangular (or Uzawa) preconditioner,
-especially in challenging scenarios such as elongated-domain problems.
+We investigate a novel monolithic algebraic multigrid (AMG) preconditioner for the Taylor-Hood ($\pmb{\mathbb{P}}_2/\mathbb{P}_1$) and Scott-Vogelius ($\pmb{\mathbb{P}}_2/\mathbb{P}_1^{disc}$) discretizations of the Stokes equations. The algorithm is based on the use of the lower-order $\pmb{\mathbb{P}}_1 \text{iso}\kern1pt\pmb{ \mathbb{P}}_2/ \mathbb{P}_1$ operator within a defect-correction setting, in combination with AMG construction of interpolation operators for velocities and pressures. The preconditioning framework is primarily algebraic, though the $\pmb{\mathbb{P}}_1 \text{iso}\kern1pt\pmb{ \mathbb{P}}_2/ \mathbb{P}_1$ operator must be provided. We investigate two relaxation strategies in this setting. Specifically, a novel block factorization approach is devised for Vanka patch systems, which significantly reduces storage requirements and computational overhead, and a Chebyshev adaptation of the LSC-DGS relaxation from [[Wang and Chen, 2013]](https://link.springer.com/article/10.1007/s10915-013-9684-1) is developed to improve parallelism. The preconditioner demonstrates robust performance across a variety of 2D and 3D Stokes problems, often matching or exceeding the effectiveness of an inexact block-triangular (or Uzawa) preconditioner, especially in challenging scenarios such as elongated-domain problems. 
 
 ## Authors
 - Alexey Voronin (axvsim [at] proton.me)

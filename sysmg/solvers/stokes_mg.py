@@ -264,6 +264,9 @@ class StokesMG(MG):
                 self.ho_system, wrapper_params, keep=self.keep
             )
 
+        # for i in range(2):
+        #    system.mass_bmat[i,i] = sp.diags(system.mass_bmat[i,i].diagonal())
+
         stks_levels = []
         rlx_levels = []
         for i, level in enumerate(levels):  # exact solve on level[-1]
@@ -273,7 +276,22 @@ class StokesMG(MG):
             level.A_bmat[1, 0].eliminate_zeros()
             level.A_bmat[0, 1].eliminate_zeros()
             stks = Stokes_tmp(level.A_bmat, system.dim, system.structured)
-            stks.stiffness_bmat = system.stiffness_bmat if i == 0 else None
+
+            # In some cases, like with LSC relaxation, we may need to propagate
+            # auxiliary operators such as mass-matrices to the coarse grids.
+            if i == 0:
+                #stks.stiffness_bmat = system.stiffness_bmat
+                if hasattr(system, "mass_bmat"): 
+                    stks.mass_bmat = system.mass_bmat
+            else:
+                #stks.stiffness_bmat = level.stiffness_bmat
+                if hasattr(level, "mass_bmat"): 
+                    stks.mass_bmat = level.mass_bmat
+
+            if i < len(levels) - 1 and hasattr(stks, "mass_bmat"):
+                P, R = level.P_bmat, level.R_bmat
+                levels[i + 1].mass_bmat = R * stks.mass_bmat * P
+
             stks.dim = self.dim
             stks_levels.append(stks)
             level.A = level.A_bmat.tocsr()

@@ -1,9 +1,0 @@
-lsc_dc_star
-Unstructured 2D Stokes (2D/airfoil/airfoil_h_): in-out-flow
-ndofs=       55604, resid[ 28]=3.35e-11: system_setup=6.27, mg_setup[lvls= 3]=1.76, solve[28]=2.20
-ndofs=      154086, resid[ 28]=5.56e-11: system_setup=12.26, mg_setup[lvls= 3]=3.80, solve[28]=5.93
-ndofs=      388887, resid[ 26]=6.00e-11: system_setup=31.22, mg_setup[lvls= 4]=8.95, solve[26]=14.82
-ndofs=      915167, resid[ 27]=5.24e-11: system_setup=75.00, mg_setup[lvls= 4]=21.15, solve[27]=38.95
-ndofs=     2049880, resid[ 27]=5.93e-11: system_setup=171.81, mg_setup[lvls= 4]=49.53, solve[27]=91.60
-ndofs=     4554518, resid[ 31]=5.22e-11: system_setup=386.65, mg_setup[lvls= 5]=119.23, solve[31]=262.03
-ndofs=     9337544, resid[ 32]=5.38e-11: system_setup=829.00, mg_setup[lvls= 5]=267.11, solve[32]=617.90

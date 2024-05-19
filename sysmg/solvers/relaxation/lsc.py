@@ -42,6 +42,9 @@ class LSC(System_Relaxation):
                 "solver": "gauss-seidel",
                 "solver_params": {"iterations": 2, "sweep": "symmetric"},
             },
+            "mass": {
+                "u": {"solver": "direct", "solver_params": {}},
+            },
         },
         omega=1,
         debug=True,
@@ -63,6 +66,12 @@ class LSC(System_Relaxation):
         self._Au = Abmat[0, 0].copy().tocsr()
         self._B = Abmat[1, 0].copy().tocsr()
         self._BT = Abmat[0, 1].copy().tocsr()
+
+        if "mass" in self.params.keys():
+            self._Mu = stokes.mass_bmat[0, 0]
+            # self._Mp = stokes.mass_bmat[1, 1]
+            # self._Mp_inv = self._Mp.diagonal()
+
         self.nullspace = getattr(stokes, "nullspace", None)
         self._vdofs = stokes.velocity_nodes()
         self._pdofs = stokes.pressure_nodes()
@@ -76,7 +85,26 @@ class LSC(System_Relaxation):
     def _get_solver(self, A, solver, params, name):
         solver = solver.lower()
 
-        if solver == "direct":
+        if solver == "lumped_diag_inv":
+            self._step_solvers[name] = sp.diags(1.0 / np.asarray(A.sum(axis=1)).ravel())
+
+            def custom_solver(b):
+                return self._step_solvers[name] * b
+
+        elif solver == "diag_inv":
+            Du = A.diagonal()
+            self._step_solvers[name] = sp.diags(1.0 / Du).tocsr()
+
+            def custom_solver(b):
+                return self._step_solvers[name] * b
+
+        elif solver == "direct_assembled":
+            self._step_solvers[name] = sp.csr_matrix(np.linalg.inv(A.toarray()))
+
+            def custom_solver(b):
+                return self._step_solvers[name] * b
+
+        elif solver == "direct":
             self._step_solvers[name] = sp.linalg.factorized(A.tocsc())
 
             def custom_solver(b):
@@ -140,7 +168,35 @@ class LSC(System_Relaxation):
         Au = self._Au
         B = self._B
         BT = self._BT
-        BBT = (B * BT).tocsr()
+
+        if "mass" in self.params.keys():
+            from scipy.sparse.linalg import LinearOperator
+
+            iparams = self.params["mass"]["u"]
+            Mu_inv = self._get_solver(
+                self._Mu, iparams["solver"], iparams.get("solver_params", {}), "Mu_inv0"
+            )
+            self._mass_u_inv = Mu_inv
+
+            if iparams["solver"] in ["direct", "sa-amg"]:
+
+                def mv0(v):
+                    return B * Mu_inv(BT * v)
+
+                BBT = LinearOperator((B.shape[0], BT.shape[1]), matvec=mv0)
+            else:
+                BBT = (B * (Mu_inv(BT))).tocsr()
+
+            def mv(v):
+                return B * Mu_inv(Au * Mu_inv(BT * v))
+
+            self._BABT = LinearOperator((B.shape[0], BT.shape[1]), matvec=mv)
+
+            self.relax = self.relax_mass
+        else:
+            self._BABT = (B * (Au * BT)).tocsr()
+            BBT = (B * BT).tocsr()
+            self.relax = self.relax_no_mass
 
         name = "momentum"
         iparams = self.params[name]
@@ -149,25 +205,40 @@ class LSC(System_Relaxation):
         )
         name = "continuity"
         iparams = self.params[name]
-        Ap = (
-            self.system.stiffness_bmat[1, 1]
-            if iparams["operator"].lower() == "stiffness"
-            else None
-        )
-        mat = Ap if iparams["operator"].lower() == "stiffness" else BBT
+
         self._continuity_solver = self._get_solver(
-            mat, iparams["solver"], iparams.get("solver_params", {}), name
+            BBT, iparams["solver"], iparams.get("solver_params", {}), name
         )
+
         name = "transform"
         iparams = self.params[name]
-        mat = Ap if iparams["operator"].lower() == "stiffness" else BBT
         self._transform_solver = self._get_solver(
-            mat, iparams["solver"], iparams.get("solver_params", {}), name
+            BBT, iparams["solver"], iparams.get("solver_params", {}), name
         )
 
-        self._BABT = (B * (Au * BT)).tocsr()
+    def relax_mass(self, K, up, rhs):
+        Nu = self._vdofs
+        u, p = up[:Nu], up[Nu:]
+        f, g = rhs[:Nu], rhs[Nu:]
 
-    def relax(self, K, up, rhs):
+        Au = self._Au
+        B = self._B
+        BT = self._BT
+
+        for _ in range(self.relax_iters):
+            # Step 1
+            vstar = self._momentum_solver(f - Au * u - BT * p)
+            q = self._continuity_solver(g - B * (u + vstar))
+            # Step 2
+            dp = -1 * self._transform_solver(self._BABT * q)
+            du = vstar + self._mass_u_inv(BT * q)
+            # Step 3
+            u[:] = u + du
+            p[:] = p + dp
+
+        return up
+
+    def relax_no_mass(self, K, up, rhs):
         Nu = self._vdofs
         u, p = up[:Nu], up[Nu:]
         f, g = rhs[:Nu], rhs[Nu:]

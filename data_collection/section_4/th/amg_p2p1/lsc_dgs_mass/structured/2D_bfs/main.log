@@ -1,0 +1,12 @@
+AMG Params:
+{'type': 'monolithic', 'interpolation': {'type': 'algebraic', 'order': 'high', 'params': {'u': {'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 75}, 'p': {'agg_mat': ('stiffness', 0.0), 'smooth_mat': ('stiffness', 0.0), 'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 50}}}, 'relaxation': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'gauss-seidel', 'solver_params': {'iterations': 1, 'sweep': 'symmetric'}}, 'continuity': {'operator': 'BBT', 'solver': 'gauss-seidel', 'solver_params': {'iterations': 1, 'sweep': 'symmetric'}}, 'transform': {'operator': 'BBT', 'solver': 'gauss-seidel', 'solver_params': {'iterations': 2, 'sweep': 'symmetric'}}, 'mass': {'u': {'solver': 'diag_inv', 'solver_params': {}}}}), 'levels': 10, 'coarse_grid_solve': 'splu'}
+
+ndofs=     4328003, resid[ 14]=6.68e-11: system_setup=71.07, mg_setup[lvls= 5]=69.21, solve[14]=62.66
+ndofs=     3314503, resid[ 14]=6.69e-11: system_setup=54.43, mg_setup[lvls= 5]=50.85, solve[14]=47.73
+ndofs=     1774595, resid[ 13]=7.50e-11: system_setup=28.40, mg_setup[lvls= 4]=26.30, solve[13]=23.04
+ndofs=      444931, resid[ 13]=4.87e-11: system_setup=6.71, mg_setup[lvls= 4]=5.90, solve[13]=5.33
+ndofs=      111875, resid[ 13]=1.67e-11: system_setup=1.70, mg_setup[lvls= 3]=1.83, solve[13]=1.22
+ndofs=       28291, resid[ 11]=6.64e-11: system_setup=0.47, mg_setup[lvls= 3]=0.64, solve[11]=0.25
+ndofs=        7235, resid[ 11]=1.79e-11: system_setup=0.18, mg_setup[lvls= 2]=0.31, solve[11]=0.07
+ndofs=        1891, resid[ 11]=6.92e-12: system_setup=0.10, mg_setup[lvls= 2]=0.22, solve[11]=0.03
+Overall run-time: 0h 17min 4s

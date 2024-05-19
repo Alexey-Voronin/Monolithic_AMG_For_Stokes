@@ -10,39 +10,51 @@ def get_mg_params(msh_type, disc_type, dim, mg_type):
 
     ################################################################
     # LSC-DC relaxation type
-    mat_type       = 'BBT' 
-    lb             = (0.5)**dim
-    ub             = 1.1
-    degree         = 3 if dim == 2 else 4
-    steps_12_iters = 1
-    step_3_iters   = 2 if dim == 2 else 4
-    lsc_params     = {'iterations': (2, 2),
-                      'momentum'   : {'solver' : 'chebyshev',
-                                      'solver_params' :{'lower_bound' : lb,
-                                                        'upper_bound' : ub,
-                                                        'degree'      : degree,
-                                                        'iterations'  : steps_12_iters,
-                                                        },
-                                      },
+    mat_type = "BBT"
+    lb = (0.5) ** dim
+    ub = 1.1
 
-                      'continuity'   : {
-                                      'operator' : mat_type,
-                                      'solver' : 'chebyshev',
-                                      'solver_params' :{'lower_bound' : lb,
-                                                        'upper_bound' : ub,
-                                                        'degree'      : degree,
-                                                        'iterations'  : steps_12_iters,
-                                                        },
-                                      },
-                      'transform'  : {'operator' : mat_type,
-                                      'solver'   : 'chebyshev',
-                                      'solver_params' :{'lower_bound' : lb,
-                                                        'upper_bound' : ub,
-                                                        'degree'      : degree,
-                                                        'iterations'  : step_3_iters,
-                                                        },
-                                     }
-                     }
+    step_1_degree = 3 if dim == 2 else 4
+    step_1_iters = 1
+
+    step_2_degree = 3 if dim == 2 else 4
+    step_2_iters = 1
+
+    step_3_degree = 6 if dim == 2 else 16
+    step_3_iters = 1
+
+    lsc_params = {
+        "iterations": (2, 2),
+        "momentum": {
+            "solver": "chebyshev",
+            "solver_params": {
+                "lower_bound": lb,
+                "upper_bound": ub,
+                "degree": step_1_degree,
+                "iterations": step_1_iters,
+            },
+        },
+        "continuity": {
+            "operator": mat_type,
+            "solver": "chebyshev",
+            "solver_params": {
+                "lower_bound": lb,
+                "upper_bound": ub,
+                "degree": step_2_degree,
+                "iterations": step_2_iters,
+            },
+        },
+        "transform": {
+            "operator": mat_type,
+            "solver": "chebyshev",
+            "solver_params": {
+                "lower_bound": lb,
+                "upper_bound": ub,
+                "degree": step_3_degree,
+                "iterations": step_3_iters,
+            },
+        },
+    }
 
     lsc_inner_params = deepcopy(lsc_params)
     lsc_outer_params = deepcopy(lsc_params)
@@ -51,12 +63,12 @@ def get_mg_params(msh_type, disc_type, dim, mg_type):
     I = np.ones((2,))
     damp_param = {
         "structured": {
-            "ho" : {"2D": {"eta": I * 1.0}, "3D": {"eta": I * 0.50}},
-            "hlo": {"2D": {"eta": I * 1.0}, "3D": {"eta": I * 1.00}},
+            "ho": {"2D": {"eta": I * 1.0}, "3D": {"eta": I * 0.60}},
+            "hlo": {"2D": {"eta": I * 1.0}, "3D": {"eta": I * 1.10}},
         },
         "unstructured": {
-            "ho" : {"2D": {"eta": I * 1.00}, "3D": {"eta": I * 1.00}},
-            "hlo": {"2D": {"eta": I * 1.00}, "3D": {"eta": I * 1.00}},
+            "ho": {"2D": {"eta": I * 1.00}, "3D": {"eta": I * 1.00}},
+            "hlo": {"2D": {"eta": I * 1.00}, "3D": {"eta": I * 1.06}},
         },
     }
 

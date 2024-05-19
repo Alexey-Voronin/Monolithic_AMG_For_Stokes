@@ -93,7 +93,7 @@ class Stokes(System):
         # Weak form
         Z = self.problems[-1].Z
         a = problem.residual()
-        L = problem.rhs(Z)
+        L = problem.rhs()
         ######################################################################
         # BCs
         bcs_hier = [
@@ -101,6 +101,7 @@ class Stokes(System):
             for problem in self.problems
         ]
         self.bcs_nodes_hier = self._get_bc_nodes(bcs_hier)
+        self.bcs_hier = bcs_hier
         ######################################################################
         # Assemble the system
         bcs = bcs_hier[-1]
@@ -124,7 +125,6 @@ class Stokes(System):
                 [_extract_op(A, (1, 0)), _extract_op(A, (1, 1))],
             ]
         )
-
         # the wrong way to get the right hand-side
         # stokes.b =  np.copy(b.vector().array())
         # the right way to form the right handside
@@ -158,12 +158,14 @@ class Stokes(System):
             bmat = [[None, None], [None, None]]
             components = add_tmp.get(attr_name, ())
             for c in components:
-                i = 0 if c == "u" else 1
                 bc_i = bc_p if c == "p" else bc_u
                 fxn = getattr(problem, mat_type + "_matrix")  # fxn return petsc matrix
+
+                i = 0 if c == "u" else 1
                 bmat[i][i] = _extract_op(
-                    fxn(c, bc_i), None
-                )  # None -> not block-operator
+                    fxn(c, bc_i), (i, i)
+                )  # None -> not block-ioperator
+
             if len(components) > 0:
                 setattr(self, f"{mat_type}_bmat", BlockMatrix(bmat))
         ######################################################################

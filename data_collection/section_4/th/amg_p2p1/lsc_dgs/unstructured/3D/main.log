@@ -1,10 +1,11 @@
 AMG Params:
-{'type': 'monolithic', 'interpolation': {'type': 'algebraic', 'order': 'high', 'params': {'u': {'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 75}, 'p': {'agg_mat': ('stiffness', 0.0), 'smooth_mat': ('stiffness', 0.0), 'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 50}}}, 'relaxation': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'gauss-seidel', 'solver_params': {'iterations': 1, 'sweep': 'forward'}}, 'continuity': {'operator': 'BBT', 'solver': 'gauss-seidel', 'solver_params': {'iterations': 1, 'sweep': 'forward'}}, 'transform': {'operator': 'BBT', 'solver': 'gauss-seidel', 'solver_params': {'iterations': 2, 'sweep': 'symmetric'}}}), 'levels': 10, 'coarse_grid_solve': 'splu'}
+{'type': 'monolithic', 'interpolation': {'type': 'algebraic', 'order': 'high', 'params': {'u': {'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 75}, 'p': {'agg_mat': ('stiffness', 0.0), 'smooth_mat': ('stiffness', 0.0), 'strength': ('evolution', {'epsilon': 4.0, 'k': 2}), 'min_coarse': 50}}}, 'relaxation': ('lsc', {'iterations': (2, 2), 'momentum': {'solver': 'gauss-seidel', 'solver_params': {'iterations': 1, 'sweep': 'symmetric'}}, 'continuity': {'operator': 'BBT', 'solver': 'gauss-seidel', 'solver_params': {'iterations': 1, 'sweep': 'symmetric'}}, 'transform': {'operator': 'BBT', 'solver': 'gauss-seidel', 'solver_params': {'iterations': 2, 'sweep': 'symmetric'}}}), 'levels': 10, 'coarse_grid_solve': 'splu'}
 
-ndofs=        3921, resid[ 18]=7.61e-11: system_setup=1.13, mg_setup[lvls= 2]=0.41, solve[18]=0.09
-ndofs=       55436, resid[ 22]=3.73e-11: system_setup=1.94, mg_setup[lvls= 2]=5.03, solve[22]=1.59
-ndofs=      141047, resid[ 28]=7.84e-11: system_setup=4.98, mg_setup[lvls= 2]=26.32, solve[28]=5.94
-ndofs=      338818, resid[ 39]=4.84e-11: system_setup=12.97, mg_setup[lvls= 3]=30.38, solve[39]=22.07
-ndofs=      797014, resid[ 46]=5.92e-11: system_setup=33.55, mg_setup[lvls= 3]=89.39, solve[46]=75.47
-ndofs=     1821303, resid[ 49]=5.93e-11: system_setup=81.13, mg_setup[lvls= 3]=260.41, solve[49]=235.94
-ndofs=     4145768, resid[ 51]=6.97e-11: system_setup=194.02, mg_setup[lvls= 3]=766.65, solve[51]=655.35
+ndofs=     4145768, resid[ 60]=1.38e-06: system_setup=166.30, mg_setup[lvls= 3]=512.32, solve[60]=826.01
+ndofs=     1821303, resid[ 25]=3.16e-11: system_setup=68.91, mg_setup[lvls= 3]=175.46, solve[25]=129.29
+ndofs=      797014, resid[ 38]=5.10e-11: system_setup=29.00, mg_setup[lvls= 3]=63.22, solve[38]=64.61
+ndofs=      338818, resid[ 21]=5.82e-11: system_setup=11.72, mg_setup[lvls= 3]=22.66, solve[21]=11.86
+ndofs=      141047, resid[ 17]=2.06e-11: system_setup=4.53, mg_setup[lvls= 2]=21.94, solve[17]=3.45
+ndofs=       55436, resid[ 16]=3.04e-11: system_setup=1.70, mg_setup[lvls= 2]=4.03, solve[16]=1.07
+ndofs=        3921, resid[ 16]=2.27e-11: system_setup=0.16, mg_setup[lvls= 2]=0.26, solve[16]=0.07
+Overall run-time: 1h 44min 34s
