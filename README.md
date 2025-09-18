@@ -11,7 +11,7 @@ We investigate a novel monolithic algebraic multigrid (AMG) preconditioner for t
 
 The published paper can be found at:
 - [arxiv](https://arxiv.org/abs/2306.06795)
-- [SISC (accepted)]()
+- [SISC](https://epubs.siam.org/doi/10.1137/23M1584514)
 
 This GitHub repository houses the code referenced in the aforementioned publications.
 
